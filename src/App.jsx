@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import Onboarding from "./pages/Onboarding";
 import KakaoCallback from "./pages/KakaoCallback";
+import RoutineAnalyze from "./pages/RoutineAnalyze";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -14,6 +15,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Onboarding />} />
             <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
+            <Route path="/RoutineAnalyze" element={<RoutineAnalyze />} />
+            <Route path="*" element={<RoutineAnalyze />} />
           </Routes>
         </BrowserRouter>
       </main>
