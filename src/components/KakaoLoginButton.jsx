@@ -9,7 +9,6 @@ const KakaoLoginButton = () => {
       window.Kakao.init(import.meta.env.VITE_KAKAO_JS_KEY);
     }
 
-    
     window.Kakao.Auth.authorize({
       redirectUri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
     });
