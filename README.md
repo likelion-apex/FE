@@ -1,3 +1,9 @@
+##📌 이슈 생성
+* `[Feature]` : 새로운 페이지 또는 UI 기능 구현
+* `[Fix]` : UI 깨짐, 스크립트 오류 등 버그 수정
+* `[Refactor]` : 컴포넌트 구조 개선, 코드 리팩토링
+* `[Style]` : CSS 스타일링, 디자인 레이아웃 수정
+
 ## 💌 네이밍 컨벤션
 - 컴포넌트 or 페이지 : PascalCase
   - 예) Button.jsx, RouteCard.jsx, HomePage.jsx
