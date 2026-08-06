@@ -24,8 +24,9 @@ const KakaoLoginButton = () => {
       <img
         src={KakaoIcon}
         alt="카카오 로그인"
-        className="w-6 h-6 mr-[60px] ml-[20px]"
+        className="absolute w-6 h-6 left-[40px]"
       />
+
       <p className="text-black font-bold text-[18px]">카카오로 계속하기</p>
     </button>
   );
