@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
-
-
-import RoutineAnalyze from "./pages/RoutineAnalyze";
+import NotFound from "./pages/NotFound";
+import RoutineAnalyze from "./pages/RoutineAnalyze/RoutineAnalyze";
+import SmartLoding from "./pages/RoutineAnalyze/SmartLoading";
 import Onboarding from "./pages/Onboarding/Onboarding";
 import KakaoCallback from "./pages/Onboarding/KakaoCallback";
 
@@ -17,10 +17,12 @@ function App() {
           <Routes>
             <Route path="/" element={<Onboarding />} />
             <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
-            <Route path="/RoutineAnalyze" element={<RoutineAnalyze />} />
             <Route path="/onboarding/*" element={<Onboarding />} />
-            <Route path="*" element={<RoutineAnalyze />} />
-        
+            <Route path="/RoutineAnalyze">
+              <Route index element={<RoutineAnalyze />} />
+              <Route path="Smartloading" element={<SmartLoding />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </main>

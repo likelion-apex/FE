@@ -1,9 +1,11 @@
 import { useState } from "react";
-import more_arrow from "../assets/routine-analyze/more_arrow.svg";
-import RecentRoutineItem from "../components/RecentRoutineItem";
-import AnalysisProcessCard from "../components/AnalysisProcessCard";
+import { Link } from "react-router-dom";
+import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
+import RecentRoutineItem from "../../components/RecentRoutineItem";
+import AnalysisProcessCard from "../../components/AnalysisProcessCard";
 
 //받는거에 따라 다르겟지만 매칭 개수 / 며칠전인지 / 어떤 루틴인지 요약
+//로그인시 받아올 데이터
 const RECENT_ROUTINES = [
   {
     title: "환절기 수부지 진정 케어",
@@ -54,7 +56,7 @@ const RoutineAnalyze = () => {
             <br />내 피부에도 잘 맞을까요?
           </h2>
           <p className="mt-2 text-[14px] leading-7 text-gray-60">
-            유튜브 쇼츠, 인스타 릴스 링크를 붙여넣어 보세요.
+            유튜브 쇼츠 링크를 붙여넣어 보세요.
           </p>
         </section>
 
@@ -69,6 +71,7 @@ const RoutineAnalyze = () => {
         </section>
 
         {/* URL 입력칸, 받은 URL를 백으로 보내야됨 */}
+        {/* 백한테 */}
         <section className="mt-6 px-[11px]">
           <div className="rounded-[20px] border border-gray-10 bg-white p-[13px]">
             <div className="relative">
