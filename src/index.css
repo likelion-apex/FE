@@ -40,6 +40,34 @@ body {
   --color-gray-50: #6d7b87;
   --color-gray-60: #56616b;
   --color-gray-80: #34373e;
+
   --color-white: #ffffff;
-  --color-primary-10: #03c1fb;
+
+  --color-black: #171a1f;
+
+  --color-blue-05: #e6f9ff;
+  --color-blue-25: #81e0fd;
+  --color-blue-50: #03c1fb;
+  --color-blue-60: #029bca;
+  --color-blue-70: #027497;
+
+  --color-green-05: #e6fff3;
+  --color-green-25: #81fdc5;
+  --color-green-50: #03fb8a;
+  --color-green-70: #029753;
+
+  --color-red-05: #ffe5e5;
+  --color-red-25: #ff8080;
+  --color-red-40: #ff3333;
+  --color-red-70: #990000;
+
+  --color-yellow-05a: #fff8e5;
+  --color-yellow-25a: #ffd880;
+  --color-yellow-50a: #ffbb00;
+  --color-yellow-50b: #ffa500;
+  --color-yellow-50k: #fee500;
+
+  --color-violet-02: #f9f6fd;
+  --color-violet-20: #c2a9ef;
+  --color-violet-45: #753ddb;
 }
