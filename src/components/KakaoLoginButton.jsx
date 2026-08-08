@@ -1,4 +1,4 @@
-import KakaoIcon from "../assets/kakaoIcon.png";
+import KakaoCircle from "../assets/kakaoCircle.png";
 
 const KakaoLoginButton = () => {
   const handleKakaoLogin = () => {
@@ -19,14 +19,14 @@ const KakaoLoginButton = () => {
   return (
     <button
       onClick={handleKakaoLogin}
-      className="h-[68px] w-[360px] flex justify-center items-center bg-[#FFE812] rounded-[10px] cursor-pointer"
+      className="flex h-[68px] w-full cursor-pointer items-center justify-center gap-[50px] rounded-lg bg-white px-5 py-4"
     >
-      <img
-        src={KakaoIcon}
-        alt="카카오 로그인"
-        className="w-6 h-6 mr-[60px] ml-[20px]"
-      />
-      <p className="text-black font-bold text-[18px]">카카오로 계속하기</p>
+      <img src={KakaoCircle} alt="" className="size-[35px] shrink-0" />
+      <p className="text-[18px] leading-[30px]  text-blue-60">
+        카카오로 시작하기
+      </p>
+      {/* 텍스트를 버튼 가운데로 맞추기 위한 여백 (Figma의 opacity 0 아이콘) */}
+      <span aria-hidden className="size-[35px] font-semibold shrink-0 " />
     </button>
   );
 };

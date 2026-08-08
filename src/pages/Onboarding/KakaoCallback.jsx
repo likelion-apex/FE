@@ -5,7 +5,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 
 const KakaoCallback = () => {
   const [searchParams] = useSearchParams();
-  const [message, setMessage] = useState("로그인 처리 중...");
+  const [message, setMessage] = useState("로그인 처리 중입니다...");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const KakaoCallback = () => {
     // TODO: 백엔드가 준비되면 이 code를 서버로 보내 토큰을 교환합니다.
     // await api.post("/auth/kakao", { code });
     console.log("인가 코드:", code);
-    navigate("/onboarding/skin-type");
+    navigate("/onboarding/nickname");
   }, [searchParams]);
 
   return <div>{message}</div>;
