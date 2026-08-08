@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
 import Onboarding from "./pages/Onboarding/Onboarding";
 import KakaoCallback from "./pages/Onboarding/KakaoCallback";
+import SkinType from "./pages/Onboarding/SkinType";
+import SkinConcern from "./pages/Onboarding/SkinConcern";
+import UsingSkincare from "./pages/Onboarding/UsingSkincare";
+import Nickname from "./pages/Onboarding/Nickname";
+import Main from "./pages/Main";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <div className="min-h-screen bg-gray-10 flex justify-center items-center">
       {/* 아이폰 17 컨테이너*/}
@@ -14,7 +16,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Onboarding />} />
             <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
-            <Route path="/onboarding/*" element={<Onboarding />} />
+            <Route path="/onboarding/skin-type" element={<SkinType />} />
+            <Route path="/onboarding/skin-concern" element={<SkinConcern />} />
+            <Route path="/onboarding/skincare" element={<UsingSkincare />} />
+            <Route path="/onboarding/nickname" element={<Nickname />} />
+            <Route path="/main" element={<Main />} />
           </Routes>
         </BrowserRouter>
       </main>
