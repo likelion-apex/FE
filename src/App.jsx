@@ -1,4 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState } from "react";
+
+
+import RoutineAnalyze from "./pages/RoutineAnalyze";
 import Onboarding from "./pages/Onboarding/Onboarding";
 import KakaoCallback from "./pages/Onboarding/KakaoCallback";
 import SkinType from "./pages/Onboarding/SkinType";
@@ -21,6 +25,9 @@ function App() {
             <Route path="/onboarding/skincare" element={<UsingSkincare />} />
             <Route path="/onboarding/nickname" element={<Nickname />} />
             <Route path="/main" element={<Main />} />
+            <Route path="/RoutineAnalyze" element={<RoutineAnalyze />} />
+            <Route path="*" element={<RoutineAnalyze />} />
+        
           </Routes>
         </BrowserRouter>
       </main>
