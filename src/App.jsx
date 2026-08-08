@@ -3,6 +3,7 @@ import { useState } from "react";
 import NotFound from "./pages/NotFound";
 import RoutineAnalyze from "./pages/RoutineAnalyze/RoutineAnalyze";
 import SmartLoding from "./pages/RoutineAnalyze/SmartLoading";
+import AnalyzeResult from "./pages/RoutineAnalyze/AnalyzeResult";
 import Onboarding from "./pages/Onboarding/Onboarding";
 import KakaoCallback from "./pages/Onboarding/KakaoCallback";
 
@@ -21,6 +22,7 @@ function App() {
             <Route path="/RoutineAnalyze">
               <Route index element={<RoutineAnalyze />} />
               <Route path="Smartloading" element={<SmartLoding />} />
+              <Route path="AnalyzeResult" element={<AnalyzeResult />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
