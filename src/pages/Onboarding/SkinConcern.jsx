@@ -12,7 +12,7 @@ import sensitiveIcon from "../../assets/skin-concern/sensitive.svg";
 import wrinkleIcon from "../../assets/skin-concern/wrinkle.svg";
 import MaskIcon from "../../components/MaskIcon";
 import NextButton from "../../components/NextButton";
-import TopNavbar from "../../components/TopNavbar";
+import TopNavbar from "../../components/layouts/TopNavbar";
 
 const SKIN_CONCERNS = [
   { id: 1, name: "속건조", icon: drynessIcon },

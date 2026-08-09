@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 import cancelIcon from "../../assets/icons/cancel.svg";
 import NextButton from "../../components/NextButton";
-import TopNavbar from "../../components/TopNavbar";
+import TopNavbar from "../../components/layouts/TopNavbar";
 
 const MAX_LENGTH = 10;
 
@@ -81,8 +81,7 @@ function Nickname() {
           <NextButton
             disabled={nickname.trim().length === 0}
             onClick={() => navigate("/onboarding/skin-type")}
-          >
-          </NextButton>
+          ></NextButton>
         </motion.div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
+import Layout from "./components/layouts/Layout";
 import NotFound from "./pages/NotFound";
 import RoutineAnalyze from "./pages/RoutineAnalyze/RoutineAnalyze";
 import SmartLoding from "./pages/RoutineAnalyze/SmartLoading";
@@ -27,10 +28,13 @@ function App() {
             <Route path="/onboarding/skincare" element={<UsingSkincare />} />
             <Route path="/onboarding/nickname" element={<Nickname />} />
             <Route path="/main" element={<Main />} />
-            <Route path="/RoutineAnalyze">
-              <Route index element={<RoutineAnalyze />} />
-              <Route path="Smartloading" element={<SmartLoding />} />
-              <Route path="AnalyzeResult" element={<AnalyzeResult />} />
+
+            <Route element={<Layout />}>
+              <Route path="/RoutineAnalyze">
+                <Route index element={<RoutineAnalyze />} />
+                <Route path="Smartloading" element={<SmartLoding />} />
+                <Route path="AnalyzeResult" element={<AnalyzeResult />} />
+              </Route>
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

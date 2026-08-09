@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import RoutineAnalyzeCard from "../../components/RoutineAnalyzeCard";
+import TopNavbar from "../../components/layouts/TopNavbar";
+import BottomNavbar from "../../components/layouts/BottomNavbar";
 
 const USER_NAME = "서영";
 const STEP_COUNT = 4;

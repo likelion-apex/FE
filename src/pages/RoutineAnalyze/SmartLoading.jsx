@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SmartLoading = () => {
-  //현재 진행 중인 스탭(1: 완료, 2: 진행중, 3: 대기, 4: 대기)
-  const [currentStep, setCurrentStep] = useState(2);
-  const userName = "서영";
+  const [currentStep, setCurrentStep] = useState(1);
+  const USERNAME = "서영";
+  const navigate = useNavigate();
 
   const steps = [
     {
@@ -13,7 +14,7 @@ const SmartLoading = () => {
     },
     {
       id: 2,
-      title: `${userName}님의 피부 타입 적합도 분석`,
+      title: `${USERNAME}님의 피부 타입 적합도 분석`,
       sub: "민감성 피부 기준 자극도 체크 중...",
     },
     {
@@ -23,19 +24,26 @@ const SmartLoading = () => {
     },
     {
       id: 4,
-      title: `오직 ${userName}님만을 위한 맞춤형 루틴 설계`,
+      title: `오직 ${USERNAME}님만을 위한 맞춤형 루틴 설계`,
       sub: "",
     },
   ];
 
+  //2초마다 다음 스텝으로 넘어가도록 설정
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentStep((prevStep) => (prev < 5 ? prev + 1 : 1));
+      setCurrentStep((prevStep) => prevStep + 1);
     }, 2000);
     return () => {
       clearInterval(timer);
     };
-  });
+  }, []);
+
+  useEffect(() => {
+    if (currentStep > 4) {
+      navigate("/RoutineAnalyze/AnalyzeResult");
+    }
+  }, [currentStep, navigate]);
 
   return (
     <div className="m-[40px] flex flex-col items-center justify-center text-center gap-8">
@@ -51,7 +59,7 @@ const SmartLoading = () => {
 
       <div className="text-center">
         <h2 className="text-[24px] text-black font-semibold">
-          영상 속 루틴이 윤지님에게 <br />
+          영상 속 루틴이 {USERNAME}님에게 <br />
           적합한지 검토하고 있어요
         </h2>
         <p className="text-gray-60 text-[14px] ">

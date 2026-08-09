@@ -9,7 +9,7 @@ import normalIcon from "../../assets/skin-type/normal.svg";
 import oilyIcon from "../../assets/skin-type/oily.svg";
 import MaskIcon from "../../components/MaskIcon";
 import NextButton from "../../components/NextButton";
-import TopNavbar from "../../components/TopNavbar";
+import TopNavbar from "../../components/layouts/TopNavbar";
 
 const SKIN_TYPES = [
   {

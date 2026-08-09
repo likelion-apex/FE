@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import backIcon from "../assets/icons/vector.svg";
-
+import backIcon from "../../assets/icons/vector.svg";
 
 let lastProgress = 0;
 

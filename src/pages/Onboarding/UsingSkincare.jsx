@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import cancelIcon from "../../assets/icons/cancel.svg";
 import searchIcon from "../../assets/icons/search.svg";
 import NextButton from "../../components/NextButton";
-import TopNavbar from "../../components/TopNavbar";
+import TopNavbar from "../../components/layouts/TopNavbar";
 
 // TODO: 제품 검색 API 연동 시 교체
 const PRODUCTS = [
@@ -56,7 +56,9 @@ function UsingSkincare() {
 
           <div
             className={`mx-auto flex h-12 w-[332px] items-center justify-between rounded-2xl border px-5 py-[10px] ${
-              keyword ? "border-blue-50 bg-blue-05" : "border-gray-20 bg-gray-05"
+              keyword
+                ? "border-blue-50 bg-blue-05"
+                : "border-gray-20 bg-gray-05"
             }`}
           >
             <input
@@ -153,7 +155,7 @@ function UsingSkincare() {
           disabled={registered.length === 0}
           onClick={() => navigate("/main")}
         >
-        시작하기
+          시작하기
         </NextButton>
       </div>
     </div>
