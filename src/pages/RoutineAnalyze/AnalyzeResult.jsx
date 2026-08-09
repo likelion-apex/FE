@@ -57,9 +57,6 @@ const ROUTINE_STEPS = [
 const AnalyzeResult = () => {
   return (
     <div>
-      <div>
-        <TopNavbar step={0} totalSteps={1} />
-      </div>
       <div className="flex flex-col mx-[24px]">
         <div className="flex-col gap-3 mb-6">
           <h3 className="text-[20px] font-semibold leading-7 mb-[8px]">
@@ -111,9 +108,6 @@ const AnalyzeResult = () => {
             ))}
           </div>
         </section>
-      </div>
-      <div>
-        <BottomNavbar />
       </div>
     </div>
   );

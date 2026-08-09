@@ -74,9 +74,6 @@ const RoutineAnalyze = () => {
 
   return (
     <div className="flex min-h-full flex-col text-black">
-      <div>
-        <TopNavbar step={0} totalSteps={1} />
-      </div>
       <div className="flex-1 pb-6 mt-[100px]">
         {/* 제목 */}
         <section className="px-[39px]">
