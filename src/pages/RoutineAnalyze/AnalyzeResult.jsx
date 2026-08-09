@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import RoutineAnalyzeCard from "../../components/RoutineAnalyzeCard";
+import TopNavbar from "../../components/layouts/TopNavbar";
+import BottomNavbar from "../../components/layouts/BottomNavbar";
 
 const USER_NAME = "서영";
 const STEP_COUNT = 4;
@@ -55,6 +57,9 @@ const ROUTINE_STEPS = [
 const AnalyzeResult = () => {
   return (
     <div>
+      <div>
+        <TopNavbar step={0} totalSteps={1} />
+      </div>
       <div className="flex flex-col mx-[24px]">
         <div className="flex-col gap-3 mb-6">
           <h3 className="text-[20px] font-semibold leading-7 mb-[8px]">
@@ -106,6 +111,9 @@ const AnalyzeResult = () => {
             ))}
           </div>
         </section>
+      </div>
+      <div>
+        <BottomNavbar />
       </div>
     </div>
   );

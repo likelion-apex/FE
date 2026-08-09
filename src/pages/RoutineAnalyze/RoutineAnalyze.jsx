@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import TopNavbar from "../../components/layouts/TopNavbar";
+import BottomNavbar from "../../components/layouts/BottomNavbar";
 import axios from "axios";
 import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 import RecentRoutineItem from "../../components/RecentRoutineItem";
@@ -72,6 +74,9 @@ const RoutineAnalyze = () => {
 
   return (
     <div className="flex min-h-full flex-col text-black">
+      <div>
+        <TopNavbar step={0} totalSteps={1} />
+      </div>
       <div className="flex-1 pb-6 mt-[100px]">
         {/* 제목 */}
         <section className="px-[39px]">
@@ -163,6 +168,9 @@ const RoutineAnalyze = () => {
             ))}
           </div>
         </section>
+      </div>
+      <div>
+        <BottomNavbar />
       </div>
     </div>
   );

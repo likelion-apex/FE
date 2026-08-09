@@ -1,5 +1,5 @@
 const RoutineAnalyzeCard = ({ step }) => {
-  // 💡 안전장치: 부모로부터 step 데이터가 안 넘어왔다면 에러를 띄우지 않고 그냥 안 그립니다!
+  //수정필요
   if (!step) return null;
 
   return (
