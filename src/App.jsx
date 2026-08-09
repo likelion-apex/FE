@@ -30,12 +30,17 @@ function App() {
             <Route path="/main" element={<Main />} />
 
             <Route element={<Layout />}>
-              <Route path="/RoutineAnalyze">
-                <Route index element={<RoutineAnalyze />} />
-                <Route path="Smartloading" element={<SmartLoding />} />
-                <Route path="AnalyzeResult" element={<AnalyzeResult />} />
-              </Route>
+              <Route path="/RoutineAnalyze" element={<RoutineAnalyze />} />
+              <Route
+                path="/RoutineAnalyze/Smartloading"
+                element={<SmartLoding />}
+              />
+              <Route
+                path="/RoutineAnalyze/AnalyzeResult"
+                element={<AnalyzeResult />}
+              />
             </Route>
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

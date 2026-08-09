@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import RoutineAnalyzeCard from "../../components/RoutineAnalyzeCard";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
@@ -55,8 +55,26 @@ const ROUTINE_STEPS = [
 ];
 
 const AnalyzeResult = () => {
+  const { setNavProps } = useOutletContext();
+  useEffect(() => {
+    setNavProps({
+      step: 2,
+      totalSteps: 4,
+      stepName: "",
+    });
+
+    //다른 페이지로 넘어갈 때 네비바 초기화
+    return () => {
+      setNavProps({
+        step: 0,
+        totalSteps: 0,
+        stepName: "",
+      });
+    };
+  }, [setNavProps]);
+
   return (
-    <div>
+    <div className="mt-[24px] mb-[70px] flex flex-col text-black">
       <div className="flex flex-col mx-[24px]">
         <div className="flex-col gap-3 mb-6">
           <h3 className="text-[20px] font-semibold leading-7 mb-[8px]">

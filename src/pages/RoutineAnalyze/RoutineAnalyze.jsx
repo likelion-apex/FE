@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
 import axios from "axios";
@@ -72,11 +72,29 @@ const RoutineAnalyze = () => {
     }
   };
 
+  const { setNavProps } = useOutletContext();
+  useEffect(() => {
+    setNavProps({
+      step: 0,
+      totalSteps: 0,
+      stepName: "AI 루틴 분석",
+    });
+
+    //다른 페이지로 넘어갈 때 네비바 초기화
+    return () => {
+      setNavProps({
+        step: 0,
+        totalSteps: 0,
+        stepName: "",
+      });
+    };
+  }, [setNavProps]);
+
   return (
-    <div className="flex min-h-full flex-col text-black">
-      <div className="flex-1 pb-6 mt-[100px]">
+    <div className="flex min-h-full flex-col text-black mt-[24px] mb-[70px] px-[20px]">
+      <div className="flex-1 pb-6 ">
         {/* 제목 */}
-        <section className="px-[39px]">
+        <section>
           <h2 className="text-[20px] font-semibold leading-7">
             영상 속 스킨케어 루틴,
             <br />내 피부에도 잘 맞을까요?
@@ -87,11 +105,11 @@ const RoutineAnalyze = () => {
         </section>
 
         {/* 비디오리스트, 아직 안정해짐, 목데이터 첨부 */}
-        <section className="mt-6 flex gap-4 overflow-x-auto px-5 no-scrollbar">
+        <section className="mt-6 flex gap-4 overflow-x-auto  no-scrollbar">
           {[1, 2, 3, 4].map((item) => (
             <div
               key={item}
-              className="h-[186px] w-[116px] shrink-0 rounded-xl bg-gray-10"
+              className="h-[184px] w-[116px] shrink-0 rounded-xl bg-gray-10"
             />
           ))}
         </section>
@@ -125,7 +143,7 @@ const RoutineAnalyze = () => {
               {isLoading ? "요청 중..." : "AI 분석 요청하기"}
             </button>
           </div>
-          <div className="mt-1 rounded-xl bg-gray-05 p-[18px] text-center text-[12px] font-semibold leading-normal text-[#4a5568]">
+          <div className=" text-center mt-1 rounded-xl bg-gray-05 py-[10px] text-[12px] font-semibold leading-normal text-gray-60">
             <p>최대 5분 이내 영상만 분석할 수 있어요.</p>
             <p>영상 길이에 따라 분석에 많은 시간이 걸릴 수 있어요.</p>
           </div>
@@ -165,9 +183,6 @@ const RoutineAnalyze = () => {
             ))}
           </div>
         </section>
-      </div>
-      <div>
-        <BottomNavbar />
       </div>
     </div>
   );
