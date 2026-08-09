@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const SmartLoading = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [timeLeft, setTimeLeft] = useState(4);
   const USERNAME = "서영";
   const navigate = useNavigate();
 
@@ -33,10 +34,17 @@ const SmartLoading = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentStep((prevStep) => prevStep + 1);
-    }, 2000);
+    }, 1000);
     return () => {
       clearInterval(timer);
     };
+  }, []);
+
+  useEffect(() => {
+    const countdown = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(countdown);
   }, []);
 
   useEffect(() => {
@@ -66,8 +74,14 @@ const SmartLoading = () => {
           피부 적합도와 성분 궁합 분석 중
         </p>
       </div>
-      <div className="w-fit h-fit p-[20px] border border-gray-20">
-        <div></div>
+      {/* 임시 (시간 흐르는거 표현) */}
+      <div className="w-full max-w-[280px] h-fit mt-4 p-[20px] rounded-[16px] border border-gray-20 bg-gray-50 flex flex-col items-center justify-center gap-1">
+        <span className="text-gray-500 text-[13px] font-medium">
+          예상 대기 시간
+        </span>
+        <span classNamge="text-blue-500 text-[28px] font-bold">
+          {timeLeft}초
+        </span>
       </div>
     </div>
   );
