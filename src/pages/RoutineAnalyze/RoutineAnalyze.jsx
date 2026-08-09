@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 import RecentRoutineItem from "../../components/RecentRoutineItem";
 import AnalysisProcessCard from "../../components/AnalysisProcessCard";
@@ -36,6 +37,8 @@ const RECENT_ROUTINES = [
 
 const RoutineAnalyze = () => {
   const [url, setUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handlePaste = async () => {
     try {
@@ -43,6 +46,27 @@ const RoutineAnalyze = () => {
       setUrl(text);
     } catch {
       // 클립보드 접근 불가 시 무시
+    }
+  };
+
+  //AI 분석 요청하기 클릭 시 실행되는 함수
+  const handleAnalyzeRequest = async () => {
+    //1. 요청 시작
+    setIsLoading(true);
+
+    try {
+      //2. 백엔드 API 로 데이터 전송
+      console.log("백엔드로 보낼 URL", url);
+
+      // 임시 딜레이 (실제 백엔드 연결 전 테스트용)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      navigate("/RoutineAnalyze/Smartloading");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      //3. 요청 완료
+      setIsLoading(false);
     }
   };
 
@@ -92,10 +116,11 @@ const RoutineAnalyze = () => {
             </div>
             <button
               type="button"
-              disabled={!url.trim()}
+              disabled={!url.trim() || isLoading} //url이 없거나, 로딩 중이면 비활성화
+              onClick={handleAnalyzeRequest}
               className="mt-2 flex w-full items-center justify-center rounded-[20px] bg-gray-20 px-2 py-4 text-[16px] font-medium text-white disabled:cursor-not-allowed enabled:bg-primary-10"
             >
-              AI 분석 요청하기
+              {isLoading ? "요청 중..." : "AI 분석 요청하기"}
             </button>
           </div>
           <div className="mt-1 rounded-xl bg-gray-05 p-[18px] text-center text-[12px] font-semibold leading-normal text-[#4a5568]">
