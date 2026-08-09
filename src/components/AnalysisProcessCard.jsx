@@ -18,7 +18,7 @@ const AnalysisProcessCard = () => {
             <div className="size-10 shrink-0 rounded-full bg-gray-40" />
             <p
               className={`text-center text-[12px] font-bold leading-[14px] ${
-                step.highlight ? "text-primary-10" : "text-gray-60"
+                step.highlight ? "text-blue-50" : "text-gray-60"
               }`}
             >
               {step.label}
