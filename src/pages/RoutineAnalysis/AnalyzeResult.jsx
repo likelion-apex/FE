@@ -1,68 +1,22 @@
 import { useState, useEffect } from "react";
 import { Link, useOutletContext } from "react-router-dom";
-import RoutineAnalyzeCard from "../../components/RoutineAnalyzeCard";
+import IngredientCard from "../../components/Analysis/IngredientCard";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
+// AnalyzeResult.jsx 상단
+import {
+  USER_NAME,
+  ROUTINE_BRIEFING_DATA,
+  ROUTINE_STEPS,
+} from "../../mocks/mockData";
+import IngredientModal from "../../components/Analysis/IngredientModal";
 
-const USER_NAME = "윤지";
 const STEP_COUNT = 4;
 
-//일단 상세 설명은 description으로 정리, 나중에 백한테 받을 데이터 참고
-const ROUTINE_MOCK_DATA = {
-  title: "속건조 타파 루틴",
-  tag: "여름철 수부지 맞춤",
-  score: 88,
-  matchDetails: [
-    "수부지 맞춤 보습 성분 12개 매칭",
-    `${USER_NAME}님 피부 알레르기 유발 성분 0개`,
-  ],
-  coreGoal: "속건조 해결 & 장벽 재생",
-  synergy: "히알루론산 + 고함량 판테놀",
-  description:
-    "수분 공급(자작나무 앰플)과 장벽 보호(판테놀 크림)의 시너지가 돋보이는 4단계 루틴입니다. 다만, 각질 제거 성분(HATCHING EX-07)이 포함된 토너가 있어 민감성 피부는 매일 사용하기보다 주 2~3회로 조절하는 것을 권장합니다.",
-};
-
-const ROUTINE_STEPS = [
-  {
-    id: 1,
-    type: "클렌징",
-    name: "초미세먼지\n세정 클렌저",
-    desc: "뛰어난 세정력과 촉촉한 마무리감",
-    status: "safe", // safe | warning
-    statusTitle: "피부 안전도 평가",
-    statusDesc: "세정력이 강하지만 자극이 적어 민감성 피부도 안심이에요.",
-  },
-  {
-    id: 2,
-    type: "토너 (주의)",
-    name: "라운드랩 1025\n독도 토너",
-    desc: "수분 공급 및 피지·각질 제거",
-    status: "warning",
-    statusTitle: "[HATCHING EX-07 각질 제거 효소]",
-    statusDesc: `${USER_NAME}님은 민감성이라 매일 쓰면 자극이 될 수 있어요. 주 2~3회만 사용하거나 부드러운 패드로 닦아내세요.`,
-  },
-  {
-    id: 3,
-    type: "앰플",
-    name: "라운드랩\n자작나무 수분 앰플",
-    desc: "산뜻하고 쫀쫀한 속건조 케어",
-    status: "safe",
-    statusTitle: "피부 안전도 평가",
-    statusDesc: "자작나무 수액과 히알루론산이 수부지 피부에 찰떡이에요.",
-  },
-  {
-    id: 4,
-    type: "크림",
-    name: "고함량 판테놀\n10% 재생 크림",
-    desc: "피부 장벽 회복 및 재생",
-    status: "safe",
-    statusTitle: "피부 안전도 평가",
-    statusDesc: "판테놀이 약해진 민감성 피부 장벽을 튼튼하게 재생해 줘요.",
-  },
-];
-
 const AnalyzeResult = () => {
+  const [selectedStep, setSelectedStep] = useState(null);
   const { setNavProps } = useOutletContext();
+
   useEffect(() => {
     setNavProps({
       step: 2,
@@ -81,7 +35,7 @@ const AnalyzeResult = () => {
   }, [setNavProps]);
 
   const { title, tag, score, matchDetails, coreGoal, synergy, description } =
-    ROUTINE_MOCK_DATA;
+    ROUTINE_BRIEFING_DATA;
 
   //정렬을 위해 짝수, 홀수 카드 분리하기
   const leftColumnData = ROUTINE_STEPS.filter((_, index) => index % 2 === 0);
@@ -148,23 +102,37 @@ const AnalyzeResult = () => {
           <h3 className="mb-4 text-[16px] font-semibold">
             영상 속 {ROUTINE_STEPS.length}단계 루틴 성분 분석
           </h3>
-          <div className="flex items-start gap-2">
+          <div className="flex items-start gap-2 ">
             {/* 왼쪽(홀수) 열*/}
             <div className="flex flex-1 flex-col gap-2">
               {leftColumnData.map((step) => (
-                <RoutineAnalyzeCard key={step.id} step={step} />
+                <IngredientCard
+                  key={step.id}
+                  step={step}
+                  onClick={() => setSelectedStep(step)}
+                />
               ))}
             </div>
 
             {/* 오른쪽(짝수) 열 */}
             <div className="flex flex-1 flex-col gap-2">
               {rightColumnData.map((step) => (
-                <RoutineAnalyzeCard key={step.id} step={step} />
+                <IngredientCard
+                  key={step.id}
+                  step={step}
+                  onClick={() => setSelectedStep(step)}
+                />
               ))}
             </div>
           </div>
         </section>
       </div>
+      {selectedStep && (
+        <IngredientModal
+          stepData={selectedStep}
+          onClose={() => setSelectedStep(null)}
+        />
+      )}
       <div className="flex flex-col gap-2 items-center justify-center w-full mt-5">
         <p className="text-[12px] font-semibold text-blue-50">
           이제 {USER_NAME}님의 인벤토리와 성분 충돌이 없는지 알아볼까요?

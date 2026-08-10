@@ -20,7 +20,7 @@ const Layout = () => {
         totalSteps={navProps.totalSteps}
         stepName={navProps.stepName}
       />
-      <div className="flex-1 overflow-y-auto no-scrollbar">
+      <div id="main-scroll-box" className="flex-1 overflow-y-auto no-scrollbar">
         <Outlet context={{ setNavProps }} />
       </div>
       <BottomNavbar />

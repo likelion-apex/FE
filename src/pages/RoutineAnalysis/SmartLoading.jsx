@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { USER_NAME } from "../../mocks/mockData";
 
 const SmartLoading = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [timeLeft, setTimeLeft] = useState(4);
-  const USERNAME = "서영";
+
   const navigate = useNavigate();
 
   const steps = [
@@ -15,7 +16,7 @@ const SmartLoading = () => {
     },
     {
       id: 2,
-      title: `${USERNAME}님의 피부 타입 적합도 분석`,
+      title: `${USER_NAME}님의 피부 타입 적합도 분석`,
       sub: "민감성 피부 기준 자극도 체크 중...",
     },
     {
@@ -25,7 +26,7 @@ const SmartLoading = () => {
     },
     {
       id: 4,
-      title: `오직 ${USERNAME}님만을 위한 맞춤형 루틴 설계`,
+      title: `오직 ${USER_NAME}님만을 위한 맞춤형 루틴 설계`,
       sub: "",
     },
   ];
@@ -49,7 +50,7 @@ const SmartLoading = () => {
 
   useEffect(() => {
     if (currentStep > 4) {
-      navigate("/RoutineAnalyze/AnalyzeResult");
+      navigate("/RoutineAnalysis/AnalyzeResult");
     }
   }, [currentStep, navigate]);
 
@@ -67,7 +68,7 @@ const SmartLoading = () => {
 
       <div className="text-center">
         <h2 className="text-[24px] text-black font-semibold">
-          영상 속 루틴이 {USERNAME}님에게 <br />
+          영상 속 루틴이 {USER_NAME}님에게 <br />
           적합한지 검토하고 있어요
         </h2>
         <p className="text-gray-60 text-[14px] ">
