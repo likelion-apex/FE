@@ -1,4 +1,4 @@
-import right_arrow from "../assets/routine-analyze/right_arrow.svg";
+import right_arrow from "../../assets/routine-analyze/right_arrow.svg";
 
 const STEPS = [
   { label: "링크 입력", highlight: false },

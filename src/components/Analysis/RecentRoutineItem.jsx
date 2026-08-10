@@ -1,5 +1,5 @@
-import video_button from "../assets/routine-analyze/video_button.svg";
-import more_arrow from "../assets/routine-analyze/more_arrow.svg";
+import video_button from "../../assets/routine-analyze/video_button.svg";
+import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 
 const RecentRoutineItem = ({ title, day, matchCount }) => {
   return (

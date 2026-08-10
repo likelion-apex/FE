@@ -2,9 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import Layout from "./components/layouts/Layout";
 import NotFound from "./pages/NotFound";
-import RoutineAnalyze from "./pages/RoutineAnalyze/RoutineAnalyze";
-import SmartLoding from "./pages/RoutineAnalyze/SmartLoading";
-import AnalyzeResult from "./pages/RoutineAnalyze/AnalyzeResult";
+import RoutineAnalyze from "./pages/RoutineAnalysis/RoutineAnalyze";
+import SmartLoding from "./pages/RoutineAnalysis/SmartLoading";
+import AnalyzeResult from "./pages/RoutineAnalysis/AnalyzeResult";
 import Onboarding from "./pages/Onboarding/Onboarding";
 import KakaoCallback from "./pages/Onboarding/KakaoCallback";
 import SkinType from "./pages/Onboarding/SkinType";
@@ -32,11 +32,11 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/RoutineAnalyze" element={<RoutineAnalyze />} />
               <Route
-                path="/RoutineAnalyze/Smartloading"
+                path="/RoutineAnalysis/Smartloading"
                 element={<SmartLoding />}
               />
               <Route
-                path="/RoutineAnalyze/AnalyzeResult"
+                path="/RoutineAnalysis/AnalyzeResult"
                 element={<AnalyzeResult />}
               />
             </Route>

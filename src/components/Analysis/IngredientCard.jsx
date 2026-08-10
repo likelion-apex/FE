@@ -1,9 +1,12 @@
-const RoutineAnalyzeCard = ({ step }) => {
+const IngredientCard = ({ step, onClick }) => {
   //단계가 비었다면
   if (!step) return null;
 
   return (
-    <div className="flex h-fit break-inside-avoid flex-col rounded-xl border border-gray-40 p-3">
+    <div
+      className="flex h-fit break-inside-avoid flex-col rounded-xl border border-gray-40 p-3 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="mb-3 flex items-center gap-3">
         <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-40 text-[16px] font-bold text-white">
           {step.id}
@@ -35,4 +38,4 @@ const RoutineAnalyzeCard = ({ step }) => {
   );
 };
 
-export default RoutineAnalyzeCard;
+export default IngredientCard;

@@ -4,8 +4,8 @@ import TopNavbar from "../../components/layouts/TopNavbar";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
 import axios from "axios";
 import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
-import RecentRoutineItem from "../../components/RecentRoutineItem";
-import AnalysisProcessCard from "../../components/AnalysisProcessCard";
+import RecentRoutineItem from "../../components/Analysis/RecentRoutineItem";
+import AnalysisProcessCard from "../../components/Analysis/AnalysisProcessCard";
 
 //받는거에 따라 다르겟지만 매칭 개수 / 며칠전인지 / 어떤 루틴인지 요약
 //로그인시 받아올 데이터
@@ -63,7 +63,7 @@ const RoutineAnalyze = () => {
       // 임시 딜레이 (실제 백엔드 연결 전 테스트용)
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      navigate("/RoutineAnalyze/Smartloading");
+      navigate("/RoutineAnalysis/Smartloading");
     } catch (error) {
       console.error(error);
     } finally {
