@@ -9,7 +9,7 @@ import myIcon from "../../assets/icons/nav/my.svg";
 
 const NAV_ITEMS = [
   { label: "홈", icon: homeIcon, to: "/main" },
-  { label: "AI분석", icon: aiAnalyzeIcon, to: "/RoutineAnalyze" },
+  { label: "AI분석", icon: aiAnalyzeIcon, to: "/RoutineAnalysis" },
   { label: "루틴", icon: routineIcon, to: "/routine" },
   { label: "인벤토리", icon: inventoryIcon, to: "/inventory" },
   { label: "My", icon: myIcon, to: "/my" },
