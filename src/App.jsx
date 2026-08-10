@@ -13,6 +13,7 @@ import SkinConcern from "./pages/Onboarding/SkinConcern";
 import UsingSkincare from "./pages/Onboarding/UsingSkincare";
 import Nickname from "./pages/Onboarding/Nickname";
 import Main from "./pages/Main";
+import MyRoutinePage from "./pages/MyRoutine/MyRoutinePage";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
                 path="/RoutineAnalysis/OptimizedRoutine"
                 element={<OptimizedRoutine />}
               />
+              <Route path="/MyRoutinePage" element={<MyRoutinePage />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
