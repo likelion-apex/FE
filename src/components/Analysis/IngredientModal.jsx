@@ -32,7 +32,7 @@ const AnalyzeModal = ({ onClose, stepData }) => {
       onClick={onClose}
     >
       <div
-        className="flex h-[100vh] w-full flex-col rounded-t-[24px] bg-white px-[22px]"
+        className="flex h-[80vh] w-full flex-col rounded-t-[24px] bg-white px-[22px]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 상단 헤더 영역 */}

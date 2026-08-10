@@ -13,6 +13,7 @@ const Layout = () => {
     stepName: "",
   });
 
+  //Outlet 부분에 id 를 달아 스크롤 고정
   return (
     <div className="w-full h-full flex flex-col bg-white text-black overflow-hidden relative no-scrollbar">
       <TopNavbar

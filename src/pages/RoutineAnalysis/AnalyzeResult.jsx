@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import IngredientCard from "../../components/Analysis/IngredientCard";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
@@ -16,6 +16,7 @@ const STEP_COUNT = 4;
 const AnalyzeResult = () => {
   const [selectedStep, setSelectedStep] = useState(null);
   const { setNavProps } = useOutletContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setNavProps({
@@ -40,6 +41,11 @@ const AnalyzeResult = () => {
   //정렬을 위해 짝수, 홀수 카드 분리하기
   const leftColumnData = ROUTINE_STEPS.filter((_, index) => index % 2 === 0);
   const rightColumnData = ROUTINE_STEPS.filter((_, index) => index % 2 !== 0);
+
+  //최적화된 페이지로 이동
+  const handleOptimize = () => {
+    navigate("/RoutineAnalysis/OptimizedRoutine");
+  };
 
   return (
     <div className="mt-[24px] mb-[70px] flex flex-col text-black px-[20px]">
@@ -140,7 +146,8 @@ const AnalyzeResult = () => {
         <div>
           <button
             type="button"
-            className="flex w-full h-[56px] items-center justify-center rounded-[10px] bg-blue-50 px-10 py-2 text-[18px] font-medium text-white"
+            className="flex w-full h-[56px] items-center justify-center rounded-[10px] bg-blue-50 px-10 py-2 text-[18px] font-medium text-white cursor-pointer"
+            onClick={handleOptimize}
           >
             인벤토리 제품과 성분 궁합 확인하기
           </button>

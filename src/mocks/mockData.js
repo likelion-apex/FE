@@ -15,7 +15,7 @@ export const ROUTINE_BRIEFING_DATA = {
 };
 
 export const MATCHING_REPORT_DATA = {
-  tag: "AI 매칭 리포트",
+  id: 1,
   keepCount: 3,
   replacedCount: 1,
   replacedDetail: "(토너→진정 패드)",
