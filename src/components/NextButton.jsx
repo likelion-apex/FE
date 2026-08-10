@@ -13,7 +13,7 @@ const NextButton = ({ children = "다음", disabled = false, onClick }) => {
       className={`flex h-14 w-full items-center justify-center rounded-lg text-[18px] leading-[30px] font-bold text-white transition-shadow duration-200 ${
         disabled
           ? "bg-gray-20 shadow-none"
-          : "cursor-pointer bg-blue-50 shadow-sm shadow-blue-50/40 hover:shadow-xl hover:shadow-blue-50/60"
+          : "cursor-pointer bg-blue-50 shadow-sm shadow-blue-50/40 hover:shadow-sm hover:shadow-blue-50/60"
       }`}
     >
       {children}

@@ -5,10 +5,12 @@ const MaskIcon = ({ src, className = "" }) => (
     aria-hidden
     className={className}
     style={{
-      maskImage: `url(${src})`,
+      // 따옴표 필수: Vite가 인라인한 data URI에 작은따옴표가 들어 있어
+      // url(...)로 감싸지 않으면 CSS 파서가 선언 전체를 버린다.
+      maskImage: `url("${src}")`,
       maskSize: "100% 100%",
       maskRepeat: "no-repeat",
-      WebkitMaskImage: `url(${src})`,
+      WebkitMaskImage: `url("${src}")`,
       WebkitMaskSize: "100% 100%",
       WebkitMaskRepeat: "no-repeat",
     }}
