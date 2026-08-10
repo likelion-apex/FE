@@ -14,7 +14,7 @@ const IngredientReason = ({ reason }) => {
   return (
     <div className={`flex gap-3 rounded-[16px] border p-4 ${currentColors}`}>
       <div className="size-7 shrink-0 rounded-md bg-gray-400" />
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         <h4 className=" text-[14px] font-bold">{reason.title}</h4>
         <p className="break-keep text-[12px] leading-relaxed  text-gray-60">
           {reason.desc}
