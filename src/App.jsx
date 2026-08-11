@@ -13,7 +13,7 @@ import SkinConcern from "./pages/Onboarding/SkinConcern";
 import UsingSkincare from "./pages/Onboarding/UsingSkincare";
 import Nickname from "./pages/Onboarding/Nickname";
 import Main from "./pages/Main";
-import MyRoutinePage from "./pages/MyRoutine/MyRoutinePage";
+import MyRoutine from "./pages/MyRoutine/MyRoutine";
 //수정필요
 import ItemDetail from "./pages/ItemDetail";
 
@@ -48,7 +48,7 @@ function App() {
                 path="/RoutineAnalysis/OptimizedRoutine"
                 element={<OptimizedRoutine />}
               />
-              <Route path="/MyRoutinePage" element={<MyRoutinePage />} />
+              <Route path="/MyRoutine" element={<MyRoutine />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
