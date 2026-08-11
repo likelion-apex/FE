@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import SavedRoutineCard from "./SavedRoutineCard";
 
-const SavedRoutineList = ({ data }) => {
+const SavedRoutineList = ({ data, onClick }) => {
   // 현재 선택된 옵션 상태
   const [period, setPeriod] = useState("3개월"); //기본 : 최근 3개월
   const [sortOrder, setSortOrder] = useState("최신순"); // 기본 : 최신순
@@ -120,7 +120,7 @@ const SavedRoutineList = ({ data }) => {
             <SavedRoutineCard
               key={routine.id}
               data={routine}
-              onClick={() => console.log(`${routine.title} 클릭!`)}
+              onClick={() => onClick(routine.id)}
             />
           ))
         ) : (

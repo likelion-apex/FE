@@ -19,6 +19,7 @@ const AnalyzeResult = () => {
   const { setNavProps } = useOutletContext();
   const navigate = useNavigate();
   const isModal = true;
+  const isDetailPage = false;
 
   useEffect(() => {
     setNavProps({
@@ -38,7 +39,7 @@ const AnalyzeResult = () => {
   }, [setNavProps]);
 
   const { title, tag, score, matchDetails, coreGoal, synergy, description } =
-    ROUTINE_BRIEFING_DATA;
+    ROUTINE_BRIEFING_DATA.steps;
 
   //정렬을 위해 짝수, 홀수 카드 분리하기
   const leftColumnData = ROUTINE_STEPS.filter((_, index) => index % 2 === 0);
@@ -62,7 +63,10 @@ const AnalyzeResult = () => {
           </span>
         </div>
         <div className="mb-5">
-          <RoutineScore data={ROUTINE_BRIEFING_DATA} />
+          <RoutineScore
+            data={ROUTINE_BRIEFING_DATA.steps}
+            isDetailPage={isDetailPage}
+          />
         </div>
 
         {/* 성분 분석 그리드 */}

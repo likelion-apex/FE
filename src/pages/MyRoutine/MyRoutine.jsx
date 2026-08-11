@@ -1,5 +1,5 @@
 import MyCalendar from "../../components/MyRoutine/MyCalendar";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { TODAY_ROUTINE_DATA } from "../../mocks/mockData";
 import { toFormData } from "axios";
@@ -13,8 +13,13 @@ import {
 import SavedRoutineList from "../../components/MyRoutine/SavedRoutineList";
 
 const MyRoutine = () => {
-  const [activeTab, setActiveTab] = useState("데일리 루틴");
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(
+    location.state?.activeTab || "데일리 루틴",
+  );
   const [checkedItems, setCheckedItems] = useState([]);
+  const isDetailPage = false;
+  const navigate = useNavigate();
 
   const { setNavProps } = useOutletContext();
   useEffect(() => {
@@ -94,7 +99,6 @@ const MyRoutine = () => {
                 <div
                   className="mb-5 flex h-[20px] w-full items-center justify-start rounded-[12px] px-[10px] text-[12px] fontsemi-bold text-white transition-all duration-300 ease-in-out"
                   style={{
-                    // 💡 마법의 코드: 왼쪽(to right)부터 시작해서 진행률(progressPercentage)만큼 파란색으로 채우고, 나머지는 회색으로 채웁니다!
                     background: `linear-gradient(to right, #03c1fb ${progressPercentage}%, #E5E7EB ${progressPercentage}%)`,
                   }}
                 >
@@ -130,7 +134,10 @@ const MyRoutine = () => {
                   오늘의 맞춤 케어 브리핑
                 </h3>
                 <div>
-                  <RoutineScore data={ROUTINE_BRIEFING_DATA} />
+                  <RoutineScore
+                    data={ROUTINE_BRIEFING_DATA[0]}
+                    isDetailPage={isDetailPage}
+                  />
                 </div>
               </div>
             </div>
@@ -139,7 +146,12 @@ const MyRoutine = () => {
 
         {activeTab === "내 루틴 보관함" && (
           <div className="mt-7">
-            <SavedRoutineList data={SAVED_ROUTINE_DATA} />
+            <SavedRoutineList
+              data={SAVED_ROUTINE_DATA}
+              onClick={(id) => {
+                navigate(`/MyRoutine/RoutineDetail/${id}`);
+              }}
+            />
           </div>
         )}
       </div>

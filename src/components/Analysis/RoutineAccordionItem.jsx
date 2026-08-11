@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import more_Arrow from "../../assets/routine-analyze/more_arrow.svg";
 
-const RoutineAccordionItem = ({ step }) => {
+const RoutineAccordionItem = ({ step, isDetailPage }) => {
   // 기본적으로 열려있도록 설정
   const [isExpanded, setIsExpanded] = useState(true);
   //단계에서 아이디와 대체품 가져오기

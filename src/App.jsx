@@ -16,6 +16,7 @@ import Main from "./pages/Main";
 import MyRoutine from "./pages/MyRoutine/MyRoutine";
 //수정필요
 import ItemDetail from "./pages/ItemDetail";
+import RoutineDetail from "./pages/MyRoutine/RoutineDetail";
 
 function App() {
   return (
@@ -49,6 +50,10 @@ function App() {
                 element={<OptimizedRoutine />}
               />
               <Route path="/MyRoutine" element={<MyRoutine />} />
+              <Route
+                path="/MyRoutine/RoutineDetail/:id"
+                element={<RoutineDetail />}
+              />
             </Route>
 
             <Route path="*" element={<NotFound />} />
