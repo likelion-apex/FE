@@ -294,3 +294,34 @@ export const ROUTINE_STEPS = [
     },
   },
 ];
+
+export const TODAY_ROUTINE_DATA = [
+  {
+    id: 1,
+    title: "초미세먼지 세정 클렌저",
+    description:
+      "모공 속 노폐물을 비워내고 스킨케어 흡수율을 높여주는 첫 단계예요.",
+    badge: null,
+  },
+  {
+    id: 2,
+    title: "셀퓨전씨 쿨링 패드",
+    description:
+      "자극받은 피부 온도를 시원하게 낮추고 다음 단계의 수분길을 활짝 열어줍니다.",
+    badge: "AI 대체",
+  },
+  {
+    id: 3,
+    title: "자작나무 수분 앰플",
+    description:
+      "고농축 수분으로 피부 깊숙한 곳의 속건조를 확실하고 쫀쫀하게 잡아줘요.",
+    badge: null,
+  },
+  {
+    id: 4,
+    title: "고함량 판테놀 재생 크림",
+    description:
+      "충전된 수분이 날아가지 않게 강력한 판테놀 보습막을 씌워 장벽을 보호해요.",
+    badge: null,
+  },
+];
