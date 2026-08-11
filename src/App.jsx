@@ -14,6 +14,8 @@ import UsingSkincare from "./pages/Onboarding/UsingSkincare";
 import Nickname from "./pages/Onboarding/Nickname";
 import Main from "./pages/Main";
 import MyRoutinePage from "./pages/MyRoutine/MyRoutinePage";
+//수정필요
+import ItemDetail from "./pages/ItemDetail";
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
             <Route path="/onboarding/skincare" element={<UsingSkincare />} />
             <Route path="/onboarding/nickname" element={<Nickname />} />
             <Route path="/main" element={<Main />} />
+            <Route path="/ItemDetail" element={<ItemDetail />} />
 
             <Route element={<Layout />}>
               <Route path="/RoutineAnalysis" element={<RoutineAnalysis />} />

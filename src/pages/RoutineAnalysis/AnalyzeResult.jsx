@@ -17,6 +17,7 @@ const AnalyzeResult = () => {
   const [selectedStep, setSelectedStep] = useState(null);
   const { setNavProps } = useOutletContext();
   const navigate = useNavigate();
+  const isModal = true;
 
   useEffect(() => {
     setNavProps({
@@ -134,10 +135,16 @@ const AnalyzeResult = () => {
         </section>
       </div>
       {selectedStep && (
-        <IngredientModal
-          stepData={selectedStep}
-          onClose={() => setSelectedStep(null)}
-        />
+        <div
+          className="absolute inset-0 z-50 flex items-end justify-center bg-black/60"
+          onClick={() => setSelectedStep(null)}
+        >
+          <IngredientModal
+            stepData={selectedStep}
+            isModal={isModal}
+            onClose={() => setSelectedStep(null)}
+          />
+        </div>
       )}
       <div className="flex flex-col gap-2 items-center justify-center w-full mt-5">
         <p className="text-[12px] font-semibold text-blue-50">
