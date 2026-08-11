@@ -3,15 +3,20 @@ import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 
 const MyCalendar = () => {
   // 오늘 날짜 기준 이번달 정보 자동 계산
-  const today = new Date();
-  const year = today.getFullYear();
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const year = currentDate.getFullYear();
   // 0부터 시작함 (0 = 1월)
-  const month = today.getMonth();
-  const date = today.getDate();
+  const month = currentDate.getMonth();
+
+  // 오늘 날짜를 따로 저장
+  const actualToday = new Date();
+  const actualYear = actualToday.getFullYear();
+  const actualMonth = actualToday.getMonth();
+  const actualDate = actualToday.getDate();
 
   // 이번 달 1일 요일 계산
   const firstDayOfMonth = new Date(year, month, 1).getDay();
-
   // 이번 달이 총 며칠인지 계산
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
@@ -34,6 +39,15 @@ const MyCalendar = () => {
     { day: "토", color: "text-blue-60" },
   ];
 
+  //화살표 클릭시 다음달/이전달로 넘어가도록 하는 함수
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(year, month - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(year, month + 1, 1));
+  };
+
   return (
     <div className="mx-auto w-[362px] rounded-[20px] border border-gray-20 bg-white p-4">
       <div className="mb-4 flex items-center justify-between px-1">
@@ -41,7 +55,10 @@ const MyCalendar = () => {
           {year}년 {month + 1}월
         </h2>
         <div className="flex gap-4 text-gray-20">
-          <button className="hover:text-black cursor-pointer">
+          <button
+            onClick={handlePrevMonth}
+            className="hover:text-black cursor-pointer"
+          >
             <svg
               width="8"
               height="13"
@@ -58,7 +75,10 @@ const MyCalendar = () => {
               />
             </svg>
           </button>
-          <button className="hover:text-black cursor-pointer">
+          <button
+            onClick={handleNextMonth}
+            className="hover:text-black cursor-pointer"
+          >
             <svg
               width="8"
               height="14"
@@ -78,6 +98,7 @@ const MyCalendar = () => {
         </div>
       </div>
 
+      {/*루틴 완료했다는 정보를 백한테 보내고 받아서 완료한 날은 채크표시 되게끔 하는게 좋을거같음 */}
       <div className="mb-2 grid grid-cols-7 place-items-center">
         {weekDays.map((item, idx) => (
           <div key={idx} className={`text-[13px] font-bold ${item.color}`}>
@@ -97,12 +118,16 @@ const MyCalendar = () => {
             ))}
 
             {/* 실제 날짜 렌더링 */}
-            {/* [5-2] 실제 1일부터 마지막 날까지 렌더링 */}
             {Array.from({ length: daysInMonth }).map((_, idx) => {
               const dayNum = idx + 1;
 
+              const isToday =
+                year === actualYear &&
+                month === actualMonth &&
+                dayNum === actualDate;
+
               //진행도 테두리가 있는 원 (오늘))
-              if (dayNum === date) {
+              if (isToday) {
                 return (
                   // 바깥쪽 래퍼 (크기 32px) : 그리드의 칸 틀어짐을 막고 테두리 두께를 만듭니다.
                   <div
