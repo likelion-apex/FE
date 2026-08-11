@@ -35,8 +35,8 @@ const MyCalendar = () => {
   ];
 
   return (
-    <div className="mx-auto w-[362px] rounded-[20px] border border-gray-20 bg-white p-5">
-      <div className="mb-6 flex items-center justify-between px-1">
+    <div className="mx-auto w-[362px] rounded-[20px] border border-gray-20 bg-white p-4">
+      <div className="mb-4 flex items-center justify-between px-1">
         <h2 className="text-[16px] font-bold text-black">
           {year}년 {month + 1}월
         </h2>
@@ -89,7 +89,7 @@ const MyCalendar = () => {
       {/* 스크롤 영역 & 하단 페이드 아웃 (Fade-out) 효과 */}
       <div className="relative">
         {/* 스크롤되는 달력 그리드 영역 */}
-        <div className="h-[160px] overflow-y-auto pb-8 no-scrollbar">
+        <div className="h-[120px] overflow-y-auto pb-8 no-scrollbar">
           <div className="grid grid-cols-7 place-items-center gap-y-3">
             {/* 시작일 이전 빈 칸 */}
             {Array.from({ length: firstDayOfMonth }).map((_, idx) => (
