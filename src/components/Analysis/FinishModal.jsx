@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../Button";
 
 const FinishModal = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     const scrollBox = document.getElementById("main-scroll-box");
 
@@ -40,12 +42,18 @@ const FinishModal = () => {
             bgColor={"blue-50"}
             textColor={"white"}
             borderColor={"border-blue-50"}
+            onClick={() =>
+              navigate("/MyRoutine", { state: { activeTab: "데일리 루틴" } })
+            }
           />
           <Button
             item={"나의 루틴 보관함에 저장"}
             bgColor={"white"}
             textColor={"gray-60"}
             borderColor={"border-gray-20"}
+            onClick={() =>
+              navigate("/MyRoutine", { state: { activeTab: "내 루틴 보관함" } })
+            }
           />
         </div>
       </div>

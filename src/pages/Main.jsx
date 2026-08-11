@@ -265,7 +265,7 @@ function Main() {
             />
             <button
               type="button"
-              onClick={() => navigate("/RoutineAnalyze")}
+              onClick={() => navigate("/RoutineAnalysis")}
               className="mt-2 w-full rounded-[20px] bg-gray-40 px-2 py-4 text-base font-medium text-white"
             >
               AI 분석 요청하기

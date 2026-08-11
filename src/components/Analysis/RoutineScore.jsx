@@ -1,12 +1,16 @@
-const RoutineScore = ({ data }) => {
+const RoutineScore = ({ data, isDetailPage }) => {
   return (
     <div className="flex w-full flex-col gap-2 rounded-[24px] bg-gray-05 px-6 py-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-[16px] font-bold text-black">{data.title}</h2>
-        <span className="rounded-md bg-gray-10 px-[8px] py-[4px] text-[12px] font-bold text-gray-60">
-          {data.tag}
-        </span>
-      </div>
+      {isDetailPage === false ? (
+        <div className="flex items-center justify-between">
+          <h2 className="text-[16px] font-bold text-black">{data.title}</h2>
+          <span className="rounded-md bg-gray-10 px-[8px] py-[4px] text-[12px] font-bold text-gray-60">
+            {data.tag}
+          </span>
+        </div>
+      ) : (
+        <div></div>
+      )}
 
       <div className="flex flex-col gap-2 rounded-[16px] bg-blue-05 py-3 px-9">
         <h3 className="text-[14px] font-bold text-blue-50">

@@ -8,8 +8,8 @@ import {
   ROUTINE_STEPS,
 } from "../../mocks/mockData";
 
-
 const OptimizedRoutine = () => {
+  const isDetailPage = false;
   const { setNavProps } = useOutletContext();
   useEffect(() => {
     setNavProps({
