@@ -325,3 +325,48 @@ export const TODAY_ROUTINE_DATA = [
     badge: null,
   },
 ];
+
+export const SAVED_ROUTINE_DATA = [
+  {
+    id: 1,
+    title: "속건조 타파 루틴",
+    steps: 4,
+    score: 92,
+    savedDate: "2026-08-10",
+  },
+  {
+    id: 2,
+    title: "민감성 진정 3단계 시카 루틴",
+    steps: 3,
+    score: 88,
+    savedDate: "2026-08-01",
+  },
+  {
+    id: 3,
+    title: "여드름 흉터 지우는 레티놀 조합",
+    steps: 5,
+    score: 75,
+    savedDate: "2026-07-25",
+  },
+  {
+    id: 4,
+    title: "겨울철 극건성 보습 장벽 루틴",
+    steps: 4,
+    score: 62,
+    savedDate: "2026-07-11",
+  },
+  {
+    id: 5,
+    title: "피부 톤업 비타민C 집중 루틴",
+    steps: 3,
+    score: 85,
+    savedDate: "2026-06-20",
+  },
+  {
+    id: 6,
+    title: "여름철 피지 조절 루틴",
+    steps: 4,
+    score: 78,
+    savedDate: "2026-06-05",
+  },
+];

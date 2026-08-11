@@ -5,8 +5,14 @@ import { TODAY_ROUTINE_DATA } from "../../mocks/mockData";
 import { toFormData } from "axios";
 import CareCard from "../../components/MyRoutine/CareCard";
 import Button from "../../components/Button";
+import RoutineScore from "../../components/Analysis/RoutineScore";
+import {
+  ROUTINE_BRIEFING_DATA,
+  SAVED_ROUTINE_DATA,
+} from "../../mocks/mockData";
+import SavedRoutineList from "../../components/MyRoutine/SavedRoutineList";
 
-const MyRoutinePage = () => {
+const MyRoutine = () => {
   const [activeTab, setActiveTab] = useState("데일리 루틴");
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -15,7 +21,7 @@ const MyRoutinePage = () => {
     setNavProps({
       step: 0,
       totalSteps: 0,
-      stepName: "",
+      stepName: "루틴",
     });
 
     //다른 페이지로 넘어갈 때 네비바 초기화
@@ -53,7 +59,7 @@ const MyRoutinePage = () => {
   return (
     <div className="relative flex h-full flex-col px-[20px]">
       <div className="flex-1 overflow-y-auto pb-[100px] pt-6 ">
-        <div className="bg-gray-10 w-full h-[40px] rounded-3xl mb-15 flex justify-between p-0.5">
+        <div className="bg-gray-10 w-full h-[40px] rounded-3xl flex justify-between p-0.5">
           {/*나중에 옆으로 넘어가는 모션 넣으면 좋을듯*/}
           {["데일리 루틴", "내 루틴 보관함"].map((tab) => (
             <button
@@ -70,7 +76,7 @@ const MyRoutinePage = () => {
           ))}
         </div>
         {activeTab === "데일리 루틴" && (
-          <div>
+          <div className="mt-12">
             <div className="mb-7">
               <MyCalendar />
             </div>
@@ -104,7 +110,7 @@ const MyRoutinePage = () => {
                     />
                   ))}
                 </div>
-                <div className="">
+                <div className="mb-[68px]">
                   <Button
                     item={"루틴 완료하기"}
                     bgColor={isAllChecked ? "blue-50" : "gray-10"}
@@ -118,13 +124,27 @@ const MyRoutinePage = () => {
                   />
                 </div>
               </div>
+              <div className="flex flex-col gap-3">
+                <h3 className="text-black text-[18px] font-bold">
+                  {" "}
+                  오늘의 맞춤 케어 브리핑
+                </h3>
+                <div>
+                  <RoutineScore data={ROUTINE_BRIEFING_DATA} />
+                </div>
+              </div>
             </div>
           </div>
         )}
+
+        {activeTab === "내 루틴 보관함" && (
+          <div className="mt-7">
+            <SavedRoutineList data={SAVED_ROUTINE_DATA} />
+          </div>
+        )}
       </div>
-      {activeTab === "내 루틴 보관함" && <div></div>}
     </div>
   );
 };
 
-export default MyRoutinePage;
+export default MyRoutine;
