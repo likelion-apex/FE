@@ -12,6 +12,7 @@ const Layout = () => {
     totalSteps: 0,
     stepName: "",
     rightAction: null,
+    showBackButton: true,
   });
 
   //Outlet 부분에 id 를 달아 스크롤 고정

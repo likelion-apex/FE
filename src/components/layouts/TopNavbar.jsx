@@ -5,7 +5,13 @@ import backIcon from "../../assets/icons/vector.svg";
 
 let lastProgress = 0;
 
-const TopNavbar = ({ step, totalSteps, stepName, rightAction }) => {
+const TopNavbar = ({
+  step,
+  totalSteps,
+  stepName,
+  rightAction,
+  showBackButton = true,
+}) => {
   const navigate = useNavigate();
   const progress = Math.min((step / totalSteps) * 100, 100);
 
@@ -26,30 +32,28 @@ const TopNavbar = ({ step, totalSteps, stepName, rightAction }) => {
     };
   }, [progress]);
 
-
   return (
     <nav aria-label="온보딩 진행 상황" className="flex flex-col gap-6 ">
       <div className="relative flex items-center justify-center gap-4 pt-[53px]">
-        <button
-          type="button"
-          aria-label="뒤로 가기"
-          onClick={() => navigate(-1)}
-          className="absolute left-[25px] flex h-8 w-4 cursor-pointer items-center justify-center"
-        >
-          <img src={backIcon} alt="" className="h-[17px] w-[10px]" />
-        </button>
+        {showBackButton && (
+          <button
+            type="button"
+            aria-label="뒤로 가기"
+            onClick={() => navigate(-1)}
+            className="absolute left-[25px] flex h-8 w-4 cursor-pointer items-center justify-center"
+          >
+            <img src={backIcon} alt="" className="h-[17px] w-[10px]" />
+          </button>
+        )}
         <div>
           {stepName ? (
             <p className="text-lg font-semibold text-black">{stepName}</p>
           ) : null}
         </div>
         <div>
-          { rightAction && (
-            <button 
-            type = "button"
-            onClick = {rightAction.onClick}
-            >
-            {rightAction.content}
+          {rightAction && (
+            <button type="button" onClick={rightAction.onClick}>
+              {rightAction.content}
             </button>
           )}
         </div>

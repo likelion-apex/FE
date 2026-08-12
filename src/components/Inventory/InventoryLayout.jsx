@@ -11,6 +11,7 @@ const InventoryLayout = () => {
     totalStpes: 0,
     stepName: "",
     rightAction: null,
+    showBackButton: false,
   });
 
   //Outlet 부분에 id 를 달아 스크롤 고정
@@ -21,6 +22,7 @@ const InventoryLayout = () => {
         totalSteps={navProps.totalSteps}
         stepName={navProps.stepName}
         rightAction={navProps.rightAction}
+        showBackButton={navProps.showBackButton}
       />
       <div id="main-scroll-box" className="flex-1 overflow-y-auto no-scrollbar">
         <Outlet context={{ setNavProps }} />

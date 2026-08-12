@@ -28,7 +28,7 @@ import InventoryLayout from "./components/Inventory/InventoryLayout";
 import InventoryHome from "./pages/Inventory/InventoryHome";
 import InventoryStar from "./pages/Inventory/InventoryStar";
 import InventorySearch from "./pages/Inventory/InventorySearch";
-import InventoryLibrary from "./pages/Inventory/InventoryLibrrary";
+import InventoryLibrary from "./pages/Inventory/InventoryLibrary";
 
 
 
