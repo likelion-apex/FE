@@ -11,15 +11,14 @@ const Layout = () => {
     step: 0,
     totalSteps: 0,
     stepName: "",
+    rightAction: null,
   });
 
   //Outlet 부분에 id 를 달아 스크롤 고정
   return (
     <div className="w-full h-full flex flex-col bg-white text-black overflow-hidden relative no-scrollbar">
       <TopNavbar
-        step={navProps.step}
-        totalSteps={navProps.totalSteps}
-        stepName={navProps.stepName}
+        {...navProps}
       />
       <div id="main-scroll-box" className="flex-1 overflow-y-auto no-scrollbar">
         <Outlet context={{ setNavProps }} />

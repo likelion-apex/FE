@@ -1,22 +1,34 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
-import Layout from "./components/layouts/Layout";
+
 import NotFound from "./pages/NotFound";
+import Main from "./pages/Main";
+
+
+import Layout from "./components/layouts/Layout";
 import RoutineAnalysis from "./pages/RoutineAnalysis/RoutineAnalysis";
 import SmartLoding from "./pages/RoutineAnalysis/SmartLoading";
 import AnalyzeResult from "./pages/RoutineAnalysis/AnalyzeResult";
 import OptimizedRoutine from "./pages/RoutineAnalysis/OptimizedRoutine";
+
+
 import Onboarding from "./pages/Onboarding/Onboarding";
 import KakaoCallback from "./pages/Onboarding/KakaoCallback";
 import SkinType from "./pages/Onboarding/SkinType";
 import SkinConcern from "./pages/Onboarding/SkinConcern";
 import UsingSkincare from "./pages/Onboarding/UsingSkincare";
 import Nickname from "./pages/Onboarding/Nickname";
-import Main from "./pages/Main";
+
+
 import MyRoutine from "./pages/MyRoutine/MyRoutine";
-//수정필요
-import ItemDetail from "./pages/ItemDetail";
 import RoutineDetail from "./pages/MyRoutine/RoutineDetail";
+
+
+import InventoryItemDetail from "./pages/Inventory/InventoryItemDetail";
+import InventoryLayout from "./components/Inventory/InventoryLayout";
+import InventoryHome from "./pages/Inventory/InventoryHome";
+import InventoryStar from "./pages/Inventory/InventoryStar";
+
+
 
 function App() {
   return (
@@ -33,7 +45,6 @@ function App() {
             <Route path="/onboarding/skincare" element={<UsingSkincare />} />
             <Route path="/onboarding/nickname" element={<Nickname />} />
             <Route path="/main" element={<Main />} />
-            <Route path="/ItemDetail" element={<ItemDetail />} />
 
             <Route element={<Layout />}>
               <Route path="/RoutineAnalysis" element={<RoutineAnalysis />} />
@@ -54,6 +65,13 @@ function App() {
                 path="/MyRoutine/RoutineDetail/:id"
                 element={<RoutineDetail />}
               />
+            </Route>
+
+            <Route path="/inventory" element={<InventoryLayout />}>
+              <Route index element={<InventoryHome />} />
+              <Route path="item-detail" element={<InventoryItemDetail />} />
+              <Route path="item-detail/:id" element={<InventoryItemDetail />} />
+              <Route path="star" element={<InventoryStar />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

@@ -1,9 +1,23 @@
+import { useEffect } from "react";
+import { useOutletContext } from "react-router-dom";
+
+
 const InventoryStar = () => {
-    return (
-        <div>
 
-        </div>
-    )
-}
+  const { setNavProps } = useOutletContext();
+  useEffect(() => {
+    setNavProps({
+      step: 0,
+      totalSteps: 0,
+      stepName: "즐겨찾기",
+    });
+  }, [setNavProps]);
 
-export default InventoryStar
+  return (
+    <div>
+      
+    </div>
+  );
+};
+
+export default InventoryStar;
