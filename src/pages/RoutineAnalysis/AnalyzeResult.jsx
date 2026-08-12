@@ -38,12 +38,10 @@ const AnalyzeResult = () => {
     };
   }, [setNavProps]);
 
-  const { title, tag, score, matchDetails, coreGoal, synergy, description } =
-    ROUTINE_BRIEFING_DATA.steps;
-
-  //정렬을 위해 짝수, 홀수 카드 분리하기
-  const leftColumnData = ROUTINE_STEPS.filter((_, index) => index % 2 === 0);
-  const rightColumnData = ROUTINE_STEPS.filter((_, index) => index % 2 !== 0);
+  const currentStep = ROUTINE_STEPS[0].steps;
+  //정렬을 위해 짝수, 홀수 카드 분리하기(일단 1번 루틴)
+  const leftColumnData = currentStep.filter((_, index) => index % 2 === 0);
+  const rightColumnData = currentStep.filter((_, index) => index % 2 !== 0);
 
   //최적화된 페이지로 이동
   const handleOptimize = () => {
@@ -64,7 +62,7 @@ const AnalyzeResult = () => {
         </div>
         <div className="mb-5">
           <RoutineScore
-            data={ROUTINE_BRIEFING_DATA.steps}
+            data={ROUTINE_BRIEFING_DATA[0]}
             isDetailPage={isDetailPage}
           />
         </div>
@@ -72,7 +70,7 @@ const AnalyzeResult = () => {
         {/* 성분 분석 그리드 */}
         <section>
           <h3 className="mb-4 text-[16px] font-semibold">
-            영상 속 {ROUTINE_STEPS.length}단계 루틴 성분 분석
+            영상 속 {currentStep.length}단계 루틴 성분 분석
           </h3>
           <div className="flex items-start gap-2 ">
             {/* 왼쪽(홀수) 열*/}

@@ -85,7 +85,7 @@ const OptimizedRoutine = () => {
             오늘 밤을 위한 안전한 4단계 루틴
           </h2>
           <div className="flex flex-col gap-2">
-            {ROUTINE_STEPS.map((step) => (
+            {ROUTINE_STEPS[0].steps.map((step) => (
               <RoutineAccordionItem key={step.id} step={step} />
             ))}
           </div>
