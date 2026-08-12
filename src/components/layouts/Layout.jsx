@@ -9,7 +9,7 @@ const Layout = () => {
   //네브바 프롭스
   const [navProps, setNavProps] = useState({
     step: 0,
-    totalStpes: 0,
+    totalSteps: 0,
     stepName: "",
   });
 
