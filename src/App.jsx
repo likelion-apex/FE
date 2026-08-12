@@ -27,6 +27,8 @@ import InventoryItemDetail from "./pages/Inventory/InventoryItemDetail";
 import InventoryLayout from "./components/Inventory/InventoryLayout";
 import InventoryHome from "./pages/Inventory/InventoryHome";
 import InventoryStar from "./pages/Inventory/InventoryStar";
+import InventorySearch from "./pages/Inventory/InventorySearch";
+import InventoryLibrary from "./pages/Inventory/InventoryLibrrary";
 
 
 
@@ -72,6 +74,8 @@ function App() {
               <Route path="item-detail" element={<InventoryItemDetail />} />
               <Route path="item-detail/:id" element={<InventoryItemDetail />} />
               <Route path="star" element={<InventoryStar />} />
+              <Route path="search" element={<InventorySearch />} />
+              <Route path="library" element={<InventoryLibrary />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
