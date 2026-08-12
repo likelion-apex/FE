@@ -3,86 +3,163 @@ import { useNavigate } from "react-router-dom";
 import { USER_NAME } from "../../mocks/mockData";
 
 const SmartLoading = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [timeLeft, setTimeLeft] = useState(4);
-
   const navigate = useNavigate();
 
+  // 현재 진행 중인 단계를 저장하는 State (1~4단계)
+  const [currentStep, setCurrentStep] = useState(1);
+
+  useEffect(() => {
+    // 2초(2000ms)마다 currentStep을 1씩 올려줍니다.
+    const timer1 = setTimeout(() => setCurrentStep(2), 2000);
+    const timer2 = setTimeout(() => setCurrentStep(3), 4000);
+    const timer3 = setTimeout(() => setCurrentStep(4), 6000);
+    const timer4 = setTimeout(() => setCurrentStep(5), 8000);
+    const timer5 = setTimeout(() => {
+      setCurrentStep(6);
+      navigate("/RoutineAnalysis/AnalyzeResult");
+    }, 8500);
+
+    // 컴포넌트가 사라질 때 타이머 청소
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(timer4);
+      clearTimeout(timer5);
+    };
+  }, [navigate]);
+
+  // 화면에 그릴 4개의 스텝 데이터
   const steps = [
-    {
-      id: 1,
-      title: "영상 속 핵심 제품 및 성분 추출",
-      sub: "",
-    },
+    { id: 1, title: "영상 속 핵심 제품 및 성분 추출", desc: null },
     {
       id: 2,
       title: `${USER_NAME}님의 피부 타입 적합도 분석`,
-      sub: "민감성 피부 기준 자극도 체크 중...",
+      desc: "민감성 피부 기준 자극도 체크 중...",
     },
-    {
-      id: 3,
-      title: "인벤토리 제품과 성분 충돌 확인",
-      sub: "",
-    },
+    { id: 3, title: "인벤토리 제품과 성분 충돌 확인", desc: null },
     {
       id: 4,
       title: `오직 ${USER_NAME}님만을 위한 맞춤형 루틴 설계`,
-      sub: "",
+      desc: null,
     },
   ];
 
-  //2초마다 다음 스텝으로 넘어가도록 설정
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentStep((prevStep) => prevStep + 1);
-    }, 1000);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  useEffect(() => {
-    const countdown = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(countdown);
-  }, []);
-
-  useEffect(() => {
-    if (currentStep > 4) {
-      navigate("/RoutineAnalysis/AnalyzeResult");
+  // 현재 상태에 따라 아이콘을 그려주는 마법의 함수 ✨
+  const renderIcon = (stepId) => {
+    if (currentStep > stepId) {
+      // 1. 완료됨
+      return (
+        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-white">
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="3"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+      );
+    } else if (currentStep === stepId) {
+      // 2. 진행 중
+      return (
+        <div className="h-6 w-6 shrink-0 animate-spin rounded-full border-[2.5px] border-blue-50 border-t-transparent"></div>
+      );
+    } else {
+      // 3. 대기 중
+      return (
+        <div className="h-6 w-6 shrink-0 rounded-full border-[2.5px] border-gray-20"></div>
+      );
     }
-  }, [currentStep, navigate]);
+  };
 
   return (
     <div className="m-[40px] flex flex-col items-center justify-center text-center gap-8">
-      {/*윗 네브바*/}
-      {/* 로딩 애니메이션 그래픽 */}
-      <div className="flex relative mb-[34px] h-32 w-32 items-center justify-center">
-        {/* 퍼지는 원 애니메이션 */}
-        <div className="absolute h-[186px] w-[186px] rounded-full border-[1.5px] border-gray-10"></div>
-        <div className="absolute h-[150px] w-[150px]  rounded-full border-[1.5px] border-gray-20"></div>
-        <div className="absolute h-[110px] w-[110px] rounded-full border-[1.5px] border-gray-40"></div>
-        <div className="h-[60px] w-[60px] rounded-full bg-gray-300"></div>
+      {/* 상단 빙글빙글 애니메이션 */}
+      <div className="relative h-[190px] w-[190px]">
+        <svg
+          className="absolute inset-0 h-full w-full -rotate-90 transform"
+          viewBox="0 0 190 190"
+        >
+          <circle
+            cx="95"
+            cy="95"
+            r="94"
+            fill="none"
+            className="stroke-blue-50"
+            strokeWidth="2"
+            strokeDasharray="590"
+            strokeDashoffset="590"
+            style={{ animation: "fill-up 8s linear forwards" }}
+          />
+        </svg>
+
+        {/* 💡 2. 선이 차오르는 애니메이션을 정의하는 CSS 키프레임 */}
+        <style>
+          {`
+      @keyframes fill-up {
+        to { stroke-dashoffset: 0; }
+      }
+    `}
+        </style>
+        <div className="absolute inset-0 m-auto h-[150px] w-[150px] rounded-full border-[2px] border-gray-20"></div>
       </div>
 
       <div className="text-center">
-        <h2 className="text-[24px] text-black font-semibold">
+        <h2 className="text-[20px] text-black font-semibold leading-relaxed">
           영상 속 루틴이 {USER_NAME}님에게 <br />
           적합한지 검토하고 있어요
         </h2>
-        <p className="text-gray-60 text-[14px] ">
+        <p className="text-gray-60 text-[14px] mt-2">
           피부 적합도와 성분 궁합 분석 중
         </p>
       </div>
-      {/* 임시 (시간 흐르는거 표현) */}
-      <div className="w-full max-w-[280px] h-fit mt-4 p-[20px] rounded-[16px] border border-gray-20 bg-gray-50 flex flex-col items-center justify-center gap-1">
-        <span className="text-gray-500 text-[13px] font-medium">
-          예상 대기 시간
-        </span>
-        <span classNamge="text-blue-500 text-[28px] font-bold">
-          {timeLeft}초
-        </span>
+
+      <div className="flex w-full flex-col gap-6 px-4 text-left">
+        {steps.map((step) => (
+          <div key={step.id} className="flex items-start gap-4">
+            {/* 아이콘 */}
+            {renderIcon(step.id)}
+
+            {/* 텍스트 영역 */}
+            <div className="flex flex-col pt-[2px]">
+              <span
+                className={`text-[15px] font-bold transition-colors duration-300 ${
+                  currentStep > step.id
+                    ? "text-gray-900"
+                    : currentStep === step.id
+                      ? "text-blue-50"
+                      : "text-gray-40"
+                }`}
+              >
+                {step.title}
+              </span>
+
+              {/* 부가 설명 텍스트*/}
+              {step.desc && currentStep >= step.id && (
+                <span className="mt-1 text-[12px] font-medium text-gray-500">
+                  {step.desc}
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 4. 취소 버튼 */}
+      <div className="mt-auto pt-4">
+        <button
+          onClick={() => navigate(-1)} // 취소 누르면 이전 페이지로 가도록 추가!
+          className="text-[13px] font-semibold text-gray-400 underline underline-offset-4 transition-colors hover:text-gray-600"
+        >
+          분석 취소하기
+        </button>
       </div>
     </div>
   );
