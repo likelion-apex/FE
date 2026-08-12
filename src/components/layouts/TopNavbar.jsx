@@ -5,7 +5,7 @@ import backIcon from "../../assets/icons/vector.svg";
 
 let lastProgress = 0;
 
-const TopNavbar = ({ step, totalSteps, stepName }) => {
+const TopNavbar = ({ step, totalSteps, stepName, rightAction }) => {
   const navigate = useNavigate();
   const progress = Math.min((step / totalSteps) * 100, 100);
 
@@ -26,6 +26,7 @@ const TopNavbar = ({ step, totalSteps, stepName }) => {
     };
   }, [progress]);
 
+
   return (
     <nav aria-label="온보딩 진행 상황" className="flex flex-col gap-6 ">
       <div className="relative flex items-center justify-center gap-4 pt-[53px]">
@@ -41,6 +42,16 @@ const TopNavbar = ({ step, totalSteps, stepName }) => {
           {stepName ? (
             <p className="text-lg font-semibold text-black">{stepName}</p>
           ) : null}
+        </div>
+        <div>
+          { rightAction && (
+            <button 
+            type = "button"
+            onClick = {rightAction.onClick}
+            >
+            {rightAction.content}
+            </button>
+          )}
         </div>
       </div>
       {progress > 0 && (
