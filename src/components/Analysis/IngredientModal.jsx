@@ -3,6 +3,7 @@ import IngredientReason from "../../components/Analysis/IngredientReason";
 import Information from "../../assets/routine-analyze/Information.svg";
 import SolventItem from "./SolventItem";
 import TopNavbar from "../layouts/TopNavbar";
+import Item from "../../components/Use/Item";
 
 const IngredientModal = ({ onClose, stepData, isModal }) => {
   const data = stepData?.modalDetails || stepData;
@@ -33,22 +34,7 @@ const IngredientModal = ({ onClose, stepData, isModal }) => {
         <div className="flex items-start justify-between px-5 py-6 shrink-0">
           <div className="flex gap-4">
             <div className="size-[64px] shrink-0 rounded-xl bg-gray-40" />
-            <div className="flex flex-col justify-center">
-              <span className="text-[12px] font-medium text-gray-60">
-                {data.brand}
-              </span>
-              <h2 className="text-[16px] font-bold text-black">
-                {data.productName}
-              </h2>
-              <div className="mt-1 flex gap-1">
-                <span className="rounded bg-gray-10 px-2 py-1 text-[10px] font-bold text-gray-60">
-                  {data.volume}
-                </span>
-                <span className="rounded bg-gray-10 px-2 py-1 text-[10px] font-bold text-gray-60">
-                  {data.category}
-                </span>
-              </div>
-            </div>
+            <Item data={data} />
           </div>
           <button
             onClick={onClose}
@@ -62,22 +48,7 @@ const IngredientModal = ({ onClose, stepData, isModal }) => {
           <TopNavbar step={0} totalSteps={0} stepName={""} />
           <div className="flex flex-col px-5 pt-6 pb-2">
             <div className="size-[360px] rounded-xl bg-gray-10 mb-14" />
-            <div>
-              <span className="text-[12px] font-medium text-gray-60">
-                {data.brand}
-              </span>
-              <h2 className="mt-1 text-[20px] font-bold text-black">
-                {data.productName}
-              </h2>
-              <div className="mt-2 flex gap-1">
-                <span className="rounded bg-gray-10 px-2.5 py-1 text-[10px] font-bold text-gray-60">
-                  {data.volume}
-                </span>
-                <span className="rounded bg-gray-10 px-2.5 py-1 text-[10px] font-bold text-gray-60">
-                  {data.category}
-                </span>
-              </div>
-            </div>
+            <Item data={data} />
           </div>
         </div>
       )}

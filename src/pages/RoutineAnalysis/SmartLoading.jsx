@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { USER_NAME } from "../../mocks/mockData";
+import soakImage from "../../assets/logo/soakImage.png";
 
 const SmartLoading = () => {
   const navigate = useNavigate();
@@ -108,7 +109,12 @@ const SmartLoading = () => {
       }
     `}
         </style>
-        <div className="absolute inset-0 m-auto h-[150px] w-[150px] rounded-full border-[2px] border-gray-20"></div>
+        <div className="absolute inset-0 m-auto h-[150px] w-[150px] rounded-full border border-gray-20"></div>
+        <img
+          src={soakImage}
+          alt="SoakLogo"
+          className="absolute inset-0 m-auto h-[120px] w-[120px] rounded-full "
+        />
       </div>
 
       <div className="text-center">

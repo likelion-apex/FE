@@ -1,5 +1,41 @@
 export const USER_NAME = "윤지";
 
+export const RECENT_ROUTINES = [
+  {
+    title: "환절기 수부지 진정 케어",
+    day: 2,
+    matchCount: 3,
+  },
+  {
+    title: "뷰티 유튜버 A의 나이트 루틴",
+    day: 5,
+    matchCount: 1,
+  },
+  {
+    title: "민감 홍조피부 스킨케어 루틴",
+    day: 7,
+    matchCount: 3,
+  },
+  {
+    title: "속건조 잡는 꿀광 보습 루틴",
+    day: 10,
+    matchCount: 4,
+  },
+  {
+    title: "여드름 피부 딥클렌징 케어",
+    day: 14,
+    matchCount: 2,
+  },
+];
+
+export const MOCK_YOUTUBE_DATA = {
+  title: "올리브영 추천템으로 완성하는\n수부지 나이트 루틴 🌙",
+  channel: "@뷰티크리에이터_윤지짱",
+  duration: "0:58",
+  views: "12만",
+  type: "Shorts",
+};
+
 export const ROUTINE_BRIEFING_DATA = [
   {
     id: 1,
@@ -99,7 +135,7 @@ export const ROUTINE_STEPS = [
         name: "라운드랩 1025\n독도 토너",
         desc: "수분 공급 및 피지·각질 제거",
         status: "warning",
-        statusTitle: "[HATCHING EX-07 각질 제거 효소]",
+        statusTitle: "AI 경고",
         statusDesc: `${USER_NAME}님은 민감성이라 매일 쓰면 자극이 될 수 있어요. 주 2~3회만 사용하거나 부드러운 패드로 닦아내세요.`,
         modalDetails: {
           brand: "라운드랩",

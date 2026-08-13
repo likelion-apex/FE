@@ -8,10 +8,10 @@ import RoutineAccordionItem from "../../components/Analysis/RoutineAccordionItem
 import Button from "../../components/Button";
 import { useState, useEffect } from "react";
 import { useOutletContext, useParams } from "react-router-dom";
+import TopNavbar from "../../components/layouts/TopNavbar";
 
 //일단 구색만 맞출려고 임시 데이터 사용
 const RoutineDetail = () => {
-  const { setNavProps } = useOutletContext();
   const { id } = useParams();
 
   const selectedSave = SAVED_ROUTINE_DATA.find(
@@ -26,23 +26,6 @@ const RoutineDetail = () => {
 
   const selectedSteps = stepContainer ? stepContainer.steps : [];
 
-  useEffect(() => {
-    setNavProps({
-      step: 0,
-      totalSteps: 0,
-      stepName: "루틴 상세",
-    });
-
-    //다른 페이지로 넘어갈 때 네비바 초기화
-    return () => {
-      setNavProps({
-        step: 0,
-        totalSteps: 0,
-        stepName: "",
-      });
-    };
-  }, [setNavProps]);
-
   if (!selectedSteps || !selectedBriefing) {
     return (
       <div className="p-10 text-center">루틴 정보를 찾을 수 없습니다.</div>
@@ -52,6 +35,7 @@ const RoutineDetail = () => {
   const isDetailPage = true;
   return (
     <div className="relative flex h-full flex-col px-[20px]">
+      <TopNavbar step={0} totalSteps={0} stepName={"루틴"} />
       <div className="flex-1 overflow-y-auto pb-[100px] pt-6 ">
         <div className="flex justify-between mb-6">
           <h2 className="text-[16px] font-semibold text-gray-900">
