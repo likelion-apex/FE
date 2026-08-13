@@ -18,7 +18,14 @@ const ScoreGoal = ({ data, isRoutine }) => {
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-[10px] border-b border-gray-20 pb-4 pt-2 text-[13px]">
+      <div
+        className={`flex flex-col gap-[10px] ${isRoutine ? "border-b border-gray-20" : ""}  pb-4 pt-2 text-[13px]`}
+      >
+        {isRoutine === false ? (
+          <div className="border border-gray-20 my-3" />
+        ) : (
+          <></>
+        )}
         <div className="flex items-center justify-between">
           <span className="text-gray-60 font-normal">
             {isRoutine === true ? "루틴" : "제품"} 핵심 목표

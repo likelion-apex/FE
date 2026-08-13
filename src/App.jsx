@@ -8,6 +8,7 @@ import RoutineAnalysis from "./pages/RoutineAnalysis/RoutineAnalysis";
 import SmartLoding from "./pages/RoutineAnalysis/SmartLoading";
 import AnalyzeResult from "./pages/RoutineAnalysis/AnalyzeResult";
 import OptimizedRoutine from "./pages/RoutineAnalysis/OptimizedRoutine";
+import SearchItem from "./pages/RoutineAnalysis/SearchItem";
 
 import Onboarding from "./pages/Onboarding/Onboarding";
 import KakaoCallback from "./pages/Onboarding/KakaoCallback";
@@ -56,14 +57,15 @@ function App() {
             <Route
               path="/RoutineAnalysis/OptimizedRoutine"
               element={<OptimizedRoutine />}
+            />{" "}
+            <Route
+              path="/RoutineAnalysis/SearchItem"
+              element={<SearchItem />}
             />
-
             <Route element={<Layout />}>
               <Route path="/RoutineAnalysis" element={<RoutineAnalysis />} />
-
               <Route path="/MyRoutine" element={<MyRoutine />} />
             </Route>
-
             <Route path="/inventory" element={<InventoryLayout />}>
               <Route index element={<InventoryHome />} />
               <Route path="item-detail" element={<InventoryItemDetail />} />
@@ -72,7 +74,6 @@ function App() {
               <Route path="search" element={<InventorySearch />} />
               <Route path="library" element={<InventoryLibrary />} />
             </Route>
-
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

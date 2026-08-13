@@ -23,8 +23,14 @@ const AnalyzeOptionModal = ({ onClose }) => {
 
   // 리스트 항목 클릭 시 실행되는 함수
   const handleOptionClick = (type) => {
-    if (type === full) {
-      navigate("/RoutineAnalysis/Smartloading");
+    if (type === "routine") {
+      navigate("/RoutineAnalysis/Smartloading", {
+        state: { type: "routine" },
+      });
+    } else if (type === "item") {
+      navigate("/RoutineAnalysis/Smartloading", {
+        state: { type: "item" },
+      });
     }
   };
 
@@ -77,7 +83,7 @@ const AnalyzeOptionModal = ({ onClose }) => {
           {/* 옵션 1: 전체 스킨케어 루틴 분석 */}
           <div
             className="flex cursor-pointer items-center gap-4 pb-4 transition-colors "
-            onClick={() => handleOptionClick("full")}
+            onClick={() => handleOptionClick("routine")}
           >
             {/* 회색 네모 아이콘 영역 (디자인 시안 컬러 적용) */}
             <div className="h-[52px] w-[52px] shrink-0 rounded-xl bg-gray-40"></div>
@@ -113,7 +119,7 @@ const AnalyzeOptionModal = ({ onClose }) => {
           {/* 핵심 제품 분석 */}
           <div
             className="flex cursor-pointer items-center gap-4 py-4 transition-colors "
-            onClick={() => handleOptionClick("core")}
+            onClick={() => handleOptionClick("item")}
           >
             {/* 회색 네모 아이콘 영역 */}
             <div className="h-[52px] w-[52px] shrink-0 rounded-xl bg-gray-40"></div>

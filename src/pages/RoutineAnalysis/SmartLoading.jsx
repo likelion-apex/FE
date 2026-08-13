@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { USER_NAME } from "../../mocks/mockData";
 import soakImage from "../../assets/logo/soakImage.png";
 
 const SmartLoading = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // 현재 진행 중인 단계를 저장하는 State (1~4단계)
   const [currentStep, setCurrentStep] = useState(1);
+  const type = location.state?.type || "routine";
 
   useEffect(() => {
     // 2초(2000ms)마다 currentStep을 1씩 올려줍니다.
@@ -17,7 +19,11 @@ const SmartLoading = () => {
     const timer4 = setTimeout(() => setCurrentStep(5), 8000);
     const timer5 = setTimeout(() => {
       setCurrentStep(6);
-      navigate("/RoutineAnalysis/AnalyzeResult");
+      if (type === "routine") {
+        navigate("/RoutineAnalysis/AnalyzeResult");
+      } else {
+        navigate("/RoutineAnalysis/SearchItem");
+      }
     }, 8500);
 
     // 컴포넌트가 사라질 때 타이머 청소
@@ -30,21 +36,53 @@ const SmartLoading = () => {
     };
   }, [navigate]);
 
-  // 화면에 그릴 4개의 스텝 데이터
-  const steps = [
-    { id: 1, title: "영상 속 핵심 제품 및 성분 추출", desc: null },
-    {
-      id: 2,
-      title: `${USER_NAME}님의 피부 타입 적합도 분석`,
-      desc: "민감성 피부 기준 자극도 체크 중...",
+  const LOADING_DATA = {
+    // 1. 전체 스킨케어 루틴 분석용 데이터
+    routine: {
+      typeTitle: "루틴",
+      title: `영상 속 루틴이 ${USER_NAME}님에게 \n적합한지 검토하고 있어요`,
+      subTitle: "피부 적합도와 성분 궁합 분석 중",
+      navigateUrl: "/RoutineAnalysis/AnalyzeResult",
+      steps: [
+        { id: 1, title: "영상 속 핵심 제품 및 성분 추출", desc: null },
+        {
+          id: 2,
+          title: `${USER_NAME}님의 피부 타입 적합도 분석`,
+          desc: "민감성 피부 기준 자극도 체크 중...",
+        },
+        { id: 3, title: "인벤토리 제품과 성분 충돌 확인", desc: null },
+        {
+          id: 4,
+          title: `오직 ${USER_NAME}님만을 위한 맞춤형 루틴 설계`,
+          desc: null,
+        },
+      ],
     },
-    { id: 3, title: "인벤토리 제품과 성분 충돌 확인", desc: null },
-    {
-      id: 4,
-      title: `오직 ${USER_NAME}님만을 위한 맞춤형 루틴 설계`,
-      desc: null,
+
+    // 2. 핵심 제품 분석용 데이터
+    item: {
+      typeTitle: "제품",
+      title: `영상 속 핵심 제품이 ${USER_NAME}님 화장대와 \n잘 어울리는지 검토하고 있어요`,
+      subTitle: "보유 제품과의 시너지 및 성분 충돌 분석 중",
+      navigateUrl: "/RoutineAnalysis/AnalyzeResult", // 필요시 제품 결과 페이지 경로로 수정하세요!
+      steps: [
+        { id: 1, title: "핵심 제품 주요 성분 및 효능 분석", desc: null },
+        {
+          id: 2,
+          title: `${USER_NAME}님의 피부 타입 적합도 분석`,
+          desc: "민감성 피부 기준 자극도 체크 중...",
+        },
+        {
+          id: 3,
+          title: "기존 인벤토리 제품과 성분 궁합 확인",
+          desc: "성분 충돌이 없는지 꼼꼼히 확인해요.",
+        },
+        { id: 4, title: "최적의 스킨케어 순서 및 조합 설계", desc: null },
+      ],
     },
-  ];
+  };
+
+  const currentData = LOADING_DATA[type];
 
   // 현재 상태에 따라 아이콘을 그려주는 마법의 함수 ✨
   const renderIcon = (stepId) => {
@@ -118,17 +156,14 @@ const SmartLoading = () => {
       </div>
 
       <div className="text-center">
-        <h2 className="text-[20px] text-black font-semibold leading-relaxed">
-          영상 속 루틴이 {USER_NAME}님에게 <br />
-          적합한지 검토하고 있어요
+        <h2 className="text-[20px] text-black font-semibold leading-relaxed whitespace-pre-wrap">
+          {currentData.title}
         </h2>
-        <p className="text-gray-60 text-[14px] mt-2">
-          피부 적합도와 성분 궁합 분석 중
-        </p>
+        <p className="text-gray-60 text-[14px] mt-2">{currentData.subTitle}</p>
       </div>
 
       <div className="flex w-full flex-col gap-6 px-4 text-left">
-        {steps.map((step) => (
+        {currentData.steps.map((step) => (
           <div key={step.id} className="flex items-start gap-4">
             {/* 아이콘 */}
             {renderIcon(step.id)}

@@ -1,8 +1,9 @@
 const Item = ({ data }) => {
+  if (!data) return null;
   return (
     <div>
       <span className="text-[12px] font-medium text-gray-60">{data.brand}</span>
-      <h2 className="mt-1 text-[20px] font-bold text-black">
+      <h2 className="mt-1 text-[16px] font-bold text-black">
         {data.productName}
       </h2>
       <div className="mt-2 flex gap-1">
