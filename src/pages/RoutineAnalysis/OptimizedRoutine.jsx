@@ -7,32 +7,17 @@ import {
   MATCHING_REPORT_DATA,
   ROUTINE_STEPS,
 } from "../../mocks/mockData";
+import TopNavbar from "../../components/layouts/TopNavbar";
 
 const OptimizedRoutine = () => {
   const isDetailPage = false;
-  const { setNavProps } = useOutletContext();
-  useEffect(() => {
-    setNavProps({
-      step: 3,
-      totalSteps: 4,
-      stepName: "",
-    });
-
-    //다른 페이지로 넘어갈 때 네비바 초기화
-    return () => {
-      setNavProps({
-        step: 0,
-        totalSteps: 0,
-        stepName: "",
-      });
-    };
-  }, [setNavProps]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div className="relative flex h-full flex-col px-[20px]">
-      <div className="flex-1 overflow-y-auto pb-[100px] pt-6">
+      <TopNavbar step={3} totalSteps={4} stepName={""} />
+      <div className="flex-1 overflow-y-auto pb-[100px] mt-7">
         <div className="mb-6 flex flex-col gap-2">
           <h1 className="break-keep text-[22px] font-semibold  leading-snug text-black">
             {USER_NAME}님의 인벤토리 제품으로
@@ -105,7 +90,13 @@ const OptimizedRoutine = () => {
         </button>
       </div>
 
-      {isModalOpen && <FinishModal />}
+      {isModalOpen && (
+        <FinishModal
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -6,41 +6,27 @@ import axios from "axios";
 import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 import RecentRoutineItem from "../../components/Analysis/RecentRoutineItem";
 import AnalysisProcessCard from "../../components/Analysis/AnalysisProcessCard";
-
-//받는거에 따라 다르겟지만 매칭 개수 / 며칠전인지 / 어떤 루틴인지 요약
-//로그인시 받아올 데이터
-const RECENT_ROUTINES = [
-  {
-    title: "환절기 수부지 진정 케어",
-    day: 2,
-    matchCount: 3,
-  },
-  {
-    title: "뷰티 유튜버 A의 나이트 루틴",
-    day: 5,
-    matchCount: 1,
-  },
-  {
-    title: "민감 홍조피부 스킨케어 루틴",
-    day: 7,
-    matchCount: 3,
-  },
-  {
-    title: "속건조 잡는 꿀광 보습 루틴",
-    day: 10,
-    matchCount: 4,
-  },
-  {
-    title: "여드름 피부 딥클렌징 케어",
-    day: 14,
-    matchCount: 2,
-  },
-];
+import { RECENT_ROUTINES, MOCK_YOUTUBE_DATA } from "../../mocks/mockData";
+import SelectModal from "../../components/Analysis/SelectModal";
 
 const RoutineAnalyze = () => {
   const [url, setUrl] = useState("");
+  const [videoData, setVideoData] = useState(null); //영상 데이터를 담음
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  //영상 정보 요청
+  useEffect(() => {
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      const fetchTimer = setTimeout(() => {
+        setVideoData(MOCK_YOUTUBE_DATA);
+      }, 500);
+      return () => clearTimeout(fetchTimer);
+    } else if (url === "") {
+      setVideoData(null);
+    }
+  }, [url]);
 
   const handlePaste = async () => {
     try {
@@ -51,23 +37,22 @@ const RoutineAnalyze = () => {
     }
   };
 
+  // X 버튼을 누르면 링크와 카드 초기화
+  const handleClear = () => {
+    setUrl("");
+    setVideoData(null);
+  };
+
   //AI 분석 요청하기 클릭 시 실행되는 함수
   const handleAnalyzeRequest = async () => {
-    //1. 요청 시작
     setIsLoading(true);
-
     try {
-      //2. 백엔드 API 로 데이터 전송
       console.log("백엔드로 보낼 URL", url);
-
-      // 임시 딜레이 (실제 백엔드 연결 전 테스트용)
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
       navigate("/RoutineAnalysis/Smartloading");
     } catch (error) {
       console.error(error);
     } finally {
-      //3. 요청 완료
       setIsLoading(false);
     }
   };
@@ -80,7 +65,6 @@ const RoutineAnalyze = () => {
       stepName: "AI 루틴 분석",
     });
 
-    //다른 페이지로 넘어갈 때 네비바 초기화
     return () => {
       setNavProps({
         step: 0,
@@ -104,60 +88,105 @@ const RoutineAnalyze = () => {
           </p>
         </section>
 
-        {/* 비디오리스트, 아직 안정해짐, 목데이터 첨부 */}
-        <section className="mt-6 flex gap-4 overflow-x-auto  no-scrollbar">
-          {[1, 2, 3, 4].map((item) => (
-            <div
-              key={item}
-              className="h-[184px] w-[116px] shrink-0 rounded-xl bg-gray-10"
-            />
-          ))}
+        {/* 💡 마법의 핵심: 여기서 비디오 리스트와 영상 카드를 교체합니다! */}
+        <section className="mt-6">
+          {videoData ? (
+            /* 영상 데이터가 있을 때: 회색 리스트 대신 예쁜 영상 카드 표시 */
+            <div className="relative mx-auto flex w-full w-[370px] h-[184px] items-center  rounded-2xl bg-white border border-gray-05 transition-all overflow-hidden">
+              {/* 닫기(X) 버튼 */}
+              <button
+                onClick={handleClear}
+                className="absolute right-3 top-3 text-gray-40 text-[14px] font-bold hover:text-gray-60"
+              >
+                ✕
+              </button>
+              <div className="flex justify-between gap-7 h-full">
+                {/* 썸네일 플레이스홀더 (기획서와 비슷하게 크기 조정) */}
+                <div className=" w-[116px] h-full flex items-center justify-center rounded-2xl bg-[#f1f3f5]" />
+
+                {/* 텍스트 콘텐츠 영역 */}
+                <div className="flex flex-col justify-center gap-8">
+                  <h4 className=" text-[16px] font-bold leading-snug text-black pr-5 ">
+                    {videoData.title}
+                  </h4>
+                  <div className="flex flex-col gap-1">
+                    <p className="text-[12px] font-semibold text-black">
+                      {videoData.channel}
+                    </p>
+                    <div className=" flex items-center gap-3">
+                      <span className="text-[10px] text-gray-60 font-regular">
+                        길이 {videoData.duration} • 조회수 {videoData.views}회
+                      </span>
+                      <span className="rounded bg-gray-10 px-2 py-1 text-[12px] font-bold text-gray-60">
+                        {videoData.type}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* 영상 데이터가 없을 때: 기존 회색 카드 리스트 표시 */
+            <div className="flex gap-4 overflow-x-auto no-scrollbar">
+              {[1, 2, 3, 4].map((item) => (
+                <div
+                  key={item}
+                  className="h-[184px] w-[116px] shrink-0 rounded-xl bg-gray-10"
+                />
+              ))}
+            </div>
+          )}
         </section>
 
-        {/* URL 입력칸, 받은 URL를 백으로 보내야됨 */}
-        {/* 백한테 */}
-        <section className="mt-6 px-[11px]">
+        {/* URL 입력창 */}
+        <section className="mt-8 px-[11px]">
           <div className="rounded-[20px] border border-gray-10 bg-white p-[13px]">
-            <div className="relative">
+            <div className="relative mb-3">
               <input
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="영상의 URL을 입력하세요"
-                className="h-12 w-full rounded border border-gray-20 px-[10px] text-[16px] text-black placeholder:text-gray-60 outline-none"
+                className="h-12 w-full rounded border border-gray-20 px-[10px] pr-[80px] text-[14px] text-black placeholder:text-gray-40 outline-none focus:border-[#03c1fb]"
               />
               <button
                 type="button"
                 onClick={handlePaste}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-gray-40 px-2 py-2 text-[12px] font-bold text-white"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-gray-40 px-3 py-[6px] text-[12px] font-bold text-white transition-colors hover:bg-gray-60"
               >
                 붙여넣기
               </button>
             </div>
+
+            {/* 분석 요청 버튼 */}
             <button
               type="button"
-              disabled={!url.trim() || isLoading} //url이 없거나, 로딩 중이면 비활성화
-              onClick={handleAnalyzeRequest}
-              className="mt-2 flex w-full items-center justify-center rounded-[20px] bg-gray-20 px-2 py-4 text-[16px] font-medium text-white disabled:cursor-not-allowed enabled:bg-primary-10"
+              disabled={!videoData || isLoading}
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+              className="flex w-full items-center justify-center rounded-[16px] bg-gray-20 px-2 py-4 text-[16px] font-bold text-white disabled:cursor-not-allowed enabled:bg-[#03c1fb]"
             >
               {isLoading ? "요청 중..." : "AI 분석 요청하기"}
             </button>
           </div>
-          <div className=" text-center mt-1 rounded-xl bg-gray-05 py-[10px] text-[12px] font-semibold leading-normal text-gray-60">
+
+          {/* 안내 문구 */}
+          <div className=" text-center mt-3 rounded-xl bg-gray-05 py-[10px] text-[11px] font-semibold leading-normal text-gray-60">
             <p>최대 5분 이내 영상만 분석할 수 있어요.</p>
             <p>영상 길이에 따라 분석에 많은 시간이 걸릴 수 있어요.</p>
           </div>
         </section>
 
         {/* 분석 과정 */}
-        <section className="mt-8 px-5">
+        <section className="mt-10 px-5">
           <h3 className="mb-6 text-[18px] font-semibold leading-7">
             AI 분석, 이렇게 진행돼요
           </h3>
           <AnalysisProcessCard />
         </section>
 
-        {/* 최근 분석한 루틴 컴포넌트(임시 목데이터 설정) */}
+        {/* 최근 분석한 루틴 컴포넌트 */}
         <section className="mt-8 px-[31px]">
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-[18px] font-semibold leading-7">
@@ -184,6 +213,13 @@ const RoutineAnalyze = () => {
           </div>
         </section>
       </div>
+      {isModalOpen && (
+        <SelectModal
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 };

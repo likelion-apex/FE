@@ -3,13 +3,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 import Main from "./pages/Main";
 
-
 import Layout from "./components/layouts/Layout";
 import RoutineAnalysis from "./pages/RoutineAnalysis/RoutineAnalysis";
 import SmartLoding from "./pages/RoutineAnalysis/SmartLoading";
 import AnalyzeResult from "./pages/RoutineAnalysis/AnalyzeResult";
 import OptimizedRoutine from "./pages/RoutineAnalysis/OptimizedRoutine";
-
+import SearchItem from "./pages/RoutineAnalysis/SearchItem";
+import ItemRoutine from "./pages/RoutineAnalysis/ItemRoutine";
 
 import Onboarding from "./pages/Onboarding/Onboarding";
 import KakaoCallback from "./pages/Onboarding/KakaoCallback";
@@ -18,10 +18,8 @@ import SkinConcern from "./pages/Onboarding/SkinConcern";
 import UsingSkincare from "./pages/Onboarding/UsingSkincare";
 import Nickname from "./pages/Onboarding/Nickname";
 
-
 import MyRoutine from "./pages/MyRoutine/MyRoutine";
 import RoutineDetail from "./pages/MyRoutine/RoutineDetail";
-
 
 import InventoryItemDetail from "./pages/Inventory/InventoryItemDetail";
 import InventoryLayout from "./components/Inventory/InventoryLayout";
@@ -29,8 +27,6 @@ import InventoryHome from "./pages/Inventory/InventoryHome";
 import InventoryStar from "./pages/Inventory/InventoryStar";
 import InventorySearch from "./pages/Inventory/InventorySearch";
 import InventoryLibrary from "./pages/Inventory/InventoryLibrary";
-
-
 
 function App() {
   return (
@@ -47,28 +43,34 @@ function App() {
             <Route path="/onboarding/skincare" element={<UsingSkincare />} />
             <Route path="/onboarding/nickname" element={<Nickname />} />
             <Route path="/main" element={<Main />} />
-
+            <Route
+              path="/RoutineAnalysis/Smartloading"
+              element={<SmartLoding />}
+            />
+            <Route
+              path="/MyRoutine/RoutineDetail/:id"
+              element={<RoutineDetail />}
+            />
+            <Route
+              path="/RoutineAnalysis/AnalyzeResult"
+              element={<AnalyzeResult />}
+            />
+            <Route
+              path="/RoutineAnalysis/OptimizedRoutine"
+              element={<OptimizedRoutine />}
+            />{" "}
+            <Route
+              path="/RoutineAnalysis/SearchItem"
+              element={<SearchItem />}
+            />
+            <Route
+              path="/RoutineAnalysis/ItemRoutine"
+              element={<ItemRoutine />}
+            />
             <Route element={<Layout />}>
               <Route path="/RoutineAnalysis" element={<RoutineAnalysis />} />
-              <Route
-                path="/RoutineAnalysis/Smartloading"
-                element={<SmartLoding />}
-              />
-              <Route
-                path="/RoutineAnalysis/AnalyzeResult"
-                element={<AnalyzeResult />}
-              />
-              <Route
-                path="/RoutineAnalysis/OptimizedRoutine"
-                element={<OptimizedRoutine />}
-              />
               <Route path="/MyRoutine" element={<MyRoutine />} />
-              <Route
-                path="/MyRoutine/RoutineDetail/:id"
-                element={<RoutineDetail />}
-              />
             </Route>
-
             <Route path="/inventory" element={<InventoryLayout />}>
               <Route index element={<InventoryHome />} />
               <Route path="item-detail" element={<InventoryItemDetail />} />
@@ -77,7 +79,6 @@ function App() {
               <Route path="search" element={<InventorySearch />} />
               <Route path="library" element={<InventoryLibrary />} />
             </Route>
-
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
