@@ -1,10 +1,12 @@
 import SearchItemCard from "../../components/Analysis/SearchItemCard";
 import { PRODUCT_DATA, USER_NAME } from "../../mocks/mockData";
 import TopNavbar from "../../components/layouts/TopNavbar";
+import { useNavigate } from "react-router-dom";
 
 const SearchItem = () => {
+  const navigate = useNavigate();
   const handleProduceRoutine = () => {
-    navigate("/RoutineAnalysis/OptimizedRoutine");
+    navigate("/RoutineAnalysis/ItemRoutine");
   };
 
   return (

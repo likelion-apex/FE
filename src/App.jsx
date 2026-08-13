@@ -9,6 +9,7 @@ import SmartLoding from "./pages/RoutineAnalysis/SmartLoading";
 import AnalyzeResult from "./pages/RoutineAnalysis/AnalyzeResult";
 import OptimizedRoutine from "./pages/RoutineAnalysis/OptimizedRoutine";
 import SearchItem from "./pages/RoutineAnalysis/SearchItem";
+import ItemRoutine from "./pages/RoutineAnalysis/ItemRoutine";
 
 import Onboarding from "./pages/Onboarding/Onboarding";
 import KakaoCallback from "./pages/Onboarding/KakaoCallback";
@@ -61,6 +62,10 @@ function App() {
             <Route
               path="/RoutineAnalysis/SearchItem"
               element={<SearchItem />}
+            />
+            <Route
+              path="/RoutineAnalysis/ItemRoutine"
+              element={<ItemRoutine />}
             />
             <Route element={<Layout />}>
               <Route path="/RoutineAnalysis" element={<RoutineAnalysis />} />

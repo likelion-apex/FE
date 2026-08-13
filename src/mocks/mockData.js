@@ -518,7 +518,7 @@ export const PRODUCT_DATA = [
     name: "라운드랩\n자작나무 수분 앰플",
     desc: "고농축 수분으로 피부 깊숙한 곳의 속건조를 확실하고 쫀쫀하게 잡아줘요.",
     status: "new",
-    statusTitle: "AI 제품 평가",
+    statusTitle: "새 제품",
     statusDesc:
       "원본 앰플과 동일하게 속건조를 꽉 잡아주며, 다음 단계의 로션과 찰떡궁합이에요.",
     modalDetails: {
@@ -575,7 +575,7 @@ export const PRODUCT_DATA = [
     name: "에스트라\n아토베리어 로션",
     desc: "충전된 수분이 날아가지 않게 강력한 판테놀 보습막을 씌워 장벽을 보호해요.",
     status: "synergy",
-    statusTitle: "AI 시너지 팁",
+    statusTitle: "시너지",
     statusDesc:
       "이전 단계의 앰플 수분이 날아가지 않게 가둬두고, 민감해진 피부 장벽을 튼튼하게 재생해 줘요.",
     modalDetails: {
@@ -619,3 +619,33 @@ export const PRODUCT_DATA = [
     replacement: null,
   },
 ];
+
+// 💡 상단 회색 요약 박스(AnalysisSummaryBox)에 들어갈 데이터 모음집
+export const OPTIMIZE_SUMMARY_DATA = {
+  targetProduct: "자작나무 수분 앰플", // 분석 대상이 되는 핵심 제품 이름
+  matchScore: 88, // AI 매칭 점수
+  title: "이 앰플을 내 화장대에 추가한다면?",
+
+  // 💡 시너지, 충돌, 대체를 리스트 형태로 깔끔하게 관리합니다!
+  analysisList: [
+    {
+      id: 1,
+      type: "시너지",
+      desc: "보유하신 에스트라 로션과 환상의 짝꿍",
+    },
+    {
+      id: 2,
+      type: "충돌",
+      desc: "보유하신 'AHA 각질 토너'와는 상극!",
+    },
+    {
+      id: 3,
+      type: "대체",
+      desc: "이미 거의 똑같은 앰플을 갖고 계세요",
+    },
+  ],
+
+  // 💡 하단에 들어가는 총평 (줄바꿈 \n 포함)
+  finalReview:
+    "충돌하는 토너는 안전한 패드로 바꿨고, 추천받은 새 앰플은\n보유하신 메디힐 앰플로 완벽히 대체 가능해요.",
+};
