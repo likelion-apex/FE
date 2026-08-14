@@ -136,7 +136,7 @@ const MyRoutine = () => {
                 <div>
                   <RoutineScore
                     data={ROUTINE_BRIEFING_DATA[0]}
-                    isDetailPage={isDetailPage}
+                    isDetailPage={true}
                     isRoutine={true}
                   />
                 </div>

@@ -55,7 +55,8 @@ export const ROUTINE_BRIEFING_DATA = [
 
 export const MATCHING_REPORT_DATA = {
   id: 1,
-  keepCount: 3,
+  newCount: 1,
+  keepCount: 2,
   replacedCount: 1,
   replacedDetail: "(토너→진정 패드)",
   description: `각질 제거 성분이 있는 원본 토너를 보유하신 '셀퓨전씨 패드'로 안전하게 교체했습니다. 내 인벤토리를 100% 활용해 ${USER_NAME}님만을 위한 맞춤 루틴을 설정해드릴게요!`,
@@ -122,7 +123,7 @@ export const ROUTINE_STEPS = [
         replacement: {
           productName: "초미세먼지 세정 클렌저",
           originalProduct: "인벤토리 미등록 · 영상속 루틴",
-          badgeText: "대체품 없음",
+          badgeText: "영상 속 제품",
           badgeType: "none",
           reasonTitle: "대체품 없음",
           reasonDesc: "인벤토리에 클렌저가 아직 등록되지 않았어요.",

@@ -1,6 +1,5 @@
 import React from "react";
 
-// 💡 부모로부터 'ing' 데이터를 프롭스로 받아옵니다!
 const SolventItem = ({ ing }) => {
   return (
     <div className="flex gap-3 border-b border-gray-20">
