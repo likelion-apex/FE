@@ -147,12 +147,12 @@ const RoutineAnalyze = () => {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="영상의 URL을 입력하세요"
-                className="h-12 w-full rounded border border-gray-20 px-[10px] pr-[80px] text-[14px] text-black placeholder:text-gray-40 outline-none focus:border-[#03c1fb]"
+                className="h-12 w-full rounded border border-gray-20 px-[10px] pr-[80px] text-[14px] text-blue-50 placeholder:text-blue-50 outline-none"
               />
               <button
                 type="button"
                 onClick={handlePaste}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-gray-40 px-3 py-[6px] text-[12px] font-bold text-white transition-colors hover:bg-gray-60"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-white px-3 py-[6px] text-[12px] font-bold text-blue-50 transition-colors border border-blue-50 hover:bg-gray-60"
               >
                 붙여넣기
               </button>
@@ -165,14 +165,14 @@ const RoutineAnalyze = () => {
               onClick={() => {
                 setIsModalOpen(true);
               }}
-              className="flex w-full items-center justify-center rounded-[16px] bg-gray-20 px-2 py-4 text-[16px] font-bold text-white disabled:cursor-not-allowed enabled:bg-[#03c1fb]"
+              className="flex w-full items-center justify-center rounded-3xl bg-blue-05 px-2 py-4 text-[16px] font-medium text-gray-40 disabled:cursor-not-allowed enabled:bg-blue-50 enabled:text-white"
             >
               {isLoading ? "요청 중..." : "AI 분석 요청하기"}
             </button>
           </div>
 
           {/* 안내 문구 */}
-          <div className=" text-center mt-3 rounded-xl bg-gray-05 py-[10px] text-[11px] font-semibold leading-normal text-gray-60">
+          <div className=" text-center mt-3 rounded-xl bg-blue-05 py-[10px] text-[11px] font-semibold leading-normal text-gray-60">
             <p>최대 5분 이내 영상만 분석할 수 있어요.</p>
             <p>영상 길이에 따라 분석에 많은 시간이 걸릴 수 있어요.</p>
           </div>

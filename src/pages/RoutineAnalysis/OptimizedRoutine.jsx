@@ -8,6 +8,7 @@ import {
   ROUTINE_STEPS,
 } from "../../mocks/mockData";
 import TopNavbar from "../../components/layouts/TopNavbar";
+import MatchingCard from "../../components/Analysis/MatchingCard";
 
 const OptimizedRoutine = () => {
   const isDetailPage = false;
@@ -29,40 +30,7 @@ const OptimizedRoutine = () => {
           </p>
         </div>
         {/* 이부분 컴포넌트로 빼는게 좋을것같음!!! */}
-        <div className="mb-8">
-          <div className="flex w-full flex-col gap-2 rounded-[24px] bg-gray-05 px-6 py-4">
-            <div className="flex">
-              <span className="rounded-md bg-gray-10 px-[8px] py-[4px] text-[12px] font-bold text-gray-60">
-                AI 매칭 리포트
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-[10px] border-b border-gray-20 pb-4 pt-2 text-[13px]">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-60 font-normal">
-                  그대로 사용 가능한 제품
-                </span>
-                <span className="font-bold text-black">
-                  {MATCHING_REPORT_DATA.keepCount}개 완료
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-60 font-normal">
-                  AI가 안전하게 대체한 제품
-                </span>
-                <span className="font-bold text-blue-50">
-                  {MATCHING_REPORT_DATA.replacedCount}개
-                  {MATCHING_REPORT_DATA.replacedDetail}
-                </span>
-              </div>
-            </div>
-
-            {/* 최하단: 상세 설명 */}
-            <p className="text-[13px] leading-[22px] text-gray-600">
-              {MATCHING_REPORT_DATA.description}
-            </p>
-          </div>
-        </div>
+        <MatchingCard data={MATCHING_REPORT_DATA} />
 
         {/* 아코디언 리스트 섹션 */}
         <div>

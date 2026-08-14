@@ -1,3 +1,5 @@
+import checkIcon from "../../assets/routine-analyze/checkIcon.svg";
+
 const ScoreGoal = ({ data, isRoutine }) => {
   return (
     <div>
@@ -9,10 +11,12 @@ const ScoreGoal = ({ data, isRoutine }) => {
           {data.matchDetails.map((detail, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 text-[12px] font-bold text-black"
+              className="flex items-center gap-2 text-[12px] font-semibold text-black"
             >
               {/* 회색 둥근 사각형 아이콘 */}
-              <div className="size-[16px] rounded-[4px] bg-gray-400 shrink-0" />
+              <div className="size-4 rounded-sm bg-blue-50 flex items-center justify-center">
+                <img src={checkIcon} alt="체크" />
+              </div>
               {detail}
             </div>
           ))}

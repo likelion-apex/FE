@@ -83,7 +83,7 @@ const AnalyzeResult = () => {
       </div>
       {selectedStep && (
         <div
-          className="absolute inset-0 z-50 flex items-end justify-center bg-black/60"
+          className="fixed inset-0 z-50 mx-auto flex w-full max-w-[402px] items-end justify-center bg-black/60"
           onClick={() => setSelectedStep(null)}
         >
           <IngredientModal

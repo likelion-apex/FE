@@ -70,4 +70,7 @@ body {
   --color-violet-02: #f9f6fd;
   --color-violet-20: #c2a9ef;
   --color-violet-45: #753ddb;
+
+  --shadow-card:
+    0px 2px 8px 0px rgba(0, 0, 0, 0.04), 0px 12px 24px 0px rgba(0, 0, 0, 0.08);
 }

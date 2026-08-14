@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import bottleIcon from "../../assets/routine-analyze/bottleIcon.svg";
+import calendarIcon from "../../assets/routine-analyze/calendarIcon.svg";
 
 // 상위 컴포넌트에서 모달을 닫기 위해 onClose 프롭스를 받습니다.
 const AnalyzeOptionModal = ({ onClose }) => {
@@ -85,8 +87,9 @@ const AnalyzeOptionModal = ({ onClose }) => {
             className="flex cursor-pointer items-center gap-4 pb-4 transition-colors "
             onClick={() => handleOptionClick("routine")}
           >
-            {/* 회색 네모 아이콘 영역 (디자인 시안 컬러 적용) */}
-            <div className="h-[52px] w-[52px] shrink-0 rounded-xl bg-gray-40"></div>
+            <div className="flex items-center justify-center size-9 bg-blue-50 rounded-lg">
+              <img src={calendarIcon} alt="캘린더" className="size-6" />
+            </div>
 
             <div className="flex flex-1  flex-col">
               <span className="text-[16px] font-bold text-black">
@@ -121,9 +124,9 @@ const AnalyzeOptionModal = ({ onClose }) => {
             className="flex cursor-pointer items-center gap-4 py-4 transition-colors "
             onClick={() => handleOptionClick("item")}
           >
-            {/* 회색 네모 아이콘 영역 */}
-            <div className="h-[52px] w-[52px] shrink-0 rounded-xl bg-gray-40"></div>
-
+            <div className="flex items-center justify-center size-9 bg-blue-50 rounded-lg">
+              <img src={bottleIcon} alt="캘린더" className="size-6" />
+            </div>
             <div className="flex flex-1 flex-col">
               <span className="text-[16px] font-bold text-black ">
                 핵심 제품 분석
