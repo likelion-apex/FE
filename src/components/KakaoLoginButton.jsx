@@ -1,19 +1,13 @@
 import KakaoCircle from "../assets/kakaoCircle.png";
 
 const KakaoLoginButton = () => {
+  const REST_API_KEY = import.meta.env.VITE_REST_API_KEY;
+  const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
+  const link = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+
   const handleKakaoLogin = () => {
-    if (!window.Kakao) {
-      console.error("카카오 SDK가 로드되지 않았습니다.");
-      return;
-    }
-
-    if (!window.Kakao.isInitialized()) {
-      window.Kakao.init(import.meta.env.VITE_KAKAO_JS_KEY);
-    }
-
-    window.Kakao.Auth.authorize({
-      redirectUri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
-    });
+    window.location.href = link;
   };
 
   return (
