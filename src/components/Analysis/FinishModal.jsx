@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../Button";
 
-const FinishModal = () => {
+const FinishModal = ({ onClose }) => {
   const navigate = useNavigate();
   useEffect(() => {
     const scrollBox = document.getElementById("main-scroll-box");
@@ -20,7 +20,10 @@ const FinishModal = () => {
     };
   }, []);
   return (
-    <div className="fixed inset-y-0 left-1/2 z-[999] flex w-full max-w-[402px] -translate-x-1/2 flex-col justify-end bg-black/60 no-scrollbar">
+    <div
+      className="fixed inset-y-0 left-1/2 z-[999] flex w-full max-w-[402px] -translate-x-1/2 flex-col justify-end bg-black/60 no-scrollbar"
+      onClick={onClose}
+    >
       <div
         className="flex h-[35vh] w-full flex-col rounded-t-[24px] bg-white px-[24px]"
         onClick={(e) => e.stopPropagation()}

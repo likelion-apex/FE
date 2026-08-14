@@ -1,5 +1,41 @@
 export const USER_NAME = "윤지";
 
+export const RECENT_ROUTINES = [
+  {
+    title: "환절기 수부지 진정 케어",
+    day: 2,
+    matchCount: 3,
+  },
+  {
+    title: "뷰티 유튜버 A의 나이트 루틴",
+    day: 5,
+    matchCount: 1,
+  },
+  {
+    title: "민감 홍조피부 스킨케어 루틴",
+    day: 7,
+    matchCount: 3,
+  },
+  {
+    title: "속건조 잡는 꿀광 보습 루틴",
+    day: 10,
+    matchCount: 4,
+  },
+  {
+    title: "여드름 피부 딥클렌징 케어",
+    day: 14,
+    matchCount: 2,
+  },
+];
+
+export const MOCK_YOUTUBE_DATA = {
+  title: "올리브영 추천템으로 완성하는\n수부지 나이트 루틴 🌙",
+  channel: "@뷰티크리에이터_윤지짱",
+  duration: "0:58",
+  views: "12만",
+  type: "Shorts",
+};
+
 export const ROUTINE_BRIEFING_DATA = [
   {
     id: 1,
@@ -99,7 +135,7 @@ export const ROUTINE_STEPS = [
         name: "라운드랩 1025\n독도 토너",
         desc: "수분 공급 및 피지·각질 제거",
         status: "warning",
-        statusTitle: "[HATCHING EX-07 각질 제거 효소]",
+        statusTitle: "AI 경고",
         statusDesc: `${USER_NAME}님은 민감성이라 매일 쓰면 자극이 될 수 있어요. 주 2~3회만 사용하거나 부드러운 패드로 닦아내세요.`,
         modalDetails: {
           brand: "라운드랩",
@@ -378,3 +414,238 @@ export const SAVED_ROUTINE_DATA = [
     savedDate: "2026-06-05",
   },
 ];
+
+export const PRODUCT_DATA = [
+  {
+    id: 1,
+    type: "클렌저",
+    name: "초미세먼지\n세정 클렌저",
+    desc: "모공 속 노폐물을 비워내고 스킨케어 흡수율을 높여주는 첫 단계예요.",
+    status: "owned",
+    statusTitle: "보유 제품",
+    statusDesc: `${USER_NAME}님이 이미 보유하신 제품으로 안전하게 세안을 시작해요.`,
+    modalDetails: {
+      brand: "라운드랩",
+      productName: "초미세먼지 세정 클렌저",
+      volume: "150ml",
+      category: "클렌징",
+      score: 95,
+      matchTitle: `${USER_NAME}님(민감성) 안심 사용 가능`,
+      // 💡 추가된 필드들
+      matchDetails: [
+        "모공 청소 및 진정 성분 8개 매칭",
+        `${USER_NAME}님 피부 알레르기 유발 성분 0개`,
+      ],
+      coreGoal: "노폐물 세정 & 수분 손실 방어",
+      synergy: "약산성 포뮬러 + 자연유래 계면활성제",
+      // --------------
+      reasons: [
+        {
+          id: 1,
+          type: "safe",
+          title: "저자극 세정 성분",
+          desc: "약산성 포뮬러로 세안 후에도 피부 당김 없이 촉촉함을 유지해 줘요.",
+        },
+      ],
+      allIngredients: {
+        composition: { low: 95, medium: 5, high: 0 },
+        summary: { total: 15, caution20: 0, allergy: 0 },
+        list: [
+          {
+            id: 1,
+            risk: "1",
+            riskType: "low",
+            name: "정제수",
+            purpose: "용제",
+            effects: ["피부 보습"],
+          },
+        ],
+      },
+    },
+    replacement: null,
+  },
+  {
+    id: 2,
+    type: "패드",
+    name: "셀퓨전씨\n쿨링 패드",
+    desc: "자극받은 피부 온도를 시원하게 낮추고 다음 단계의 수분길을 활짝 열어줍니다.",
+    status: "owned",
+    statusTitle: "보유 제품",
+    statusDesc: `기존 영상의 각질 제거 토너 대신, ${USER_NAME}님이 보유하신 진정 패드로 부드럽게 결을 정리해요.`,
+    modalDetails: {
+      brand: "셀퓨전씨",
+      productName: "포스트 알파 쿨링 패드",
+      volume: "70매",
+      category: "토너 패드",
+      score: 90,
+      matchTitle: `${USER_NAME}님(민감성) 진정 케어 적합`,
+      // 💡 추가된 필드들
+      matchDetails: [
+        "민감성 맞춤 쿨링 진정 성분 10개 매칭",
+        `${USER_NAME}님 피부 알레르기 유발 성분 0개`,
+      ],
+      coreGoal: "피부 열감 하락 & 수분길 오픈",
+      synergy: "빙하수 + 글리세린",
+      // --------------
+      reasons: [
+        {
+          id: 1,
+          type: "synergy",
+          title: "열감 쿨링 및 장벽 진정",
+          desc: "빙하수 성분이 즉각적으로 피부 열을 내려주고 붉은기를 완화해 줘요.",
+        },
+      ],
+      allIngredients: {
+        composition: { low: 90, medium: 10, high: 0 },
+        summary: { total: 20, caution20: 0, allergy: 0 },
+        list: [
+          {
+            id: 1,
+            risk: "1",
+            riskType: "low",
+            name: "글리세린",
+            purpose: "보습제",
+            effects: ["강력 보습"],
+          },
+        ],
+      },
+    },
+    replacement: null,
+  },
+  {
+    id: 3,
+    type: "앰플",
+    name: "라운드랩\n자작나무 수분 앰플",
+    desc: "고농축 수분으로 피부 깊숙한 곳의 속건조를 확실하고 쫀쫀하게 잡아줘요.",
+    status: "new",
+    statusTitle: "새 제품",
+    statusDesc:
+      "원본 앰플과 동일하게 속건조를 꽉 잡아주며, 다음 단계의 로션과 찰떡궁합이에요.",
+    modalDetails: {
+      brand: "라운드랩",
+      productName: "자작나무 수분 앰플",
+      volume: "50ml",
+      category: "에센스",
+      score: 88,
+      matchTitle: `수부지 맞춤 보습 찰떡템`,
+      // 💡 요청하신 내용 그대로 추가된 필드들!
+      matchDetails: [
+        "수부지 맞춤 보습 성분 12개 매칭",
+        `${USER_NAME}님 피부 알레르기 유발 성분 0개`,
+      ],
+      coreGoal: "속건조 해결 & 장벽 재생",
+      synergy: "히알루론산 + 고함량 판테놀",
+      // --------------
+      reasons: [
+        {
+          id: 1,
+          type: "synergy",
+          title: "속건조 해결 & 장벽 재생",
+          desc: "히알루론산과 고함량 판테놀이 배합되어 보습 시너지가 발생해요.",
+        },
+      ],
+      allIngredients: {
+        composition: { low: 100, medium: 0, high: 0 },
+        summary: { total: 22, caution20: 0, allergy: 0 },
+        list: [
+          {
+            id: 1,
+            risk: "1",
+            riskType: "low",
+            name: "자작나무수액",
+            purpose: "피부컨디셔닝제",
+            effects: ["피부 보습", "진정"],
+          },
+        ],
+      },
+    },
+    replacement: {
+      productName: "메디힐 수분 앰플",
+      originalProduct: "영상속 루틴: 라운드랩 자작나무 수분 앰플",
+      badgeText: "대체 제품",
+      badgeType: "replace",
+      reasonTitle: "AI 대체 이유",
+      reasonDesc: `원본 앰플과 역할이 겹쳐요. 이미 보유하고 계신 메디힐 수분 앰플로 충분히 속건조를 잡을 수 있어요!`,
+      actionText: "이 제품으로 대체하기",
+    },
+  },
+  {
+    id: 4,
+    type: "로션",
+    name: "에스트라\n아토베리어 로션",
+    desc: "충전된 수분이 날아가지 않게 강력한 판테놀 보습막을 씌워 장벽을 보호해요.",
+    status: "synergy",
+    statusTitle: "시너지",
+    statusDesc:
+      "이전 단계의 앰플 수분이 날아가지 않게 가둬두고, 민감해진 피부 장벽을 튼튼하게 재생해 줘요.",
+    modalDetails: {
+      brand: "에스트라",
+      productName: "아토베리어 365 로션",
+      volume: "150ml",
+      category: "로션",
+      score: 98,
+      matchTitle: `${USER_NAME}님(민감성) 장벽 강화 필수템`,
+      // 💡 추가된 필드들
+      matchDetails: [
+        "손상 장벽 강화 성분 15개 매칭",
+        `${USER_NAME}님 피부 알레르기 유발 성분 0개`,
+      ],
+      coreGoal: "강력한 보습막 형성 & 장벽 보호",
+      synergy: "세라마이드 + 판테놀",
+      // --------------
+      reasons: [
+        {
+          id: 1,
+          type: "synergy",
+          title: "세라마이드 복합체 시너지",
+          desc: "피부 지질 구조와 유사한 성분이 손상된 장벽을 완벽하게 보호해 줘요.",
+        },
+      ],
+      allIngredients: {
+        composition: { low: 90, medium: 10, high: 0 },
+        summary: { total: 25, caution20: 0, allergy: 0 },
+        list: [
+          {
+            id: 1,
+            risk: "1",
+            riskType: "low",
+            name: "세라마이드엔피",
+            purpose: "피부교질화제",
+            effects: ["장벽 강화", "수분 유지"],
+          },
+        ],
+      },
+    },
+    replacement: null,
+  },
+];
+
+// 💡 상단 회색 요약 박스(AnalysisSummaryBox)에 들어갈 데이터 모음집
+export const OPTIMIZE_SUMMARY_DATA = {
+  targetProduct: "자작나무 수분 앰플", // 분석 대상이 되는 핵심 제품 이름
+  matchScore: 88, // AI 매칭 점수
+  title: "이 앰플을 내 화장대에 추가한다면?",
+
+  // 💡 시너지, 충돌, 대체를 리스트 형태로 깔끔하게 관리합니다!
+  analysisList: [
+    {
+      id: 1,
+      type: "시너지",
+      desc: "보유하신 에스트라 로션과 환상의 짝꿍",
+    },
+    {
+      id: 2,
+      type: "충돌",
+      desc: "보유하신 'AHA 각질 토너'와는 상극!",
+    },
+    {
+      id: 3,
+      type: "대체",
+      desc: "이미 거의 똑같은 앰플을 갖고 계세요",
+    },
+  ],
+
+  // 💡 하단에 들어가는 총평 (줄바꿈 \n 포함)
+  finalReview:
+    "충돌하는 토너는 안전한 패드로 바꿨고, 추천받은 새 앰플은\n보유하신 메디힐 앰플로 완벽히 대체 가능해요.",
+};

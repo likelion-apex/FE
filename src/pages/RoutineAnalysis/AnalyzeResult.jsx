@@ -16,27 +16,9 @@ const STEP_COUNT = 4;
 
 const AnalyzeResult = () => {
   const [selectedStep, setSelectedStep] = useState(null);
-  const { setNavProps } = useOutletContext();
   const navigate = useNavigate();
   const isModal = true;
   const isDetailPage = false;
-
-  useEffect(() => {
-    setNavProps({
-      step: 2,
-      totalSteps: 4,
-      stepName: "",
-    });
-
-    //다른 페이지로 넘어갈 때 네비바 초기화
-    return () => {
-      setNavProps({
-        step: 0,
-        totalSteps: 0,
-        stepName: "",
-      });
-    };
-  }, [setNavProps]);
 
   const currentStep = ROUTINE_STEPS[0].steps;
   //정렬을 위해 짝수, 홀수 카드 분리하기(일단 1번 루틴)
@@ -49,8 +31,9 @@ const AnalyzeResult = () => {
   };
 
   return (
-    <div className="mt-[24px] mb-6 flex flex-col text-black px-[20px]">
-      <div className="flex flex-col">
+    <div className="mb-6 flex flex-col text-black px-[20px]">
+      <TopNavbar step={2} totalSteps={4} stepName={""} />
+      <div className="mt-7 flex flex-col">
         <div className="flex-col gap-3 mb-6">
           <h3 className="text-[20px] font-semibold leading-7 mb-[8px]">
             {USER_NAME}님이 공유하신 영상에서 <br />
@@ -64,6 +47,7 @@ const AnalyzeResult = () => {
           <RoutineScore
             data={ROUTINE_BRIEFING_DATA[0]}
             isDetailPage={isDetailPage}
+            isRoutine={true}
           />
         </div>
 

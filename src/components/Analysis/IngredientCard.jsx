@@ -30,7 +30,13 @@ const IngredientCard = ({ step, onClick }) => {
       >
         <div className="flex items-center gap-1.5 mb-1 text-gray-60 font-semibold">
           <div className="h-4 w-4 shrink-0 rounded bg-gray-400" />
-          <div className=" flex items-center gap-1">{step.statusTitle}</div>
+          <div
+            className={`flex items-center gap-1  ${
+              step.status === "warning" ? "text-red-40" : "text-gray-60"
+            }`}
+          >
+            {step.statusTitle}
+          </div>
         </div>
         <p className="leading-tight opacity-90 break-keep">{step.statusDesc}</p>
       </div>
