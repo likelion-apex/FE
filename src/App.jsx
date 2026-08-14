@@ -43,8 +43,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Onboarding />} />
-            <Route path="/oauth/kakao/callback" element={<KakaoCallback />} />
             <Route path="/onboarding/*" element={<Onboarding />} />
+            <Route path="/onboarding/kakaocallback" element={<KakaoCallback />} />
             <Route path="/onboarding/skin-type" element={<SkinType />} />
             <Route path="/onboarding/skin-concern" element={<SkinConcern />} />
             <Route path="/onboarding/skincare" element={<UsingSkincare />} />
