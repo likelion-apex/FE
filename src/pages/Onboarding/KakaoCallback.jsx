@@ -1,12 +1,20 @@
 // src/pages/KakaoCallback.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
+import { kakaoLogin } from "../../api/auth";
+import useAuthStore from "../../store/authStore";
+
+const LOADING_MESSAGE = "로그인 처리 중입니다...";
 
 const KakaoCallback = () => {
   const [searchParams] = useSearchParams();
-  const [message, setMessage] = useState("로그인 처리 중입니다...");
+  const [message, setMessage] = useState(LOADING_MESSAGE);
   const navigate = useNavigate();
+  const setAuth = useAuthStore((state) => state.setAuth);
+
+  // 인가 코드는 1회용이라 StrictMode의 이중 실행을 막아야 합니다.
+  const hasRequested = useRef(false);
 
   useEffect(() => {
     const code = searchParams.get("code");
@@ -22,13 +30,45 @@ const KakaoCallback = () => {
       return;
     }
 
-    // TODO: 백엔드가 준비되면 이 code를 서버로 보내 토큰을 교환합니다.
-    // await api.post("/auth/kakao", { code });
-    console.log("인가 코드:", code);
-    navigate("/onboarding/nickname");
-  }, [searchParams]);
+    if (hasRequested.current) return;
+    hasRequested.current = true;
 
-  return <div>{message}</div>;
+    const login = async () => {
+      try {
+        const tokens = await kakaoLogin(code);
+
+        setAuth(tokens);
+
+        // 신규 회원은 온보딩부터, 기존 회원은 홈으로.
+        // 뒤로가기로 이 콜백 화면에 다시 들어오지 않도록 replace로 이동합니다.
+        navigate(tokens.isNewMember ? "/onboarding/nickname" : "/main", {
+          replace: true,
+        });
+      } catch (err) {
+        console.error("카카오 로그인 실패:", err);
+        setMessage("로그인에 실패했습니다. 다시 시도해주세요.");
+      }
+    };
+
+    login();
+  }, [searchParams, navigate, setAuth]);
+
+  return (
+    <div className="flex min-h-full w-full flex-col items-center justify-center gap-6 bg-white px-5">
+      <p className="text-base leading-5 text-gray-60">{message}</p>
+
+      {/* 실패했을 때만 온보딩으로 돌아가는 버튼을 노출합니다. */}
+      {message !== LOADING_MESSAGE && (
+        <button
+          type="button"
+          onClick={() => navigate("/", { replace: true })}
+          className="cursor-pointer text-sm leading-5 font-bold text-blue-50 underline"
+        >
+          처음으로 돌아가기
+        </button>
+      )}
+    </div>
+  );
 };
 
 export default KakaoCallback;
