@@ -1,23 +1,32 @@
-import soakLogo from "../../assets/logo/soak.svg";
+import soakMark from "../../assets/logo/soak-mark.png";
+import soakWordmark from "../../assets/logo/soak-wordmark.svg";
 import KakaoLoginButton from "../../components/KakaoLoginButton";
 
 const Onboarding = () => {
   return (
-    <div className="flex min-h-full w-full flex-col items-center bg-blue-50 px-5 pt-[199px] pb-[92px]">
-      <div className="flex w-[257px] flex-col items-center gap-[60px]">
-        <img
-          src={soakLogo}
-          alt="SOAK"
-          className="h-[88.33px] w-[241.82px] shrink-0"
-        />
-        <p className="text-center text-[20px] leading-[30px] font-medium text-white">
-          나만을 위한 맞춤형 AI
-          <br />
-          스킨 케어 서비스
-        </p>
-      </div>
+    <div className="flex min-h-full w-full flex-col bg-gradient-to-b from-white from-[32.7%] via-[#33cdfb] via-[87.5%] to-blue-50 px-5 pt-[69px]">
+      <div className="flex w-full flex-col gap-[48px]">
+        <div className="flex w-full flex-col items-center gap-[300px]">
+          <div className="flex w-[188px] flex-col items-center">
+            <img
+              src={soakMark}
+              alt=""
+              className="aspect-square w-full object-cover"
+            />
+            <img
+              src={soakWordmark}
+              alt="SOAK"
+              className="h-[42px] w-[142px] shrink-0"
+            />
+          </div>
 
-      <div className="mt-[300px] w-[360px]">
+          <p className="text-center text-[20px] leading-[30px] font-semibold text-white">
+            나만을 위한 맞춤형 AI
+            <br />
+            스킨 케어 서비스
+          </p>
+        </div>
+
         <KakaoLoginButton />
       </div>
     </div>
