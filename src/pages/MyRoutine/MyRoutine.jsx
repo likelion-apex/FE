@@ -11,6 +11,7 @@ import {
   SAVED_ROUTINE_DATA,
 } from "../../mocks/mockData";
 import SavedRoutineList from "../../components/MyRoutine/SavedRoutineList";
+import RoutineComplete from "../../components/MyRoutine/RoutineComplete";
 
 const MyRoutine = () => {
   const location = useLocation();
@@ -20,6 +21,9 @@ const MyRoutine = () => {
   const [checkedItems, setCheckedItems] = useState([]);
   const isDetailPage = false;
   const navigate = useNavigate();
+
+  // "루틴 완료하기" 버튼 클릭 여부
+  const [isRoutineSubmitted, setIsRoutineSubmitted] = useState(false);
 
   const { setNavProps } = useOutletContext();
   useEffect(() => {
@@ -61,6 +65,17 @@ const MyRoutine = () => {
   //진행 완료 표시
   const isAllChecked = checkedItems.length === totalSteps;
 
+  const handleCompleteAll = () => {
+    if (isAllChecked) {
+      // 전부 체크되어있다면 전체 취소
+      setCheckedItems([]);
+    } else {
+      // 체크 안된 id를 찾아 체크
+      const allIds = TODAY_ROUTINE_DATA.map((step) => step.id);
+      setCheckedItems(allIds);
+    }
+  };
+
   return (
     <div className="relative flex h-full flex-col px-[20px]">
       <div className="flex-1 overflow-y-auto pb-[100px] pt-6 ">
@@ -83,51 +98,74 @@ const MyRoutine = () => {
         {activeTab === "데일리 루틴" && (
           <div className="mt-12">
             <div className="mb-7">
-              <MyCalendar />
+              <MyCalendar progressPercentage={progressPercentage} />
             </div>
             <div>
               <div className="flex items-center justify-between mb-5">
                 <h3 className="text-black font-semibold text-[18px]">
                   오늘의 나이트 케어
                 </h3>
-                <button className="bg-gray-05 text-gray-60 text-[12px] rounded-[12px] p-2">
-                  루틴 편집
-                </button>
               </div>
-              <div>
-                {/* 퍼센트 표시 */}
-                <div
-                  className="mb-5 flex h-[20px] w-full items-center justify-start rounded-[12px] px-[10px] text-[12px] fontsemi-bold text-white transition-all duration-300 ease-in-out"
-                  style={{
-                    background: `linear-gradient(to right, #03c1fb ${progressPercentage}%, #E5E7EB ${progressPercentage}%)`,
-                  }}
-                >
-                  {progressPercentage}%
+
+              {isRoutineSubmitted ? (
+                <div className="w-full overflow-clip rounded-2xl border border-gray-10 shadow-card mb-10">
+                  <RoutineComplete />
                 </div>
-                <div className="flex flex-col gap-3 overflow-y-auto no-scrollbar mb-6">
-                  {TODAY_ROUTINE_DATA.map((step) => (
-                    <CareCard
-                      key={step.id}
-                      step={step}
-                      isChecked={checkedItems.includes(step.id)}
-                      onClick={() => handleToggle(step.id)}
+              ) : (
+                <div>
+                  <div className="flex justify-between items-center mb-5">
+                    {/* 퍼센트 표시 */}
+                    <div
+                      className="flex h-[20px] w-[252px] items-center justify-start rounded-[12px] px-[10px] text-[12px] font-semibold text-white transition-all duration-300 ease-in-out"
+                      style={{
+                        background: `linear-gradient(to right, #03c1fb ${progressPercentage}%, #E5E7EB ${progressPercentage}%)`,
+                      }}
+                    >
+                      {progressPercentage}%
+                    </div>
+
+                    <button
+                      onClick={handleCompleteAll}
+                      className={`py-1 px-2 rounded-xl text-[13px] font-medium border transition-colors active:scale-95 ${
+                        isAllChecked
+                          ? "bg-blue-05 text-blue-50 border-blue-50" // 모두 체크되었을 때 스타일
+                          : "text-blue-50 border-blue-50 bg-white" // 평상시 스타일
+                      }`}
+                    >
+                      {/* 💡 모두 체크되었을 때는 '전체 취소', 아닐 때는 '전체 완료'로 글씨가 바뀝니다 */}
+                      ✓ {isAllChecked ? "전체 취소" : "전체 완료"}
+                    </button>
+                  </div>
+
+                  <div className="flex flex-col gap-3 overflow-y-auto no-scrollbar mb-6">
+                    {TODAY_ROUTINE_DATA.map((step) => (
+                      <CareCard
+                        key={step.id}
+                        step={step}
+                        isChecked={checkedItems.includes(step.id)}
+                        onClick={() => handleToggle(step.id)}
+                      />
+                    ))}
+                  </div>
+                  <div className="mb-[68px]">
+                    <Button
+                      item={"루틴 완료하기"}
+                      bgColor={isAllChecked ? "blue-50" : "gray-10"}
+                      textColor={isAllChecked ? "white" : "gray-40"}
+                      borderColor={
+                        isAllChecked ? "border-blue-50" : "border-gray-10"
+                      }
+                      onClick={
+                        isAllChecked
+                          ? isAllChecked
+                            ? () => setIsRoutineSubmitted(true)
+                            : undefined
+                          : undefined
+                      }
                     />
-                  ))}
+                  </div>
                 </div>
-                <div className="mb-[68px]">
-                  <Button
-                    item={"루틴 완료하기"}
-                    bgColor={isAllChecked ? "blue-50" : "gray-10"}
-                    textColor={isAllChecked ? "white" : "gray-40"}
-                    borderColor={
-                      isAllChecked ? "border-blue-50" : "border-gray-10"
-                    }
-                    onClick={
-                      isAllChecked ? () => console.log("루틴 완료!") : undefined
-                    }
-                  />
-                </div>
-              </div>
+              )}
               <div className="flex flex-col gap-3">
                 <h3 className="text-black text-[18px] font-bold">
                   {" "}

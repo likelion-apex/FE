@@ -1,7 +1,6 @@
-// src/components/RoutineCard.jsx
 import React from "react";
+import checkIcon from "../../assets/routine-analyze/checkIcon.svg";
 
-// 💡 1. isChecked를 부모로부터 받아오도록 props에 추가했습니다!
 const RoutineCard = ({ step, isChecked, onClick }) => {
   return (
     <div
@@ -43,22 +42,9 @@ const RoutineCard = ({ step, isChecked, onClick }) => {
       {/* 오른쪽: 체크박스 */}
       <div className="shrink-0">
         {isChecked ? (
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="12" cy="12" r="12" fill="#03C1FB" />
-            <path
-              d="M7 12.5L10.5 16L17 8"
-              stroke="white"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <div className="size-[28px] text-[20px] text-white flex items-center justify-center text-center rounded-full border border-blue-50 bg-blue-50">
+            <img src={checkIcon} alt="체크" className="size-4" />
+          </div>
         ) : (
           <div className="size-[28px] rounded-full border border-gray-20 bg-white"></div>
         )}
