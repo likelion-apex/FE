@@ -5,21 +5,20 @@ import searchIcon_gray from "../../assets/routine-analyze/searchIcon_gray.svg";
 import searchIcon_blue from "../../assets/routine-analyze/searchIcon_blue.svg";
 import rightArrowIcon_blue from "../../assets/icons/rightArrowIcon_blue.svg";
 import axios from "axios";
-import InvertoryItemCard from "../../components/Inventory/InventoryItemCard";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
 import useAuthStore from "../../store/authStore";
 import InventoryNavbar from "../../components/Inventory/InventoryNavbar";
+import useInventoryStore from "../../store/inventoryStore";
+import BrandItemCard from "../../components/Inventory/BrandItemCard";
 
 const InventorySearch = () => {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
 
-  const [inventoryList, setInventoryList] = useState([]); // 내 인벤토리 리스트
   const [searchResults, setSearchResults] = useState([]); // 필터링 된 리스트
-  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const inventoryList = useInventoryStore((state) => state.inventoryList);
 
   const goToItemDetail = (item) =>
     navigate(`/inventory/item-detail/${item.inventoryId}`);
@@ -39,45 +38,18 @@ const InventorySearch = () => {
     );
   };
 
-  // 화면 렌더링 시 내 인벤토리 목록 전부 불러옴
-  useEffect(() => {
-    const fetchMyInventory = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/inventory`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-        console.error("내 인벤토리 목록.", response.data.data);
-        const items = response.data.data?.items || [];
-        setInventoryList(items);
-      } catch (error) {
-        console.error("내 인벤토리 목록을 불러오는 데 실패했습니다.", error);
-        setInventoryList([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMyInventory();
-  }, [accessToken]);
-
-  // keyword 변경 시 프론트 내에서 필터링
+  //keyword 변경 시 필터링
   useEffect(() => {
     if (!keyword.trim()) {
       setSearchResults([]);
       return;
     }
 
-    //브랜드 명 및 이름으로 검색 가능
+    // 브랜드 명 및 이름으로 검색 가능
     const filtered = inventoryList.filter(
       (item) =>
-        item.productName.includes(keyword.trim()) ||
-        item.brand.includes(keyword.trim()),
+        item.productName?.includes(keyword.trim()) ||
+        item.brand?.includes(keyword.trim()),
     );
 
     setSearchResults(filtered);
@@ -137,7 +109,7 @@ const InventorySearch = () => {
 
             <div className="grid grid-cols-2 gap-3">
               {searchResults.map((item) => (
-                <InvertoryItemCard
+                <BrandItemCard
                   key={item.ProductId}
                   item={item}
                   onItemClick={goToItemDetail}

@@ -5,6 +5,8 @@ import searchIcon_blue from "../../assets/routine-analyze/searchIcon_blue.svg";
 import notIcon from "../../assets/routine-analyze/notIcon_black.svg";
 import useAuthStore from "../../store/authStore";
 
+import { createPortal } from "react-dom";
+
 const NewItemSearchModal = ({ onClose }) => {
   const [keyword, setKeyword] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -23,7 +25,7 @@ const NewItemSearchModal = ({ onClose }) => {
       try {
         console.log("👉 현재 내 신분증(토큰) 상태:", accessToken);
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/products/search`,
+          `${import.meta.env.VITE_API_URL}/api/v1/products`,
           {
             params: { keyword: keyword.trim() },
             headers: {
@@ -33,7 +35,15 @@ const NewItemSearchModal = ({ onClose }) => {
         );
         console.log("현재 받아온 데이터", response.data.data);
 
-        setSearchResults(response.data.data?.items || []);
+        const fetchedItems = response.data.data?.items || [];
+
+        const filteredItems = fetchedItems.filter(
+          (item) =>
+            item.productName?.includes(keyword.trim()) ||
+            item.brand?.includes(keyword.trim()),
+        );
+
+        setSearchResults(filteredItems);
       } catch (error) {
         console.error("검색 결과를 불러오는 데 실패했습니다.", error);
         setSearchResults([]);
@@ -98,10 +108,13 @@ const NewItemSearchModal = ({ onClose }) => {
     }
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-50 mx-auto flex w-full max-w-[430px] items-end justify-center bg-black/60"
       onClick={onClose}
+      //모달 배경에서 슬라이드 등으로 일어나는 이벤트 차단
+      onMouseDown={(e) => e.stopPropagation()}
+      onTouchStart={(e) => e.stopPropagation()}
     >
       <div
         className="flex h-[85vh] w-full flex-col rounded-t-[20px] bg-white px-5 pt-6 pb-6"
@@ -114,19 +127,7 @@ const NewItemSearchModal = ({ onClose }) => {
             onClick={onClose}
             className="flex size-7 items-center justify-center rounded-full bg-gray-05"
           >
-            <svg
-              className="size-4 text-gray-50"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <img src={notIcon} alt="X" className="size-4" />
           </button>
         </div>
 
@@ -154,83 +155,123 @@ const NewItemSearchModal = ({ onClose }) => {
                 onClick={() => setKeyword("")}
                 className="text-gray-30 hover:text-gray-50"
               >
-                <img src={notIcon} alt="X" className="size-4" />
+                <img src={notIcon} alt="X" />
               </button>
             )}
           </div>
         </div>
 
-        {/* 3. 검색 결과 영역 */}
-        <div className="flex-1 overflow-y-auto no-scrollbar">
-          {keyword && (
+        {/* 3. 검색 결과 및 선택된 제품 영역 */}
+        <div className="flex-1 overflow-y-auto no-scrollbar ">
+          <div className="flex flex-col">
             <div className="flex flex-col">
               <p className="mb-3 text-[12px] font-bold text-gray-60">
                 추가할 제품({selectedItems.length})
               </p>
 
-              {isLoading ? (
-                <div className="py-4 text-center text-[13px] text-gray-50">
-                  검색 중입니다...
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  {searchResults.map((item) => {
-                    // 💡 API 명세서에 맞게 item.productId 로 변경
-                    const isSelected = selectedItems.some(
-                      (selected) => selected.productId === item.productId,
-                    );
-
-                    return (
-                      <div
-                        key={item.productId}
-                        className="flex items-center justify-between border-b border-gray-05 pb-4 last:border-0"
-                      >
-                        {/* 왼쪽: 이미지 + 제품 정보 */}
-                        <div className="flex items-center gap-3">
-                          <div className="size-[52px] shrink-0 overflow-hidden rounded-lg bg-gray-10">
-                            {item.imageUrl && (
-                              <img
-                                src={item.imageUrl}
-                                alt={item.productName}
-                                className="h-full w-full object-cover"
-                              />
-                            )}
-                          </div>
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[11px] text-gray-40">
-                              {item.brand}
-                            </span>
-                            <span className="break-keep text-[14px] font-bold text-black">
-                              {/* 💡 API 명세서에 맞게 item.name -> item.productName 으로 변경 */}
-                              {item.productName}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* 오른쪽: 추가/취소 버튼 */}
-                        <button
-                          onClick={() => toggleItemSelection(item)}
-                          className={`shrink-0 rounded-full border px-4 py-1.5 text-[12px] font-semibold transition-colors ${
-                            isSelected
-                              ? "border-gray-30 bg-gray-30 text-white"
-                              : "border-blue-50 bg-white text-blue-50"
-                          }`}
-                        >
-                          {isSelected ? "취소" : "추가"}
-                        </button>
+              {/* 💡 가로로 스크롤되는 선택된 칩(Chip) 리스트 */}
+              {selectedItems.length > 0 && (
+                <div className=" flex w-full gap-2 overflow-x-auto no-scrollbar pb-2">
+                  {selectedItems.map((selected) => (
+                    <div
+                      key={`badge-${selected.productId}`}
+                      className="flex shrink-0 items-center gap-1.5 rounded-full border border-gray-20 bg-white py-1.5 pl-1.5 pr-3 shadow-sm"
+                    >
+                      {/* 작은 원형 썸네일 */}
+                      <div className="size-6 shrink-0 overflow-hidden rounded-full bg-gray-10">
+                        {selected.imageUrl && (
+                          <img
+                            src={selected.imageUrl}
+                            alt={selected.productName}
+                            className="h-full w-full object-cover"
+                          />
+                        )}
                       </div>
-                    );
-                  })}
-                </div>
-              )}
 
-              {!isLoading && searchResults.length === 0 && (
-                <div className="py-4 text-center text-[13px] text-gray-50">
-                  검색 결과가 없습니다.
+                      {/* 제품명 (너무 길면 말줄임표 처리) */}
+                      <span className="max-w-[120px] truncate text-[12px] font-medium text-black">
+                        {selected.productName}
+                      </span>
+
+                      {/* X 버튼 (누르면 선택 해제) */}
+                      <button
+                        onClick={() => toggleItemSelection(selected)}
+                        className="flex items-center justify-center text-gray-40 transition-colors hover:text-gray-60"
+                      >
+                        <img src={notIcon} alt="X" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
-          )}
+            <div className="border border-gray-20 my-5" />
+
+            {/* 키워드가 있을 때만 검색 결과 목록 보여주기 */}
+            {keyword && (
+              <>
+                {isLoading ? (
+                  <div className="py-4 text-center text-[13px] text-gray-50">
+                    검색 중입니다...
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {searchResults.map((item) => {
+                      const isSelected = selectedItems.some(
+                        (selected) => selected.productId === item.productId,
+                      );
+
+                      return (
+                        <div
+                          key={item.productId}
+                          className="flex items-center justify-between border-b border-gray-05 pb-4 last:border-0"
+                        >
+                          {/* 왼쪽: 이미지 + 제품 정보 */}
+                          <div className="flex items-center gap-3">
+                            <div className="size-[52px] shrink-0 overflow-hidden rounded-lg bg-gray-10">
+                              {item.imageUrl && (
+                                <img
+                                  src={item.imageUrl}
+                                  alt={item.productName}
+                                  className="h-full w-full object-cover"
+                                />
+                              )}
+                            </div>
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-[11px] text-gray-40">
+                                {item.brand}
+                              </span>
+                              <span className="break-keep text-[14px] font-bold text-black">
+                                {item.productName}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* 오른쪽: 추가/취소 버튼 */}
+                          <button
+                            onClick={() => toggleItemSelection(item)}
+                            className={`shrink-0 rounded-full border px-4 py-1.5 text-[12px] font-semibold transition-colors ${
+                              isSelected
+                                ? "border-gray-30 bg-gray-30 text-white"
+                                : "border-blue-50 bg-white text-blue-50"
+                            }`}
+                          >
+                            {isSelected ? "취소" : "추가"}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {!isLoading && searchResults.length === 0 && (
+                  <div className="py-4 text-center text-[13px] text-gray-50">
+                    검색 결과가 없습니다.
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
 
         {/* 4. 하단 고정 등록 버튼 */}
@@ -250,7 +291,8 @@ const NewItemSearchModal = ({ onClose }) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

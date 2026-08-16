@@ -7,10 +7,11 @@ import plusIcon from "../../assets/icons/plusIcon.svg";
 import soakImage from "../../assets/logo/soakImage.png";
 import useAuthStore from "../../store/authStore";
 import axios from "axios";
+import useInventoryStore from "../../store/inventoryStore";
 
 //카테고리 명 사전
 const CATEGORY_NAME_MAP = {
-  SIKN_TONER: "스킨/토너",
+  SKIN_TONER: "스킨/토너",
   SERUM: "세럼/앰플",
   CREAM: "크림",
   ESSENCE: "에센스",
@@ -21,12 +22,26 @@ const CATEGORY_NAME_MAP = {
   ETC: "기타",
 };
 
+/*const CATEGORIES = [
+  { id: "ALL", name: "전체 화장품" },
+  { id: "SKIN_TONER", name: "스킨/토너" },
+  { id: "LOTION", name: "로션/에멀전" },
+  { id: "ESSENCE", name: "에센스/앰플/세럼" },
+  { id: "FACEOIL", name: "페이스 오일" },
+  { id: "CREAM", name: "크림" },
+  { id: "EYECARD", name: "아이케어" }, // 💡 백엔드 키값이 EYECARD가 맞는지 한번 체크해보시면 좋습니다! (보통 EYECARE를 많이 씁니다)
+  { id: "MIST", name: "미스트·젤" },
+  { id: "MASK", name: "마스크/팩" },
+  { id: "ETC", name: "기타" },
+];*/
 const InventoryHome = () => {
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [inventoryList, setInventoryList] = useState([]); // 내 인벤토리 리스트
+  //zustand에서 리스트 및 저장함수 꺼내오기
+  const inventoryList = useInventoryStore((state) => state.inventoryList);
+  const setInventoryList = useInventoryStore((state) => state.setInventoryList);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
 
@@ -57,9 +72,8 @@ const InventoryHome = () => {
         setIsLoading(false);
       }
     };
-
     fetchMyInventory();
-  }, [accessToken]);
+  }, [accessToken, setInventoryList]);
 
   const { setNavProps } = useOutletContext();
   const [isEditing, setIsEditing] = useState(false);
