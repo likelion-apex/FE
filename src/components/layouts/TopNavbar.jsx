@@ -57,7 +57,7 @@ const TopNavbar = ({
             <button
               type="button"
               onClick={rightAction.onClick}
-              className={`absolute right-[25px] flex h-8 items-center justify-end text-[16px] font-medium ${
+              className={`absolute right-[25px] flex h-8 items-center justify-end text-[16px] font-medium cursor-pointer ${
                 rightAction.textColor || "text-black"
               }`}
             >
