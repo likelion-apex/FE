@@ -41,11 +41,11 @@ const InventoryNavbar = () => {
                 <>
                   <MaskIcon
                     src={item.icon}
-                    className={`size-8 ${isActive ? "bg-black" : "bg-gray-40"}`}
+                    className={`size-8 ${isActive ? "bg-blue-50" : "bg-gray-40"}`}
                   />
                   <span
                     className={`text-center text-sm font-medium whitespace-nowrap ${
-                      isActive ? "text-black" : "text-gray-40"
+                      isActive ? "text-blue-50" : "text-gray-40"
                     }`}
                   >
                     {item.label}
