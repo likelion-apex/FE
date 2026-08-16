@@ -8,6 +8,7 @@ import axios from "axios";
 import InvertoryItemCard from "../../components/Inventory/InventoryItemCard";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
 import useAuthStore from "../../store/authStore";
+import InventoryNavbar from "../../components/Inventory/InventoryNavbar";
 
 const InventorySearch = () => {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ const InventorySearch = () => {
   }, [keyword, inventoryList]);
 
   return (
-    <div className="flex h-full flex-col bg-gray-05 px-[20px] pt-2">
+    <div className="flex h-full flex-col bg-gray-05 px-[20px] pt-5">
       <div className="flex items-center gap-3 mb-6">
         <div
           className={`flex flex-1 items-center rounded-2xl border bg-gray-05 px-5 py-[10px] transition-colors ${
@@ -173,6 +174,7 @@ const InventorySearch = () => {
       {isModalOpen && (
         <NewItemSearchModal onClose={() => setIsModalOpen(false)} />
       )}
+      <InventoryNavbar />
     </div>
   );
 };

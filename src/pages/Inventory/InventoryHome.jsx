@@ -5,74 +5,105 @@ import InventoryHomeCard from "../../components/Inventory/InventoryHomeCard";
 import { USER_NAME } from "../../mocks/mockData";
 import plusIcon from "../../assets/icons/plusIcon.svg";
 import soakImage from "../../assets/logo/soakImage.png";
+import useAuthStore from "../../store/authStore";
+import axios from "axios";
 
-//임시 데이터 (인벤토리 API 연동 전)
-const FAVORITE_ITEMS = [
-  { productId: 1, productName: "어성초 진정 패드", tag: "결 정돈" },
-  { productId: 2, productName: "비타민 C 앰플", tag: "항산화/미백" },
-  { productId: 3, productName: "시카 장벽 크림", tag: "장벽 보호" },
-  { productId: 4, productName: "레티놀 크림", tag: "나이트 케어" },
-  { productId: 5, productName: "히알루론 에센스", tag: "속건조 해결" },
-  { productId: 6, productName: "무기자차 선크림", tag: "자외선 차단" },
-];
-
-const CATEGORIES = [
-  {
-    Id: "toner",
-    title: "스킨/토너",
-    items: [
-      { productId: 1, productName: "어성초 진정 패드", tag: "결 정돈" },
-      { productId: 2, productName: "비타민 C 앰플", tag: "항산화/미백" },
-      { productId: 3, productName: "시카 장벽 크림", tag: "장벽 보호" },
-    ],
-  },
-  {
-    Id: "lotion",
-    title: "로션/에멀전",
-    items: [
-      { productId: 4, productName: "어성초 진정 패드", tag: "결 정돈" },
-      { productId: 5, productName: "비타민 C 앰플", tag: "항산화/미백" },
-      { productId: 6, productName: "시카 장벽 크림", tag: "장벽 보호" },
-    ],
-  },
-  {
-    Id: "essence",
-    title: "에센스/앰플/세럼",
-    items: [
-      { productId: 7, productName: "어성초 진정 패드", tag: "결 정돈" },
-      { productId: 8, productName: "비타민 C 앰플", tag: "항산화/미백" },
-      { productId: 9, productName: "시카 장벽 크림", tag: "장벽 보호" },
-      { productId: 10, productName: "레티놀 크림", tag: "나이트 케어" },
-    ],
-  },
-];
+//카테고리 명 사전
+const CATEGORY_NAME_MAP = {
+  SIKN_TONER: "스킨/토너",
+  SERUM: "세럼/앰플",
+  CREAM: "크림",
+  ESSENCE: "에센스",
+  LOTION: "로션/에멀전",
+  SUNCREAM: "선케어",
+  CLEANSER: "클렌징",
+  MASK: "마스크/팩",
+  ETC: "기타",
+};
 
 const InventoryHome = () => {
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const totalCount = CATEGORIES.reduce(
-    (sum, category) => sum + category.items.length,
-    0,
-  );
+  const [inventoryList, setInventoryList] = useState([]); // 내 인벤토리 리스트
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  // 화면 렌더링 시 내 인벤토리 목록 전부 불러옴
+  useEffect(() => {
+    const fetchMyInventory = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/v1/inventory`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+        console.log("내 인벤토리 목록.", response.data.data);
+        const data = response.data.data;
+
+        setInventoryList(data?.items || []); //인벤토리 아이템들 저장
+        setTotalCount(data?.totalCount || 0); //전체 개수 저장
+      } catch (error) {
+        console.error("내 인벤토리 목록을 불러오는 데 실패했습니다.", error);
+        setInventoryList([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMyInventory();
+  }, [accessToken]);
 
   const { setNavProps } = useOutletContext();
+  const [isEditing, setIsEditing] = useState(false);
+
   useEffect(() => {
     setNavProps({
       step: 0,
       totalSteps: 0,
-      stepproductName: "인벤토리",
+      stepName: "인벤토리",
       rightAction: {
-        content: "편집",
+        content: isEditing ? "완료" : "편집",
+        onClick: () => setIsEditing((prev) => !prev),
+
+        textColor: isEditing ? "text-red-40" : "text-blue-50",
       },
     });
-  }, [setNavProps]);
+  }, [setNavProps, isEditing]);
+
+  const favoriteItems = inventoryList.filter((item) => item.isFavorite);
 
   //제품 등록은 검색 기반 플로우로 진입
 
   const goToItemDetail = (item) =>
     navigate(`/inventory/item-detail/${item.productId}`);
+
+  const categorizedList = Object.entries(
+    inventoryList.reduce((acc, item) => {
+      // 백엔드에서 category 값이 안 오면 ETC로 분류
+      const categoryKey = item.category || "ETC";
+
+      // 해당 카테고리 내 제품이 없다면 없으면 빈 배열로 만들어줍니다.
+      if (!acc[categoryKey]) {
+        acc[categoryKey] = [];
+      }
+      // 해당 방에 아이템을 쏙 넣어줍니다.
+      acc[categoryKey].push(item);
+
+      return acc;
+    }, {}),
+  ).map(([key, items]) => ({
+    //배열 형태로 변환
+    title: CATEGORY_NAME_MAP[key] || key, // 한국어로 변환 (사전에 없으면 영문 그대로 노출)
+    items: items,
+  }));
 
   return (
     <div className="flex flex-col gap-6 px-[25px] pt-6 pb-6">
@@ -100,7 +131,6 @@ const InventoryHome = () => {
           </div>
         </div>
 
-        {/* 하단 영역: 꽉 차는 둥근 버튼 */}
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
@@ -113,7 +143,7 @@ const InventoryHome = () => {
       <div className="rounded-[20px] border border-gray-20 bg-white p-5 shadow-card">
         <InventoryHomeCard
           title="즐겨찾는 화장품"
-          items={FAVORITE_ITEMS}
+          items={favoriteItems}
           showAddCard={false}
           onViewAll={() => navigate("/inventory/star")}
           onItemClick={goToItemDetail}
@@ -121,7 +151,7 @@ const InventoryHome = () => {
         />
       </div>
 
-      {CATEGORIES.map((category) => (
+      {categorizedList.map((category) => (
         <InventoryHomeCard
           key={category.productId}
           title={category.title}

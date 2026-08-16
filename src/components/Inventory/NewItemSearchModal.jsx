@@ -31,9 +31,8 @@ const NewItemSearchModal = ({ onClose }) => {
             },
           },
         );
+        console.log("현재 받아온 데이터", response.data.data);
 
-        console.log("👉 2. response.data:", response.data);
-        console.error("받아온 데이터.", response.data.data);
         setSearchResults(response.data.data?.items || []);
       } catch (error) {
         console.error("검색 결과를 불러오는 데 실패했습니다.", error);
@@ -64,15 +63,39 @@ const NewItemSearchModal = ({ onClose }) => {
   };
 
   // 인벤토리에 최종 등록하기 버튼 클릭
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedItems.length === 0) return;
 
-    // 💡 팁: 백엔드에 보낼 때는 보통 productId 배열만 뽑아서 보냅니다!
-    const productIdsToSubmit = selectedItems.map((item) => item.productId);
-    console.log("등록할 제품 ID 목록:", productIdsToSubmit);
+    try {
+      const addRequests = selectedItems.map((item) =>
+        axios.post(
+          `${import.meta.env.VITE_API_URL}/api/v1/inventory`,
+          {
+            // API 명세서 Request body에 맞게 데이터 세팅
+            productId: item.productId,
+            productName: item.productName,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        ),
+      );
 
-    // TODO: 백엔드 API(POST)로 데이터 전송 로직 추가
-    onClose();
+      // 2. Promise.all을 통해 백엔드로 여러 개의 등록 요청을 동시에 보냅니다.
+      await Promise.all(addRequests);
+
+      // 3. 모든 등록이 성공하면 모달을 닫고 사용자에게 알려줍니다.
+      alert(`${selectedItems.length}개의 제품이 인벤토리에 등록되었습니다!`);
+      onClose();
+
+      //여기서 모달이 닫힌 후 바깥쪽(InventoryHome) 화면이 새로고침 되도록
+      // 부모 컴포넌트에서 데이터 다시 불러오기(fetch) 함수를 prop으로 넘겨받아 호출해주면 더 완벽합니다!
+    } catch (error) {
+      console.error("인벤토리 등록에 실패했습니다.", error);
+      alert("제품 등록 중 오류가 발생했습니다.");
+    }
   };
 
   return (

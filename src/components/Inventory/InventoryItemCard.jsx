@@ -1,12 +1,12 @@
 const InvertoryItemCard = ({ item, onClick }) => {
   return (
-    <button
+    <div
       key={item.productId}
-      type="button"
-      onClick={() => onItemClick?.(item)}
-      className="shrink-0 flex flex-col gap-2 items-start p-3 bg-white border border-gray-20 rounded-2xl shadow-card"
+      onClick={() => onClick?.(item)}
+      className="shrink-0 flex cursor-pointer flex-col gap-2 items-start p-3 bg-white border border-gray-20 rounded-2xl shadow-card transition-transform active:scale-95"
     >
-      <div className="size-[116px] rounded-[20px] bg-gray-40 overflow-clip">
+      {/* 이미지 영역 (가로 116px) */}
+      <div className="size-[116px] rounded-[20px] bg-gray-40 overflow-clip shrink-0">
         {item.imageUrl && (
           <img
             src={item.imageUrl}
@@ -15,15 +15,16 @@ const InvertoryItemCard = ({ item, onClick }) => {
           />
         )}
       </div>
-      <div className="flex flex-col gap-1 items-start w-[92px]">
-        <p className="text-[14px] font-semibold text-black whitespace-nowrap">
+
+      <div className="flex flex-col gap-1 items-start w-[116px] overflow-hidden">
+        <p className="w-full text-left text-[14px] font-semibold text-black truncate">
           {item.productName}
         </p>
-        <p className="text-[12px] font-medium text-gray-60 whitespace-nowrap">
+        <p className="w-full text-left text-[12px] font-medium text-gray-60 truncate">
           {item.tag}
         </p>
       </div>
-    </button>
+    </div>
   );
 };
 
