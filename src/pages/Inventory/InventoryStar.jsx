@@ -1,46 +1,10 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import BrandItemCard from "../../components/Inventory/BrandItemCard";
-import axois from "axios";
+import axios from "axios";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
+import useAuthStore from "../../store/authStore";
 // 인벤토리 조회 API 응답 목데이터
-const mockInventoryResponse = {
-  success: true,
-  code: "COMMON-200",
-  message: "요청이 성공했습니다.",
-  data: {
-    totalFavoriteCount: 1, // 즐겨찾기 된 아이템 개수
-    items: [
-      {
-        inventoryId: 1,
-        productId: 101,
-        productName: "화이트 트러플 퍼스트 스프레이 세럼",
-        brand: "달바",
-        category: "SERUM",
-        imageUrl: null,
-        isFavorite: true,
-      },
-      {
-        inventoryId: 2,
-        productId: 102,
-        productName: "어성초 77 수분 진정 토너",
-        brand: "아누아",
-        category: "TONER",
-        imageUrl: null,
-        isFavorite: true,
-      },
-      {
-        inventoryId: 3,
-        productId: 103,
-        productName: "캐롯 카로틴 카밍 워터 패드",
-        brand: "스킨푸드",
-        category: "ETC",
-        imageUrl: null,
-        isFavorite: true,
-      },
-    ],
-  },
-};
 
 const InventoryStar = () => {
   const { setNavProps } = useOutletContext();
@@ -57,6 +21,83 @@ const InventoryStar = () => {
   const [startX, setStartX] = useState(0);
   const [endX, setEndX] = useState(0);
 
+  const [items, setItems] = useState([]);
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  //즐찾 아이템 들고오기(토글 후 다시 불러오기 위해 useEffect 를 아래로내림)
+  const fetchFavorites = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/inventory/favorites`,
+        {
+          //조회개수 기본 20개
+          params: { limit: 20 },
+          headers: { Authorization: `Bearer ${accessToken}` },
+        },
+      );
+      setItems(response.data.data?.items || []);
+    } catch (error) {
+      console.error("즐겨찾기 목록을 불러오는 데 실패했습니다.", error);
+    }
+  };
+
+  useEffect(() => {
+    if (accessToken) fetchFavorites();
+  }, [accessToken]);
+
+  //즐찾 추가/삭제
+  const toggleFavorite = async (inventoryId, currentStatus) => {
+    const newFavoriteStatus = !currentStatus;
+
+    if (newFavoriteStatus === false) {
+      setItems((prevItems) =>
+        prevItems.filter((item) => item.inventoryId !== inventoryId),
+      );
+    }
+
+    try {
+      // 💡 3. 명세서대로 확실한 데이터를 담아 백엔드에 요청합니다.
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/api/v1/inventory/${inventoryId}/favorite`,
+        { isFavorite: newFavoriteStatus }, // 명세서 정답!
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        },
+      );
+      // 성공 시 이미 화면에서 지웠으므로 아무것도 안 해도 됩니다!
+    } catch (error) {
+      console.error("즐겨찾기 상태 변경에 실패했습니다.", error);
+      // 🚨 만약 서버 오류로 실패했다면? 지웠던 카드를 다시 부활시킵니다.
+      fetchFavorites();
+    }
+  };
+
+  // 인벤토리 삭제 함수
+  const handleDeleteItem = async (item) => {
+    // 삭제 여부 확인
+    if (!window.confirm(`${item.productName}을(를) 정말 삭제하시겠습니까?`))
+      return;
+
+    // 즉각 삭제
+    setItems((prevItems) =>
+      prevItems.filter((i) => i.inventoryId !== item.inventoryId),
+    );
+
+    try {
+      // 2. 백엔드에 진짜 삭제 요청 보내기
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/v1/inventory/${item.inventoryId}`,
+        { headers: { Authorization: `Bearer ${accessToken}` } },
+      );
+      // 성공하면 이미 화면에서 지웠으니 끝!
+    } catch (error) {
+      console.error("삭제에 실패했습니다.", error);
+      alert("삭제 중 오류가 발생했습니다.");
+      // 실패하면 몰래 지웠던 걸 다시 부활시킵니다.
+      fetchFavorites();
+    }
+  };
+
   useEffect(() => {
     setNavProps({
       step: 0,
@@ -69,8 +110,6 @@ const InventoryStar = () => {
       },
     });
   }, [setNavProps, isEditing]);
-
-  const items = mockInventoryResponse.data.items;
 
   // 현재 페이지에 보여줄 4개의 아이템만 잘라내기 로직
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE) || 1;
@@ -132,7 +171,12 @@ const InventoryStar = () => {
           {/* 1. 실제 데이터가 있는 화장품 카드 먼저 그리기 */}
           {currentItems.map((item) => (
             <div key={item.productId} className="pointer-events-auto">
-              <BrandItemCard item={item} />
+              <BrandItemCard
+                item={item}
+                isEditing={isEditing}
+                onToggleFavorite={toggleFavorite}
+                onDelete={handleDeleteItem}
+              />
             </div>
           ))}
 

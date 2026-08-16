@@ -4,6 +4,7 @@ import BrandItemCard from "../../components/Inventory/BrandItemCard";
 import axios from "axios";
 import useInventoryStore from "../../store/inventoryStore";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
+import useAuthStore from "../../store/authStore";
 
 const CATEGORIES = [
   { id: "ALL", name: "전체 화장품" },
@@ -18,69 +19,15 @@ const CATEGORIES = [
   { id: "ETC", name: "기타" },
 ];
 
-// 💡 새로운 카테고리(Enum)에 맞춘 인벤토리 조회 API 응답 목데이터
-const mockInventoryResponse = {
-  success: true,
-  code: "COMMON-200",
-  message: "요청이 성공했습니다.",
-  data: {
-    totalFavoriteCount: 3,
-    items: [
-      {
-        inventoryId: 1,
-        productId: 101,
-        productName: "화이트 트러플 퍼스트 스프레이 세럼",
-        brand: "달바",
-        category: "ESSENCE", // 에센스/앰플/세럼
-        imageUrl: null,
-        isFavorite: true,
-      },
-      {
-        inventoryId: 2,
-        productId: 102,
-        productName: "어성초 77 수분 진정 토너",
-        brand: "아누아",
-        category: "SKIN_TONER", // 스킨/토너
-        imageUrl: null,
-        isFavorite: true,
-      },
-      {
-        inventoryId: 3,
-        productId: 103,
-        productName: "캐롯 카로틴 카밍 워터 패드",
-        brand: "스킨푸드",
-        category: "SKIN_TONER", // 스킨/토너
-        imageUrl: null,
-        isFavorite: true,
-      },
-      {
-        inventoryId: 4,
-        productId: 104,
-        productName: "레티놀 인텐스 어드밴스드 트리플 액션 아이크림",
-        brand: "썸바이미",
-        category: "EYECARD", // 아이케어
-        imageUrl: null,
-        isFavorite: false,
-      },
-      {
-        inventoryId: 5,
-        productId: 105,
-        productName: "자작나무 수분 크림",
-        brand: "라운드랩",
-        category: "CREAM", // 크림
-        imageUrl: null,
-        isFavorite: false,
-      },
-    ],
-  },
-};
-
 const InventoryStar = () => {
   const { setNavProps } = useOutletContext();
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const inventoryList = useInventoryStore((state) => state.inventoryList);
+  const fetchInventoryList = useInventoryStore(
+    (state) => state.fetchInventoryList,
+  );
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]);
@@ -93,6 +40,45 @@ const InventoryStar = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [endX, setEndX] = useState(0);
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  //즐찾 추가/삭제
+  const toggleFavorite = async (inventoryId, currentStatus) => {
+    const newFavoriteStatus = !currentStatus;
+
+    try {
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/api/v1/inventory/${inventoryId}/favorite`,
+        { isFavorite: newFavoriteStatus },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        },
+      );
+
+      //스토어 새로고침
+      fetchInventoryList();
+    } catch (error) {
+      console.error("즐겨찾기 상태 변경에 실패했습니다.", error);
+    }
+  };
+
+  // 인벤토리 삭제 함수
+  const handleDeleteItem = async (item) => {
+    if (!window.confirm(`${item.productName}을(를) 정말 삭제하시겠습니까?`))
+      return;
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/v1/inventory/${item.inventoryId}`,
+        { headers: { Authorization: `Bearer ${accessToken}` } },
+      );
+
+      fetchInventoryList();
+    } catch (error) {
+      console.error("삭제에 실패했습니다.", error);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
 
   useEffect(() => {
     setNavProps({
@@ -107,11 +93,14 @@ const InventoryStar = () => {
     });
   }, [setNavProps, isEditing]);
 
-  const mockItems = mockInventoryResponse.data.items;
+  const items = Array.isArray(inventoryList)
+    ? inventoryList
+    : inventoryList?.items || inventoryList?.data?.items || [];
+
   const filteredList =
     selectedCategory.id === "ALL"
-      ? mockItems
-      : mockItems.filter((item) => item.category === selectedCategory.id);
+      ? items
+      : items.filter((item) => item.category === selectedCategory.id);
 
   // 현재 페이지에 보여줄 4개의 아이템만 잘라내기 로직
   const totalPages = Math.ceil(filteredList.length / ITEMS_PER_PAGE) || 1;
@@ -133,7 +122,7 @@ const InventoryStar = () => {
   const handleSelectCategory = (category) => {
     setSelectedCategory(category);
     setIsDropdownOpen(false);
-    setCurrentPage(1); // 💡 카테고리가 바뀌면 무조건 1페이지로 돌아가도록 초기화!
+    setCurrentPage(1);
   };
 
   // 💡 공통 드래그 로직 (마우스와 터치 모두 여기서 처리)
@@ -172,7 +161,7 @@ const InventoryStar = () => {
           className="flex items-center gap-1 text-[18px] font-bold text-black"
         >
           {selectedCategory.name}
-          {/* 꺾쇠 화살표 아이콘 (svg로 직접 넣거나 이미지 사용) */}
+          {/* 꺾쇠 화살표 아이콘*/}
           <svg
             className={`size-5 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
             fill="none"
@@ -220,21 +209,23 @@ const InventoryStar = () => {
         // cursor-grab, active:cursor-grabbing: 마우스 커서가 '잡는 손' 모양으로 바뀜
         className="flex-1 select-none cursor-grab active:cursor-grabbing"
       >
-        {/* 💡 카드의 클릭(이동/추가)이 드래그를 방해하지 않도록 pointer-events-none을 줍니다 */}
+        {/* 카드의 클릭(이동/추가)이 드래그를 방해하지 않도록 pointer-events-none을 줍니다 */}
         <div className="grid grid-cols-2 gap-4 pointer-events-none">
-          {/* 1. 실제 데이터가 있는 화장품 카드 먼저 그리기 */}
+          {/* 실제 데이터 카드 */}
           {currentItems.map((item) => (
             <div key={item.productId} className="pointer-events-auto">
-              <BrandItemCard item={item} />
+              <BrandItemCard item={item} onToggleFavorite={toggleFavorite} />
             </div>
           ))}
 
-          {/* 2. 남은 빈 칸 개수만큼 '추가하기' 카드 그리기 */}
+          {/* 남은 빈 칸 개수만큼 추가 카드 그리기 */}
           {emptyCards.map((_, index) => (
             <div key={`empty-${index}`} className="pointer-events-auto">
               <BrandItemCard
                 isAddCard={true}
+                isEditing={isEditing}
                 onAddClick={() => setIsModalOpen(true)}
+                onDelete={handleDeleteItem}
               />
             </div>
           ))}

@@ -9,6 +9,8 @@ const BrandItemCard = ({
 
   isAddCard,
   onAddClick,
+
+  onToggleFavorite,
 }) => {
   if (isAddCard) {
     return (
@@ -49,7 +51,13 @@ const BrandItemCard = ({
             <div className="absolute left-2 top-2 z-10 flex items-center justify-center rounded-lg bg-blue-50 px-2 py-1 text-[12px] font-bold text-white">
               {item.score || "94"}점
             </div>
-            <div className="absolute right-2 top-2 z-10">
+            <div
+              className="absolute right-2 top-2 z-10"
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFavorite?.(item.inventoryId, item.isFavorite);
+              }}
+            >
               <svg
                 width="18"
                 height="18"
