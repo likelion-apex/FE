@@ -1,6 +1,8 @@
 import MyPageHeader from "../../components/My/MyPageHeader";
+import IconBadge from "../../components/My/IconBadge";
 import arrowRightIcon from "../../assets/icons/arrowRight.svg";
 import kakaoCircle from "../../assets/kakaoCircle.png";
+import { MY_ICONS } from "../../constants/myIcons";
 
 // 연동된 계정 정보. 추후 백엔드 응답으로 교체
 const LINKED_ACCOUNT = {
@@ -18,11 +20,11 @@ function AccountManage() {
   };
 
   return (
-    <div className="flex min-h-full w-full flex-col bg-white">
+    <div className="flex min-h-full w-full flex-col bg-gray-05">
       <MyPageHeader title="계정 관리" />
 
       <div className="flex-1 px-5">
-        <p className="mt-[46px] text-sm leading-[14px] font-bold text-gray-60">
+        <p className="mt-[29px] text-sm leading-[14px] font-bold text-gray-60">
           연동된 계정 정보
         </p>
 
@@ -47,8 +49,7 @@ function AccountManage() {
             className="flex w-full cursor-pointer items-center justify-between py-5"
           >
             <span className="flex items-center gap-2">
-              {/* 아이콘. 디자인상 아직 placeholder */}
-              <span className="size-6 shrink-0 rounded-lg bg-gray-20" />
+              <IconBadge icon={MY_ICONS.logout} />
               <span className="text-sm font-medium text-black">로그아웃</span>
             </span>
             <img src={arrowRightIcon} alt="" className="h-6 w-3" />

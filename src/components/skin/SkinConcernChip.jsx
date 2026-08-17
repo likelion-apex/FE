@@ -7,7 +7,7 @@ const SkinConcernChip = ({ concern, isSelected, onToggle }) => {
       type="button"
       aria-pressed={isSelected}
       onClick={() => onToggle?.(concern.id)}
-      className={`flex cursor-pointer items-center gap-2 rounded-3xl border p-4 transition ${
+      className={`flex cursor-pointer items-end gap-2 rounded-3xl border p-4 transition ${
         isSelected ? "border-blue-50 bg-blue-05" : "border-gray-20 bg-gray-05"
       }`}
     >

@@ -1,28 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { getMyProfile, updateProfile } from "../../api/member";
+import { SKIN_TYPES, SKIN_CONCERNS } from "../../constants/skin";
 
 import MyPageHeader from "../../components/My/MyPageHeader";
 import SkinTypeOption from "../../components/skin/SkinTypeOption";
 import SkinConcernChip from "../../components/skin/SkinConcernChip";
 import cancelIcon from "../../assets/icons/cancel.svg";
-import { SKIN_TYPES, SKIN_CONCERNS } from "../../constants/skin";
 
 const NICKNAME_MAX_LENGTH = 10;
-
-// 기존 프로필 값. 추후 백엔드 응답으로 교체
-const CURRENT_PROFILE = {
-  nickname: "김윤지",
-  skinTypeId: 1,
-  concernIds: [1, 6],
-};
 
 function ProfileManage() {
   const navigate = useNavigate();
 
-  const [nickname, setNickname] = useState(CURRENT_PROFILE.nickname);
+  const [nickname, setNickname] = useState("");
   const [isNicknameFocused, setIsNicknameFocused] = useState(false);
-  const [skinTypeId, setSkinTypeId] = useState(CURRENT_PROFILE.skinTypeId);
-  const [concernIds, setConcernIds] = useState(CURRENT_PROFILE.concernIds);
+  const [skinTypeId, setSkinTypeId] = useState(null);
+  const [concernIds, setConcernIds] = useState([]);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const profile = await getMyProfile();
+
+        setNickname(profile.nickname ?? "");
+        setSkinTypeId(
+          SKIN_TYPES.find((type) => type.name === profile.skinType)?.id || null,
+        );
+        setConcernIds(
+          (profile.skinConcerns ?? [])
+            .map(
+              (concern) =>
+                SKIN_CONCERNS.find((item) => item.name === concern)?.id,
+            )
+            .filter(Boolean),
+        );
+      } catch (error) {
+        console.error("프로필 조회 실패", error);
+      }
+    };
+
+    loadProfile();
+  }, []);
 
   const toggleConcern = (id) =>
     setConcernIds((prev) =>
@@ -31,9 +51,28 @@ function ProfileManage() {
 
   const isNicknameActive = isNicknameFocused || nickname.length > 0;
 
-  const handleSave = () => {
-    // TODO: 프로필 저장 API 연동
-    navigate(-1);
+  const handleSave = async () => {
+    const skinType = SKIN_TYPES.find(
+      (type) => type.id === skinTypeId,
+    )?.name;
+
+    const skinConcerns = concernIds
+      .map(
+        (id) => SKIN_CONCERNS.find((concern) => concern.id === id)?.name,
+      )
+      .filter(Boolean);
+
+    try {
+      await updateProfile({
+        nickname,
+        skinType,
+        skinConcerns,
+      });
+
+      navigate(-1);
+    } catch (error) {
+      console.error("프로필 저장 실패", error);
+    }
   };
 
   return (
@@ -45,7 +84,7 @@ function ProfileManage() {
       />
 
       {/* 닉네임 */}
-      <section className="mt-[60px] flex flex-col gap-[5px] px-5">
+      <section className="mt-[114px] flex flex-col gap-[5px] px-5">
         <p className="text-sm leading-[14px] font-bold text-gray-60">닉네임</p>
 
         <div className="flex flex-col items-end gap-1">
@@ -85,7 +124,7 @@ function ProfileManage() {
       </section>
 
       {/* 피부 타입 */}
-      <section className="mt-[30px] flex flex-col gap-[15px] px-5">
+      <section className="mt-[25px] flex flex-col gap-[15px] px-5">
         <h2 className="text-base font-semibold text-black">피부 타입</h2>
 
         <div className="flex flex-col gap-3">
