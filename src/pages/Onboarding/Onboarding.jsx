@@ -2,7 +2,25 @@ import soakMark from "../../assets/logo/soak-mark.png";
 import soakWordmark from "../../assets/logo/soak-wordmark.svg";
 import KakaoLoginButton from "../../components/KakaoLoginButton";
 
+import useAuthStore from "../../store/authStore";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 const Onboarding = () => {
+  const accessToken = useAuthStore((state) => state.accessToken )
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    if (!accessToken) return;
+
+    const timer = setTimeout(()=>{
+      navigate("/main", { replace: true })
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  },[accessToken, navigate])
+
+
   return (
     <div className="flex min-h-full w-full flex-col bg-gradient-to-b from-white from-[32.7%] via-[#33cdfb] via-[87.5%] to-blue-50 px-5 pt-[69px]">
       <div className="flex w-full flex-col gap-[48px]">
@@ -27,7 +45,7 @@ const Onboarding = () => {
           </p>
         </div>
 
-        <KakaoLoginButton />
+        {!accessToken && <KakaoLoginButton />}
       </div>
     </div>
   );
