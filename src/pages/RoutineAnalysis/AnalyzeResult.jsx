@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
-import { Link, useOutletContext, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useOutletContext,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import IngredientCard from "../../components/Analysis/IngredientCard";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
-// AnalyzeResult.jsx 상단
 import {
   USER_NAME,
   ROUTINE_BRIEFING_DATA,
@@ -11,28 +15,88 @@ import {
 } from "../../mocks/mockData";
 import IngredientModal from "../../components/Analysis/IngredientModal";
 import RoutineScore from "../../components/Analysis/RoutineScore";
-
-const STEP_COUNT = 4;
+import axios from "axios";
+import useAuthStore from "../../store/authStore";
 
 const AnalyzeResult = () => {
   const [selectedStep, setSelectedStep] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const isModal = true;
   const isDetailPage = false;
+  const analysisId = location.state?.analysisId;
 
-  const currentStep = ROUTINE_STEPS[0].steps;
-  //정렬을 위해 짝수, 홀수 카드 분리하기(일단 1번 루틴)
-  const leftColumnData = currentStep.filter((_, index) => index % 2 === 0);
-  const rightColumnData = currentStep.filter((_, index) => index % 2 !== 0);
+  const [resultData, setResultData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  //루틴 분석 결과 조회
+  useEffect(() => {
+    if (!analysisId) {
+      alert("잘못된 접근입니다.");
+      navigate(-1);
+      return;
+    }
+
+    const fetchAnalysisResult = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/shortform-analyses/${analysisId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+        console.log(
+          "백엔드에서 가져온 분석 결과 : ",
+          response.data.data.result,
+        );
+        setResultData(response.data.data.result);
+      } catch (error) {
+        console.error("분석 결과를 불러오는 데 실패했습니다:", error);
+        alert("결과를 불러오지 못했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAnalysisResult();
+  }, [analysisId, accessToken, navigate]);
 
   //최적화된 페이지로 이동
   const handleOptimize = () => {
-    navigate("/RoutineAnalysis/OptimizedRoutine");
+    navigate("/RoutineAnalysis/OptimizedRoutine", { state: { analysisId } });
+  };
+
+  if (isLoading) {
+    return <div className="p-5 text-center">결과를 구성하는 중입니다...</div>;
+  }
+
+  // 데이터 로드 실패 시 화면
+  if (!resultData) {
+    return <div className="p-5 text-center">데이터가 없습니다.</div>;
+  }
+  const realSteps = resultData.steps || [];
+  const leftColumnData = realSteps.filter((_, index) => index % 2 === 0);
+  const rightColumnData = realSteps.filter((_, index) => index % 2 !== 0);
+
+  // 뒤로가기 버튼을 눌렀을 때 실행될 함수
+  const handleBackClick = () => {
+    const isConfirm = window.confirm("결과 화면을 나가시겠습니까?");
+    if (!isConfirm) return;
+
+    navigate("/RoutineAnalysis", { replace: true });
   };
 
   return (
     <div className="mb-6 flex flex-col text-black px-[20px]">
-      <TopNavbar step={2} totalSteps={4} stepName={""} />
+      <TopNavbar
+        step={2}
+        totalSteps={4}
+        stepName={""}
+        onBack={handleBackClick}
+      />
       <div className="mt-7 flex flex-col">
         <div className="flex-col gap-3 mb-6">
           <h3 className="text-[20px] font-semibold leading-7 mb-[8px]">
@@ -45,7 +109,7 @@ const AnalyzeResult = () => {
         </div>
         <div className="mb-5">
           <RoutineScore
-            data={ROUTINE_BRIEFING_DATA[0]}
+            data={resultData}
             isDetailPage={isDetailPage}
             isRoutine={true}
           />
@@ -54,7 +118,7 @@ const AnalyzeResult = () => {
         {/* 성분 분석 그리드 */}
         <section>
           <h3 className="mb-4 text-[16px] font-semibold">
-            영상 속 {currentStep.length}단계 루틴 성분 분석
+            영상 속 {realSteps.length}단계 루틴 성분 분석
           </h3>
           <div className="flex items-start gap-2 ">
             {/* 왼쪽(홀수) 열*/}

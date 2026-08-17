@@ -1,43 +1,124 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios"; // 💡 통신을 위해 추가
+import useAuthStore from "../../store/authStore"; // 💡 토큰을 위해 추가
 import { USER_NAME } from "../../mocks/mockData";
 import soakImage from "../../assets/logo/soakImage.png";
 
 const SmartLoading = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const accessToken = useAuthStore((state) => state.accessToken);
 
-  // 현재 진행 중인 단계를 저장하는 State (1~4단계)
-  const [currentStep, setCurrentStep] = useState(1);
   const type = location.state?.type || "routine";
+  const analysisId = location.state?.analysisId;
+
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isCanceling, setIsCanceling] = useState(false);
 
   useEffect(() => {
-    // 2초(2000ms)마다 currentStep을 1씩 올려줍니다.
-    const timer1 = setTimeout(() => setCurrentStep(2), 2000);
-    const timer2 = setTimeout(() => setCurrentStep(3), 4000);
-    const timer3 = setTimeout(() => setCurrentStep(4), 6000);
-    const timer4 = setTimeout(() => setCurrentStep(5), 8000);
-    const timer5 = setTimeout(() => {
-      setCurrentStep(6);
-      if (type === "routine") {
-        navigate("/RoutineAnalysis/AnalyzeResult");
-      } else {
-        navigate("/RoutineAnalysis/SearchItem");
-      }
-    }, 8500);
+    // 혹시라도 서버 응답이 더 빠를 수 있으니, Math.max로 역주행 방지
+    const timer1 = setTimeout(
+      () => setCurrentStep((prev) => Math.max(prev, 2)),
+      2000,
+    );
+    const timer2 = setTimeout(
+      () => setCurrentStep((prev) => Math.max(prev, 3)),
+      4000,
+    );
+    const timer3 = setTimeout(
+      () => setCurrentStep((prev) => Math.max(prev, 4)),
+      6000,
+    );
 
-    // 컴포넌트가 사라질 때 타이머 청소
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
-      clearTimeout(timer4);
-      clearTimeout(timer5);
     };
-  }, [navigate]);
+  }, []);
+
+  useEffect(() => {
+    if (!analysisId) return; // ID가 없으면 실행 안 함
+
+    let intervalId;
+
+    const checkStatus = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/shortform-analyses/${analysisId}/status`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+
+        // 명세서에 따른 응답 데이터 구조
+        const { status, progress, errorMessage } = response.data.data;
+        console.log("현재 진행 상태:", status, progress);
+
+        // 백엔드 완료 상태 확인
+        if (status === "COMPLETED" || status === "DONE") {
+          clearInterval(intervalId);
+          setCurrentStep(5);
+
+          setTimeout(() => {
+            setCurrentStep(6);
+            // 다음 결과 페이지로 이동 (결과 페이지에서 조회할 수 있도록 analysisId도 함께 넘겨줌)
+            if (type === "routine") {
+              navigate("/RoutineAnalysis/AnalyzeResult", {
+                state: { analysisId },
+              });
+            } else {
+              navigate("/RoutineAnalysis/SearchItem", {
+                state: { analysisId },
+              });
+            }
+          }, 500); // 0.5초 뒤 넘어감
+        } else if (status === "FAILED" || status === "ERROR") {
+          clearInterval(intervalId);
+          alert(
+            `분석 중 문제가 발생했습니다: ${errorMessage || "알 수 없는 오류"}`,
+          );
+          navigate(-1);
+        }
+      } catch (error) {
+        console.error("상태 체크 실패:", error);
+      }
+    };
+
+    intervalId = setInterval(checkStatus, 2500);
+
+    return () => clearInterval(intervalId);
+  }, [analysisId, accessToken, navigate, type]);
+
+  //분석 취소
+  const handleCancel = async () => {
+    if (!analysisId || isCanceling) return;
+    setIsCanceling(true);
+
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/shortform-analyses/${analysisId}/cancel`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      alert("분석이 취소되었습니다.");
+      navigate(-1);
+    } catch (error) {
+      console.error("분석 취소 실패:", error);
+      alert("취소 요청 중 문제가 발생했습니다. 다시 시도해 주세요.");
+      setIsCanceling(false);
+    }
+  };
 
   const LOADING_DATA = {
-    // 1. 전체 스킨케어 루틴 분석용 데이터
     routine: {
       typeTitle: "루틴",
       title: `영상 속 루틴이 ${USER_NAME}님에게 \n적합한지 검토하고 있어요`,
@@ -58,13 +139,11 @@ const SmartLoading = () => {
         },
       ],
     },
-
-    // 2. 핵심 제품 분석용 데이터
     item: {
       typeTitle: "제품",
       title: `영상 속 핵심 제품이 ${USER_NAME}님 화장대와 \n잘 어울리는지 검토하고 있어요`,
       subTitle: "보유 제품과의 시너지 및 성분 충돌 분석 중",
-      navigateUrl: "/RoutineAnalysis/AnalyzeResult", // 필요시 제품 결과 페이지 경로로 수정하세요!
+      navigateUrl: "/RoutineAnalysis/AnalyzeResult",
       steps: [
         { id: 1, title: "핵심 제품 주요 성분 및 효능 분석", desc: null },
         {
@@ -84,10 +163,8 @@ const SmartLoading = () => {
 
   const currentData = LOADING_DATA[type];
 
-  // 현재 상태에 따라 아이콘을 그려주는 마법의 함수 ✨
   const renderIcon = (stepId) => {
     if (currentStep > stepId) {
-      // 1. 완료됨
       return (
         <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 text-white">
           <svg
@@ -106,12 +183,10 @@ const SmartLoading = () => {
         </div>
       );
     } else if (currentStep === stepId) {
-      // 2. 진행 중
       return (
         <div className="h-6 w-6 shrink-0 animate-spin rounded-full border-[2.5px] border-blue-50 border-t-transparent"></div>
       );
     } else {
-      // 3. 대기 중
       return (
         <div className="h-6 w-6 shrink-0 rounded-full border-[2.5px] border-gray-20"></div>
       );
@@ -139,7 +214,6 @@ const SmartLoading = () => {
           />
         </svg>
 
-        {/* 💡 2. 선이 차오르는 애니메이션을 정의하는 CSS 키프레임 */}
         <style>
           {`
       @keyframes fill-up {
@@ -165,10 +239,7 @@ const SmartLoading = () => {
       <div className="flex w-full flex-col gap-6 px-4 text-left">
         {currentData.steps.map((step) => (
           <div key={step.id} className="flex items-start gap-4">
-            {/* 아이콘 */}
             {renderIcon(step.id)}
-
-            {/* 텍스트 영역 */}
             <div className="flex flex-col pt-[2px]">
               <span
                 className={`text-[15px] font-bold transition-colors duration-300 ${
@@ -182,7 +253,6 @@ const SmartLoading = () => {
                 {step.title}
               </span>
 
-              {/* 부가 설명 텍스트*/}
               {step.desc && currentStep >= step.id && (
                 <span className="mt-1 text-[12px] font-medium text-gray-500">
                   {step.desc}
@@ -193,10 +263,11 @@ const SmartLoading = () => {
         ))}
       </div>
 
-      {/* 4. 취소 버튼 */}
+      {/* 취소 버튼 */}
       <div className="mt-auto pt-4">
         <button
-          onClick={() => navigate(-1)} // 취소 누르면 이전 페이지로 가도록 추가!
+          onClick={handleCancel}
+          disabled={isCanceling}
           className="text-[13px] font-semibold text-gray-400 underline underline-offset-4 transition-colors hover:text-gray-600"
         >
           분석 취소하기
