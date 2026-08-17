@@ -1,11 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bottleIcon from "../../assets/routine-analyze/bottleIcon.svg";
 import calendarIcon from "../../assets/routine-analyze/calendarIcon.svg";
+import axios from "axios";
+import useAuthStore from "../../store/authStore";
 
 // 상위 컴포넌트에서 모달을 닫기 위해 onClose 프롭스를 받습니다.
-const AnalyzeOptionModal = ({ onClose }) => {
+const AnalyzeOptionModal = ({ onClose, url }) => {
   const navigate = useNavigate();
+  const [isRequesting, setIsRequesting] = useState(false); // 중복 클릭 방지용 상태
+  const accessToken = useAuthStore((state) => state.accessToken);
 
   useEffect(() => {
     const scrollBox = document.getElementById("main-scroll-box");
@@ -24,11 +28,51 @@ const AnalyzeOptionModal = ({ onClose }) => {
   }, []);
 
   // 리스트 항목 클릭 시 실행되는 함수
-  const handleOptionClick = (type) => {
+  const handleOptionClick = async (type) => {
     if (type === "routine") {
-      navigate("/RoutineAnalysis/Smartloading", {
-        state: { type: "routine" },
-      });
+      if (isRequesting) return; // 이미 요청 중이면 무시
+      setIsRequesting(true);
+      //분석 요청 보내기
+      try {
+        console.log("📤 서버로 보내는 Request Body:", { videoUrl: url });
+        console.log("🔑 사용 중인 토큰:", accessToken);
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/shortform-analyses`,
+          {
+            videoUrl: url,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+
+        const analysisId = response.data.data.analysisId;
+
+        navigate("/RoutineAnalysis/Smartloading", {
+          state: { type: "routine", analysisId: analysisId },
+        });
+      } catch (error) {
+        console.error("전체 루틴 분석 요청 실패:", error);
+        // 💡 백엔드가 보내준 구체적인 에러 메시지가 있는지 확인
+        const errorMessage = error.response?.data?.message;
+        const errorCode = error.response?.data?.code;
+
+        if (errorCode === "ANALYSIS-005") {
+          // 피부 타입 미등록 에러인 경우
+          alert("피부 타입을 먼저 등록해 주세요! 마이페이지로 이동합니다.");
+          // 필요하다면 피부 타입 설정 페이지로 이동: navigate("/mypage/profile");
+        } else if (errorMessage) {
+          // 백엔드가 준 다른 에러 메시지가 있다면 그걸 띄워줌
+          alert(errorMessage);
+        } else {
+          // 아예 통신이 끊겼거나 원인을 모를 때
+          alert("분석 요청에 실패했습니다. 다시 시도해 주세요.");
+        }
+      } finally {
+        setIsRequesting(false);
+      }
     } else if (type === "item") {
       navigate("/RoutineAnalysis/Smartloading", {
         state: { type: "item" },

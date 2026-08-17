@@ -84,16 +84,14 @@ const InventoryStar = () => {
     );
 
     try {
-      // 2. 백엔드에 진짜 삭제 요청 보내기
       await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/v1/inventory/${item.inventoryId}`,
         { headers: { Authorization: `Bearer ${accessToken}` } },
       );
-      // 성공하면 이미 화면에서 지웠으니 끝!
     } catch (error) {
       console.error("삭제에 실패했습니다.", error);
       alert("삭제 중 오류가 발생했습니다.");
-      // 실패하면 몰래 지웠던 걸 다시 부활시킵니다.
+      // 실패하면 재로딩
       fetchFavorites();
     }
   };

@@ -88,7 +88,6 @@ function App() {
               <Route path="item-detail" element={<InventoryItemDetail />} />
               <Route path="item-detail/:id" element={<InventoryItemDetail />} />
               <Route path="star" element={<InventoryStar />} />
-
               <Route path="library" element={<InventoryLibrary />} />
             </Route>
             <Route path="/inventory/search" element={<InventorySearch />} />

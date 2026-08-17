@@ -1,9 +1,44 @@
 import React, { useState } from "react";
 import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
+import RecordDetailModal from "./RecordDetailModal";
 
-const MyCalendar = () => {
+const MyCalendar = ({ progressPercentage }) => {
   // 오늘 날짜 기준 이번달 정보 자동 계산
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDateInfo, setSelectedDateInfo] = useState(null);
+  const [isToday, setIsToday] = useState();
+
+  // 💡 1. 여기에 모달용 목데이터를 추가해 주세요!
+  const mockRecordData = {
+    date: selectedDateInfo || "8월 4일 (화)",
+    conditionId: "moist",
+    memo: null,
+    completionRate: 100,
+    completedCount: 4,
+    totalCount: 4,
+    routines: [
+      { name: "초미세먼지 세정 클렌저" },
+      { name: "라운드랩 1025 독도 토너" },
+      { name: "라운드랩 자작나무 수분 앰플" },
+      { name: "고함량 판테놀 10% 재생 크림" },
+    ],
+  };
+
+  const handleDateClick = (dayNum) => {
+    // 클릭한 날짜가 오늘인지 판별
+    const isClickedToday =
+      year === actualYear && month === actualMonth && dayNum === actualDate;
+
+    // 요일 구하는 로직
+    const clickedDateObj = new Date(year, month, dayNum);
+    const dayOfWeekNames = ["일", "월", "화", "수", "목", "금", "토"];
+    const dayOfWeek = dayOfWeekNames[clickedDateObj.getDay()];
+
+    setSelectedDateInfo(`${month + 1}월 ${dayNum}일 (${dayOfWeek})`);
+    setIsToday(isClickedToday); // 오늘 여부를 상태나 변수로 저장
+    setIsModalOpen(true);
+  };
 
   const year = currentDate.getFullYear();
   // 0부터 시작함 (0 = 1월)
@@ -22,11 +57,6 @@ const MyCalendar = () => {
 
   // 루틴 완료한 날짜(백엔드가 보내줌(마이데이터))
   const completedDays = [2, 3, 4, 5, 6, 7, 8];
-
-  // 진행도 변수 (퍼센트)
-  const totalSteps = 4;
-  const currentStep = 3;
-  const progressPercentage = (currentStep / totalSteps) * 100;
 
   // 요일 배열
   const weekDays = [
@@ -132,6 +162,7 @@ const MyCalendar = () => {
                   // 바깥쪽 래퍼 (크기 32px) : 그리드의 칸 틀어짐을 막고 테두리 두께를 만듭니다.
                   <div
                     key={dayNum}
+                    onClick={() => handleDateClick(dayNum)}
                     className="relative flex size-[32px] items-center justify-center rounded-full"
                     style={{
                       // conic-gradient: 진행률만큼 색 채우기
@@ -151,6 +182,7 @@ const MyCalendar = () => {
                 // 여기도 바깥쪽 크기는 32px로 똑같이 맞춰줍니다. (정렬 유지)
                 <div
                   key={dayNum}
+                  onClick={() => handleDateClick(dayNum)}
                   className="flex size-[32px] items-center justify-center"
                 >
                   <div className="flex size-[28px] items-center justify-center rounded-full bg-gray-05 text-[14px] font-medium text-black">
@@ -174,6 +206,13 @@ const MyCalendar = () => {
         <span className="mx-1 text-blue-50">{completedDays.length}일</span>{" "}
         루틴을 완수했어요!
       </div>
+
+      <RecordDetailModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        recordData={mockRecordData}
+        isToday={isToday} // 💡 전달 완료!
+      />
     </div>
   );
 };
