@@ -17,9 +17,7 @@ const RoutineScore = ({ data, isDetailPage, isRoutine }) => {
       <ScoreGoal data={data} isRoutine={isRoutine} />
 
       {/* 최하단: 상세 설명 */}
-      <p className="text-[13px] leading-[22px] text-gray-600">
-        {data.description}
-      </p>
+      <p className="text-[13px] leading-[22px] text-gray-600">{data.summary}</p>
     </div>
   );
 };

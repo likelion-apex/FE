@@ -244,7 +244,7 @@ const RoutineAnalyze = () => {
         </section>
 
         {/* 최근 분석한 루틴 컴포넌트 */}
-        <section className="mt-8 px-[31px]">
+        <section className="mt-8">
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-[18px] font-semibold leading-7">
               최근 분석한 루틴
@@ -263,7 +263,7 @@ const RoutineAnalyze = () => {
                 <RecentRoutineItem
                   title={routine.title}
                   day={routine.createdAt}
-                  matchCount={routine.matchCount}
+                  score={routine.overallScore}
                 />
               </div>
             ))}

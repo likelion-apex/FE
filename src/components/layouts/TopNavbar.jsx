@@ -12,6 +12,7 @@ const TopNavbar = ({
   rightAction,
   showBackButton = true,
   con,
+  onBack,
 }) => {
   const navigate = useNavigate();
   const progress = Math.min((step / totalSteps) * 100, 100);
@@ -33,6 +34,14 @@ const TopNavbar = ({
     };
   }, [progress]);
 
+  const handleGoBack = () => {
+    if (onBack) {
+      onBack(); // 만약 부모가 넘겨준 특별한 기능(취소 등)이 있다면 그걸 실행!
+    } else {
+      navigate(-1); // 따로 넘겨준 게 없으면 그냥 평범하게 뒤로 가기
+    }
+  };
+
   return (
     <nav aria-label="온보딩 진행 상황" className="flex flex-col gap-6 ">
       <div className="pt-[53px]">
@@ -41,7 +50,7 @@ const TopNavbar = ({
             <button
               type="button"
               aria-label="뒤로 가기"
-              onClick={() => navigate(-1)}
+              onClick={handleGoBack}
               className="absolute left-[25px] flex h-8 w-4 cursor-pointer items-center justify-center"
             >
               <img src={backIcon} alt="" className="h-[17px] w-[10px]" />

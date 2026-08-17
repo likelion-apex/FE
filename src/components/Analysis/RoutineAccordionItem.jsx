@@ -7,7 +7,6 @@ const RoutineAccordionItem = ({ step }) => {
   // 기본적으로 열려있도록 설정
   const [isExpanded, setIsExpanded] = useState(true);
   //단계에서 아이디와 대체품 가져오기
-  const { id, replacement } = step;
 
   // 상태에 따른 테마 색상 매핑
   const theme = {
@@ -17,6 +16,8 @@ const RoutineAccordionItem = ({ step }) => {
       iconColor: "bg-gray-40",
       title: "text-gray-60",
       icon: notIcon,
+      bedgeText: "영상 속 제품",
+      reasonTitle: "대체품 없음",
     },
     replace: {
       badge: "bg-blue-05 text-blue-50",
@@ -24,6 +25,8 @@ const RoutineAccordionItem = ({ step }) => {
       iconColor: "bg-blue-50",
       title: "text-blue-50",
       icon: glassesIcon,
+      bedgeText: "대체",
+      reasonTitle: "AI 대체 이유",
     },
     compatible: {
       badge: "bg-green-05 text-green-70",
@@ -31,10 +34,12 @@ const RoutineAccordionItem = ({ step }) => {
       iconColor: "bg-green-50",
       title: "text-green-70",
       icon: glassesIcon,
+      bedgeText: "호환",
+      reasonTitle: "AI 대체 이유",
     },
   };
   //대체 테마가 있다면 대체테마로, 아니라면 none으로 (오류방지)
-  const currentTheme = theme[replacement.badgeType] || theme.none;
+  const currentTheme = theme[step.badgeType] || theme.none;
 
   return (
     <div
@@ -48,24 +53,22 @@ const RoutineAccordionItem = ({ step }) => {
       >
         <div className="flex items-center gap-3">
           <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-40 text-[16px] font-bold text-white">
-            {step.id}
+            {step.order}
           </div>
           <div className="size-[36px] shrink-0 rounded-lg bg-gray-40" />
 
-          <div className="flex flex-col justify-center">
-            <div className="flex items-center gap-2">
-              <span className="text-[15px] font-bold text-black">
-                {replacement.productName}
+          <div className="flex flex-col justify-between w-full">
+            <div className="flex items-center gap-1">
+              <span className="text-[16px] font-bold text-black">
+                {step.productName}
               </span>
               <span
-                className={`rounded px-2 py-1 text-[10px] font-bold ${currentTheme.badge}`}
+                className={`rounded px-2 py-1 text-[10px] whitespace-nowrap shrink-0 font-bold ${currentTheme.badge}`}
               >
-                {replacement.badgeText}
+                {currentTheme.bedgeText}
               </span>
             </div>
-            <span className="text-[12px] text-gray-60">
-              {replacement.originalProduct}
-            </span>
+            <span className="text-[12px] text-gray-60">{step.productName}</span>
           </div>
         </div>
 
@@ -94,14 +97,14 @@ const RoutineAccordionItem = ({ step }) => {
               <span
                 className={`text-[12px] font-semibold ${currentTheme.title}`}
               >
-                {replacement.reasonTitle}
+                {currentTheme.reasonTitle}
               </span>
             </div>
             <div className="flex justify-between text-[12px] leading-relaxed text-gray-600">
-              <p>{replacement.reasonDesc}</p>
-              {replacement.actionText && (
+              <p>{step.reason}</p>
+              {step.actionText && (
                 <span className="ml-1 cursor-pointer font-bold text-blue-50">
-                  {replacement.actionText}
+                  {step.reason}
                 </span>
               )}
             </div>
