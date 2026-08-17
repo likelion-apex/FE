@@ -67,10 +67,8 @@ function MyPage() {
                 SKIN_CONCERNS.find((item) => item.name === concern)?.id,
             )
             .filter(Boolean),
-
-            setProfileImageUrl(profile.profileImageUrl ?? "")
-
         );
+        setProfileImageUrl(profile.profileImageUrl ?? null);
       } catch (error) {
         console.error("프로필 조회 실패", error);
       }
@@ -80,7 +78,7 @@ function MyPage() {
   }, []);
 
   const user = {
-    imageUrl: profileImageUrl?? "",
+    imageUrl: profileImageUrl ?? null,
     name: nickname,
     skinType: SKIN_TYPES.find((type) => type.id === skinTypeId)?.name ?? "",
     concerns: concernIds
@@ -104,7 +102,7 @@ function MyPage() {
           <SectionHeader
             title="이번 달 요약"
             actionLabel="기록보기"
-            onClick={() => navigate("/MyRoutine")}
+            onAction={() => navigate("/MyRoutine")}
           />
           <SummaryCard stats={MONTH_SUMMARY} />
         </section>
