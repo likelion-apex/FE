@@ -1,5 +1,7 @@
 import alert from "../assets/icons/my/alert.svg";
+import clearDay from "../assets/icons/my/clear-day.svg";
 import incompleteCircle from "../assets/icons/my/incomplete-circle.svg";
+import modeNight from "../assets/icons/my/mode-night.svg";
 import information from "../assets/icons/my/information.svg";
 import logout from "../assets/icons/my/logout.svg";
 import penWriting from "../assets/icons/my/pen-writing.svg";
@@ -16,4 +18,7 @@ export const MY_ICONS = {
   userId: { src: userId, sizeClass: "h-[13.33px] w-[16.67px]" },
   information: { src: information, sizeClass: "size-[16.67px]" },
   logout: { src: logout, sizeClass: "h-[15px] w-[16.67px]" },
+  // 알림 시간 설정에서만 쓰는 36px 배지용 아이콘
+  clearDay: { src: clearDay, sizeClass: "size-[22px]" },
+  modeNight: { src: modeNight, sizeClass: "h-5 w-[15px]" },
 };
