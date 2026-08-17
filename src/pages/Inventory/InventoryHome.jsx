@@ -34,6 +34,7 @@ const CATEGORY_NAME_MAP = {
   { id: "MASK", name: "마스크/팩" },
   { id: "ETC", name: "기타" },
 ];*/
+
 const InventoryHome = () => {
   const navigate = useNavigate();
 

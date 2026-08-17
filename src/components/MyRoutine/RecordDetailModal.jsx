@@ -146,7 +146,7 @@ const RecordDetailModal = ({ isOpen, onClose, recordData, isToday }) => {
 
         <hr className="my-6 border-gray-10" />
 
-        {/* 4. 진행한 루틴 (타임라인) */}
+        {/* 4. 진행한 루틴 */}
         <div>
           <h3 className="mb-4 text-[14px] font-semibold text-gray-60">
             진행한 루틴
