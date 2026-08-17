@@ -26,6 +26,7 @@ import ProfileManage from "./pages/My/ProfileManage";
 import AccountManage from "./pages/My/AccountManage";
 import AnalysisReport from "./pages/My/AnalysisReport";
 import RoutineAlarm from "./pages/My/RoutineAlarm";
+import Withdraw from "./pages/My/Withdraw";
 
 import InventoryItemDetail from "./pages/Inventory/InventoryItemDetail";
 import InventoryLayout from "./components/Inventory/InventoryLayout";
@@ -57,6 +58,7 @@ function App() {
             <Route path="/my/account" element={<AccountManage />} />
             <Route path="/my/report/:type" element={<AnalysisReport />} />
             <Route path="/my/alarm/routine" element={<RoutineAlarm />} />
+            <Route path="/my/withdraw" element={<Withdraw />} />
             <Route
               path="/RoutineAnalysis/Smartloading"
               element={<SmartLoding />}

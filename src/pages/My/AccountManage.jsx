@@ -1,5 +1,9 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import MyPageHeader from "../../components/My/MyPageHeader";
 import IconBadge from "../../components/My/IconBadge";
+import ConfirmDialog from "../../components/My/ConfirmDialog";
 import arrowRightIcon from "../../assets/icons/arrowRight.svg";
 import kakaoCircle from "../../assets/kakaoCircle.png";
 import { MY_ICONS } from "../../constants/myIcons";
@@ -11,13 +15,16 @@ const LINKED_ACCOUNT = {
 };
 
 function AccountManage() {
+  const navigate = useNavigate();
+
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+
   const handleLogout = () => {
+    setIsLogoutDialogOpen(false);
     // TODO: 로그아웃 API 연동
   };
 
-  const handleWithdraw = () => {
-    // TODO: 회원탈퇴 API 연동
-  };
+  const handleWithdraw = () => navigate("/my/withdraw");
 
   return (
     <div className="flex min-h-full w-full flex-col bg-gray-05">
@@ -45,7 +52,7 @@ function AccountManage() {
         <div className="mt-[25px] border-t border-gray-20">
           <button
             type="button"
-            onClick={handleLogout}
+            onClick={() => setIsLogoutDialogOpen(true)}
             className="flex w-full cursor-pointer items-center justify-between py-5"
           >
             <span className="flex items-center gap-2">
@@ -67,6 +74,16 @@ function AccountManage() {
           회원탈퇴
         </button>
       </div>
+
+      {isLogoutDialogOpen && (
+        <ConfirmDialog
+          title="로그아웃"
+          description="로그아웃하면 앱이 재시작됩니다."
+          confirmLabel="로그아웃"
+          onConfirm={handleLogout}
+          onCancel={() => setIsLogoutDialogOpen(false)}
+        />
+      )}
     </div>
   );
 }
