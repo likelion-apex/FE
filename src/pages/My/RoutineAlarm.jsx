@@ -3,6 +3,7 @@ import { useState } from "react";
 import MyPageHeader from "../../components/My/MyPageHeader";
 import IconBadge from "../../components/My/IconBadge";
 import ToggleSwitch from "../../components/My/ToggleSwitch";
+import TimePickerModal from "../../components/My/TimePickerModal";
 import { MY_ICONS } from "../../constants/myIcons";
 
 // 알림 시간. 추후 백엔드 응답으로 교체
@@ -10,16 +11,19 @@ const ALARM_TIMES = [
   {
     id: "morning",
     label: "아침 루틴",
-    time: "매일 오전 7:30",
+    time: { meridiem: "오전", hour: 7, minute: 30 },
     icon: MY_ICONS.clearDay,
   },
   {
     id: "night",
     label: "저녁 루틴",
-    time: "매일 오후 10:00",
+    time: { meridiem: "오후", hour: 10, minute: 0 },
     icon: MY_ICONS.modeNight,
   },
 ];
+
+const formatAlarmTime = ({ meridiem, hour, minute }) =>
+  `매일 ${meridiem} ${hour}:${`${minute}`.padStart(2, "0")}`;
 
 // 상세 설정 항목. 추후 백엔드 응답으로 교체
 const DETAIL_SETTINGS = [
@@ -42,9 +46,21 @@ function RoutineAlarm() {
   const [detailSettings, setDetailSettings] = useState(() =>
     Object.fromEntries(DETAIL_SETTINGS.map(({ id, isOn }) => [id, isOn])),
   );
+  const [alarmTimes, setAlarmTimes] = useState(() =>
+    Object.fromEntries(ALARM_TIMES.map(({ id, time }) => [id, time])),
+  );
+  // 시간 선택 바텀시트를 띄운 알림의 id
+  const [editingAlarmId, setEditingAlarmId] = useState(null);
 
   const toggleDetailSetting = (id) =>
     setDetailSettings((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  const editingAlarm = ALARM_TIMES.find(({ id }) => id === editingAlarmId);
+
+  const saveAlarmTime = (time) => {
+    setAlarmTimes((prev) => ({ ...prev, [editingAlarmId]: time }));
+    setEditingAlarmId(null);
+  };
 
   return (
     <div className="min-h-full w-full bg-gray-05 pb-10">
@@ -84,13 +100,15 @@ function RoutineAlarm() {
                   <p className="text-base leading-5 font-bold text-black">
                     {alarm.label}
                   </p>
-                  <p className="text-sm leading-5 text-gray-60">{alarm.time}</p>
+                  <p className="text-sm leading-5 text-gray-60">
+                    {formatAlarmTime(alarmTimes[alarm.id])}
+                  </p>
                 </div>
               </div>
 
-              {/* 시간 변경 화면은 아직 라우트가 없어 핸들러를 비워둔다 */}
               <button
                 type="button"
+                onClick={() => setEditingAlarmId(alarm.id)}
                 className="cursor-pointer text-xs leading-4 font-bold text-blue-50"
               >
                 변경
@@ -128,6 +146,15 @@ function RoutineAlarm() {
           ))}
         </div>
       </section>
+
+      {editingAlarm && (
+        <TimePickerModal
+          title={`${editingAlarm.label} 시간 설정`}
+          time={alarmTimes[editingAlarm.id]}
+          onClose={() => setEditingAlarmId(null)}
+          onSave={saveAlarmTime}
+        />
+      )}
     </div>
   );
 }
