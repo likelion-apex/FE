@@ -3,39 +3,49 @@ import { useNavigate } from "react-router-dom";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
 import SectionHeader from "../../components/Home/SectionHeader";
 import ProfileSummary from "../../components/My/ProfileSummary";
-import ReportCard from "../../components/My/ReportCard";
 import SummaryCard from "../../components/My/SummaryCard";
 import MenuSection from "../../components/My/MenuSection";
-import { REPORTS } from "../../constants/report";
+import { MY_ICONS } from "../../constants/myIcons";
 
 // 사용자 정보. 추후 백엔드 응답으로 교체
 const USER = {
-  name: "윤지",
-  skinType: "수부지 · 민감성",
-  concerns: ["속건조", "트러블"],
+  name: "김수아",
+  skinType: "건성",
+  imageUrl: null,
+  concerns: ["수분부족", "각질", "홍조"],
 };
 
 // 이번 달 요약. 추후 백엔드 응답으로 교체
 const MONTH_SUMMARY = [
-  { label: "컨디션 기록", value: 7, unit: "회" },
-  { label: "루틴 완수율", value: 62, unit: "%" },
+  {
+    label: "컨디션 기록",
+    value: 7,
+    unit: "회",
+    icon: MY_ICONS.penWriting,
+  },
+  {
+    label: "루틴 완수율",
+    value: 62,
+    unit: "%",
+    icon: MY_ICONS.incompleteCircle,
+  },
 ];
 
 function MyPage() {
   const navigate = useNavigate();
 
-  // 알림 관련 화면은 아직 디자인이 없어 핸들러를 비워둔다
+  // 알림 관련 화면은 아직 라우트가 없어 핸들러를 비워둔다
   const settingItems = [
-    { label: "스킨케어 루틴 알림" },
-    { label: "앱 알림 설정" },
-    { label: "계정 관리", onClick: () => navigate("/my/account") },
+    { label: "루틴 알림 설정", icon: MY_ICONS.routine },
+    { label: "앱 알림 설정", icon: MY_ICONS.alert },
+    {
+      label: "계정 관리",
+      icon: MY_ICONS.userId,
+      onClick: () => navigate("/my/account"),
+    },
   ];
 
-  const supportItems = [
-    { label: "공지사항 및 FAQ" },
-    { label: "1:1 문의하기" },
-    { label: "앱 정보" },
-  ];
+  const supportItems = [{ label: "앱 정보", icon: MY_ICONS.information }];
 
   return (
     <div className="flex min-h-full flex-col bg-white text-black">
@@ -48,20 +58,8 @@ function MyPage() {
           />
         </section>
 
-        {/* 분석 리포트 */}
-        <section className="mt-[38px] flex gap-2 px-5">
-          {Object.entries(REPORTS).map(([type, report]) => (
-            <ReportCard
-              key={type}
-              period={report.period}
-              title={report.title}
-              onClick={() => navigate(`/my/report/${type}`)}
-            />
-          ))}
-        </section>
-
         {/* 이번 달 요약 */}
-        <section className="mt-[42px] flex flex-col gap-[23px] px-5">
+        <section className="mt-[44px] flex flex-col gap-[23px] px-5">
           <SectionHeader title="이번 달 요약" actionLabel="기록보기" />
           <SummaryCard stats={MONTH_SUMMARY} />
         </section>

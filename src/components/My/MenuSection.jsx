@@ -1,4 +1,5 @@
 import arrowRightIcon from "../../assets/icons/arrowRight.svg";
+import IconBadge from "./IconBadge";
 
 // 마이페이지 하단 메뉴 목록 (설정 및 계정 관리 / 고객 지원 및 앱 정보)
 const MenuSection = ({ title, items }) => {
@@ -15,8 +16,7 @@ const MenuSection = ({ title, items }) => {
               className="flex w-full cursor-pointer items-center justify-between"
             >
               <span className="flex items-center gap-2">
-                {/* 아이콘. 디자인상 아직 placeholder */}
-                <span className="size-6 shrink-0 rounded-lg bg-gray-20" />
+                <IconBadge icon={item.icon} />
                 <span className="text-sm font-medium text-black">
                   {item.label}
                 </span>
