@@ -13,6 +13,7 @@ const IngredientCard = ({ step, onClick }) => {
       titleText: "text-gray-60",
       descText: "text-gray-60",
       icon: glassesIcon,
+      safetyTitle: "피부 안전도 평가",
     },
     soso: {
       bg: "bg-yellow-05a",
@@ -20,6 +21,7 @@ const IngredientCard = ({ step, onClick }) => {
       titleText: "text-gray-60",
       descText: "text-gray-60",
       icon: glassesIcon,
+      safetyTitle: "피부 안전도 평가",
     },
     good: {
       bg: "bg-blue-05",
@@ -27,6 +29,7 @@ const IngredientCard = ({ step, onClick }) => {
       titleText: "text-blue-50",
       descText: "text-gray-60",
       icon: glassesIcon,
+      safetyTitle: "피부 안전도 평가",
     },
     dangerIconing: {
       bg: "bg-red-05",
@@ -34,6 +37,7 @@ const IngredientCard = ({ step, onClick }) => {
       titleText: "text-red-40",
       descText: "text-red-70",
       icon: dangerIcon,
+      safetyTitle: "AI 경고",
     },
   };
 
@@ -102,13 +106,13 @@ const IngredientCard = ({ step, onClick }) => {
           >
             <img
               src={currentStyle.icon}
-              alt={step.safetyTitle}
+              alt={currentStyle.safetyTitle}
               className="h-3 w-3 shrink-0"
             />
           </div>
           <div className={`flex items-center gap-1 ${currentStyle.titleText}`}>
             {/* 💡 API 명세: step.statusTitle -> step.safetyTitle */}
-            {step.safetyTitle}
+            {currentStyle.safetyTitle}
           </div>
         </div>
         <p className="break-keep leading-tight opacity-90">

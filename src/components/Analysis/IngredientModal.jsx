@@ -1,16 +1,47 @@
 import React, { useState, useEffect } from "react";
 import IngredientReason from "../../components/Analysis/IngredientReason";
-
 import TopNavbar from "../layouts/TopNavbar";
 import Item from "../../components/Use/Item";
 import IngredientInfo from "./IngredientInfo";
+import axios from "axios";
+import useAuthStore from "../../store/authStore";
+import Information from "../../assets/routine-analyze/Information.svg";
 
-const IngredientModal = ({ onClose, stepData, isModal }) => {
-  const data = stepData?.modalDetails || stepData;
+const IngredientModal = ({ onClose, stepData, isModal, analysisId }) => {
   const [activeTab, setActiveTab] = useState("AI 맞춤 분석");
 
-  if (!data) return null;
+  const [detailedData, setDetailedData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const accessToken = useAuthStore((state) => state.accessToken);
 
+  // 모달이 열릴 때 상세 API 호출
+  useEffect(() => {
+    // resultId나 analysisId가 없으면 실행 안 함
+    if (!stepData?.resultId || !analysisId) return;
+
+    const fetchDetailedResult = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/shortform-analyses/${analysisId}/results/${stepData.resultId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+        console.log("제품 상세 분석 결과:", response.data.data.result);
+        setDetailedData(response.data.data.result);
+      } catch (error) {
+        console.error("상세 분석 결과를 불러오지 못했습니다:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDetailedResult();
+  }, [stepData, analysisId, accessToken]);
+
+  //스크롤 방지 로직
   useEffect(() => {
     const scrollBox = document.getElementById("main-scroll-box");
     if (scrollBox && isModal) {
@@ -22,6 +53,22 @@ const IngredientModal = ({ onClose, stepData, isModal }) => {
       }
     };
   }, [isModal]);
+
+  if (isLoading) {
+    return (
+      <div
+        className={`flex w-full flex-col items-center justify-center bg-white ${isModal ? "rounded-t-[24px] h-[85vh]" : "min-h-screen"}`}
+      >
+        <div className="size-10 animate-spin rounded-full border-4 border-blue-50 border-t-transparent mb-4"></div>
+        <p className="text-gray-60 text-[14px]">
+          상세 데이터를 분석 중입니다...
+        </p>
+      </div>
+    );
+  }
+
+  const data = detailedData;
+  if (!data) return null;
 
   return (
     <div
@@ -59,10 +106,10 @@ const IngredientModal = ({ onClose, stepData, isModal }) => {
           <div className="size-9 shrink-0 rounded-lg bg-gray-40" />
           <div className="flex flex-col">
             <span className="text-[12px] font-bold text-blue-50">
-              {data.matchTitle}
+              윤지님 수부지 피부 맞춤(교체필요)
             </span>
             <span className="text-[16px] font-bold text-black">
-              AI 매칭 점수 {data.score}점
+              AI 매칭 점수 {data.matchScore}점
             </span>
           </div>
         </div>
@@ -90,20 +137,18 @@ const IngredientModal = ({ onClose, stepData, isModal }) => {
           {activeTab === "AI 맞춤 분석" && (
             <div className="flex flex-col">
               <h3 className="mb-4 text-[16px] font-bold text-black">
-                이 제품이 {data.score}점인 이유
+                이 제품이 {data.matchScore}점인 이유
               </h3>
               <div className="flex flex-col gap-3">
                 {data.reasons.map((reason) => (
-                  <IngredientReason key={reason.id} reason={reason} />
+                  <IngredientReason key={reason.order} reason={reason} />
                 ))}
               </div>
             </div>
           )}
 
           {/* 탭 2. 전체 성분 */}
-          {activeTab === "전체 성분" && data.allIngredients && (
-            <IngredientInfo data={data} />
-          )}
+          {activeTab === "전체 성분" && <IngredientInfo data={data} />}
         </div>
       </div>
       {activeTab === "AI 맞춤 분석" ? (

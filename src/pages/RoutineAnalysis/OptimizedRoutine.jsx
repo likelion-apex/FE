@@ -113,6 +113,7 @@ const OptimizedRoutine = () => {
           onClose={() => {
             setIsModalOpen(false);
           }}
+          analysisId={analysisId}
         />
       )}
     </div>

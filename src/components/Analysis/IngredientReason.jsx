@@ -5,7 +5,7 @@ import dangerIcon from "../../assets/routine-analyze/dangerIcon.svg"; // 빨강 
 
 const IngredientReason = ({ reason }) => {
   const typeStyles = {
-    excellent: {
+    POSITIVE: {
       card: "bg-green-05 border-green-50",
       iconBg: "bg-green-50",
       iconImg: safeIcon,
@@ -38,7 +38,7 @@ const IngredientReason = ({ reason }) => {
       >
         <img
           src={currentStyle.iconImg}
-          alt={reason.type}
+          alt={reason.title}
           className="size-4" /* 아이콘 크기에 맞게 조절하세요 */
         />
       </div>
@@ -47,7 +47,7 @@ const IngredientReason = ({ reason }) => {
       <div className="flex flex-col gap-1.5">
         <h4 className="text-[14px] font-bold text-black">{reason.title}</h4>
         <p className="break-keep text-[12px] leading-relaxed text-gray-60">
-          {reason.desc}
+          {reason.description}
         </p>
       </div>
     </div>

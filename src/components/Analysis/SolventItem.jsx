@@ -1,43 +1,53 @@
 import React from "react";
 
 const SolventItem = ({ ing }) => {
+  // 💡 백엔드의 riskLevel에 따른 색상 매핑 함수
+  const getBgColor = (riskLevel) => {
+    if (riskLevel === "LOW") return "bg-blue-50";
+    if (riskLevel === "MODERATE") return "bg-yellow-50a";
+    if (riskLevel === "HIGH") return "bg-red-40";
+    return "bg-gray-40"; // 알 수 없는 위험도일 경우 기본값
+  };
+
+  const getTextColor = (riskLevel) => {
+    if (riskLevel === "LOW") return "text-blue-50";
+    if (riskLevel === "MODERATE") return "text-yellow-50a";
+    if (riskLevel === "HIGH") return "text-red-40";
+    return "text-gray-40";
+  };
+
   return (
     <div className="flex gap-3 border-b border-gray-20">
-      {/* 1. 왼쪽 동그라미 (위험도) */}
+      {/* 1. 왼쪽 동그라미 (위험도 점수) */}
       <div
-        className={`flex size-8 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold text-white ${
-          ing.riskType === "low"
-            ? "bg-blue-50"
-            : ing.riskType === "medium"
-              ? "bg-yellow-50a"
-              : "bg-red-40"
-        }`}
+        className={`flex size-8 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold text-white ${getBgColor(
+          ing.riskLevel,
+        )}`}
       >
-        {ing.risk}
+        {/* 💡 risk -> riskScore 로 변경 */}
+        {ing.riskScore || "-"}
       </div>
 
       {/* 2. 오른쪽 텍스트 정보 */}
       <div className="flex w-full flex-col gap-1 pb-3">
         <span className="text-[14px] text-black">{ing.name}</span>
         <span className="break-keep text-[11px] text-gray-40">
-          배합목적 : {ing.purpose}
+          {/* 💡 purpose (문자열) -> purposes (배열)로 변경 후 join(", ")으로 연결 */}
+          배합목적 :{" "}
+          {ing.purposes && ing.purposes.length > 0
+            ? ing.purposes.join(", ")
+            : "정보 없음"}
         </span>
 
-        {/* effects가 있을 때만 렌더링 */}
-        {ing.effects && ing.effects.length > 0 && (
+        {/* 💡 effects -> skinBenefits 로 변경 */}
+        {ing.skinBenefits && ing.skinBenefits.length > 0 && (
           <div className="mt-0.5 flex gap-1">
-            {ing.effects.map((effect, idx) => (
+            {ing.skinBenefits.map((benefit, idx) => (
               <span
                 key={idx}
-                className={`text-[11px] font-bold  ${
-                  ing.riskType === "low"
-                    ? "text-blue-50"
-                    : ing.riskType === "medium"
-                      ? "text-yellow-50a"
-                      : "text-red-40"
-                }`}
+                className={`text-[11px] font-bold ${getTextColor(ing.riskLevel)}`}
               >
-                {effect}
+                {benefit}
               </span>
             ))}
           </div>

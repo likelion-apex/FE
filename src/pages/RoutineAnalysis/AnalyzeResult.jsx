@@ -125,7 +125,7 @@ const AnalyzeResult = () => {
             <div className="flex flex-1 flex-col gap-2">
               {leftColumnData.map((step) => (
                 <IngredientCard
-                  key={step.id}
+                  key={step.resultId}
                   step={step}
                   onClick={() => setSelectedStep(step)}
                 />
@@ -136,7 +136,7 @@ const AnalyzeResult = () => {
             <div className="flex flex-1 flex-col gap-2">
               {rightColumnData.map((step) => (
                 <IngredientCard
-                  key={step.id}
+                  key={step.resultId}
                   step={step}
                   onClick={() => setSelectedStep(step)}
                 />
@@ -154,6 +154,7 @@ const AnalyzeResult = () => {
             stepData={selectedStep}
             isModal={isModal}
             onClose={() => setSelectedStep(null)}
+            analysisId={analysisId}
           />
         </div>
       )}
