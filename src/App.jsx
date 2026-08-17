@@ -27,6 +27,10 @@ import AccountManage from "./pages/My/AccountManage";
 import AnalysisReport from "./pages/My/AnalysisReport";
 import RoutineAlarm from "./pages/My/RoutineAlarm";
 import Withdraw from "./pages/My/Withdraw";
+import AppInfo from "./pages/My/AppInfo";
+import Terms from "./pages/My/Terms";
+import Privacy from "./pages/My/Privacy";
+import License from "./pages/My/License";
 
 import InventoryItemDetail from "./pages/Inventory/InventoryItemDetail";
 import InventoryLayout from "./components/Inventory/InventoryLayout";
@@ -59,6 +63,10 @@ function App() {
             <Route path="/my/report/:type" element={<AnalysisReport />} />
             <Route path="/my/alarm/routine" element={<RoutineAlarm />} />
             <Route path="/my/withdraw" element={<Withdraw />} />
+            <Route path="/my/app-info" element={<AppInfo />} />
+            <Route path="/my/terms" element={<Terms />} />
+            <Route path="/my/privacy" element={<Privacy />} />
+            <Route path="/my/license" element={<License />} />
             <Route
               path="/RoutineAnalysis/Smartloading"
               element={<SmartLoding />}

@@ -49,7 +49,13 @@ function MyPage() {
     },
   ];
 
-  const supportItems = [{ label: "앱 정보", icon: MY_ICONS.information }];
+  const supportItems = [
+    {
+      label: "앱 정보",
+      icon: MY_ICONS.information,
+      onClick: () => navigate("/my/app-info"),
+    },
+  ];
 
   useEffect(() => {
     const loadProfile = async () => {
