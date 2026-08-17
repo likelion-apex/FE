@@ -84,21 +84,17 @@ export const OPEN_SOURCE_INTRO =
 
 export const OPEN_SOURCE_LICENSES = [
   {
-    name: "react-native",
+    name: "React / React DOM",
     license: "MIT License",
     notices: [
       "Copyright (c) Meta Platforms, Inc. and affiliates.",
-      'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:',
     ],
   },
   {
-    name: "lottie-react-native",
-    license: "Apache License 2.0",
+    name: "React Router DOM",
+    license: "MIT License",
     notices: [
-      "Copyright (c) 2017 Airbnb, Inc.",
-      'Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at',
-      "http://www.apache.org/licenses/LICENSE-2.0",
-      'Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.',
+      "Copyright (c) Remix Software, Inc.",
     ],
   },
   {
@@ -109,4 +105,11 @@ export const OPEN_SOURCE_LICENSES = [
       'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:',
     ],
   },
+  {
+     name: "Zustand",
+    license: "MIT License",
+    notices: [
+      "Copyright (c) Paul Henschel",
+    ]
+  }
 ];
