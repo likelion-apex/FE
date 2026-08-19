@@ -61,11 +61,11 @@ const MyCalendar = ({ progressPercentage }) => {
   // 요일 배열
   const weekDays = [
     { day: "일", color: "text-red-70" },
-    { day: "월", color: "text-gray-500" },
-    { day: "화", color: "text-gray-500" },
-    { day: "수", color: "text-gray-500" },
-    { day: "목", color: "text-gray-500" },
-    { day: "금", color: "text-gray-500" },
+    { day: "월", color: "text-gray-60" },
+    { day: "화", color: "text-gray-60" },
+    { day: "수", color: "text-gray-60" },
+    { day: "목", color: "text-gray-60" },
+    { day: "금", color: "text-gray-60" },
     { day: "토", color: "text-blue-60" },
   ];
 
@@ -79,7 +79,7 @@ const MyCalendar = ({ progressPercentage }) => {
   };
 
   return (
-    <div className="mx-auto w-[362px] rounded-[20px] border border-gray-20 bg-white p-4">
+    <div className="mx-auto w-full max-w-[362px] rounded-[20px] border border-gray-20 bg-white px-[24px] pt-[12px] pb-[16px] shadow-card">
       <div className="mb-4 flex items-center justify-between px-1">
         <h2 className="text-[16px] font-bold text-black">
           {year}년 {month + 1}월
@@ -131,7 +131,7 @@ const MyCalendar = ({ progressPercentage }) => {
       {/*루틴 완료했다는 정보를 백한테 보내고 받아서 완료한 날은 채크표시 되게끔 하는게 좋을거같음 */}
       <div className="mb-2 grid grid-cols-7 place-items-center">
         {weekDays.map((item, idx) => (
-          <div key={idx} className={`text-[13px] font-bold ${item.color}`}>
+          <div key={idx} className={`text-[12px] font-semibold ${item.color}`}>
             {item.day}
           </div>
         ))}
@@ -155,6 +155,9 @@ const MyCalendar = ({ progressPercentage }) => {
                 year === actualYear &&
                 month === actualMonth &&
                 dayNum === actualDate;
+
+              // 루틴을 완수한 날만 진하게, 나머지는 연하게
+              const isCompleted = completedDays.includes(dayNum);
 
               //진행도 테두리가 있는 원 (오늘))
               if (isToday) {
@@ -185,7 +188,11 @@ const MyCalendar = ({ progressPercentage }) => {
                   onClick={() => handleDateClick(dayNum)}
                   className="flex size-[32px] items-center justify-center"
                 >
-                  <div className="flex size-[28px] items-center justify-center rounded-full bg-gray-05 text-[14px] font-medium text-black">
+                  <div
+                    className={`flex size-[28px] items-center justify-center rounded-full bg-gray-05 text-[14px] font-medium ${
+                      isCompleted ? "text-black" : "text-gray-30"
+                    }`}
+                  >
                     {dayNum}
                   </div>
                 </div>
@@ -201,7 +208,7 @@ const MyCalendar = ({ progressPercentage }) => {
         <div className="pointer-events-none absolute bottom-0 left-0 h-8 w-full bg-gradient-to-t from-white to-transparent" />
       </div>
 
-      <div className="mt-6 flex w-full items-center justify-center rounded-xl bg-gray-05 py-2 text-[12px] text-gray-50 font-semibold">
+      <div className="mt-6 flex w-full items-center justify-center rounded-[12px] bg-blue-05 p-[8px] text-[12px] font-semibold text-gray-60">
         이번 달은 총{" "}
         <span className="mx-1 text-blue-50">{completedDays.length}일</span>{" "}
         루틴을 완수했어요!

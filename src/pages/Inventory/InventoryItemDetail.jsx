@@ -3,11 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "../../store/authStore";
 import useUserStore from "../../store/userStore";
+import {
+  getInventoryDetail,
+  getInventoryIngredients,
+  updateFavorite,
+} from "../../api/inventory";
 
 import IngredientModal from "../../components/Analysis/IngredientModal";
 
 const ItemDetail = () => {
-  const { id } = useParams();
+  const { inventoryId } = useParams();
   const navigate = useNavigate();
 
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -16,25 +21,14 @@ const ItemDetail = () => {
   const [itemData, setItemData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  //수정
   useEffect(() => {
     const fetchItemDetails = async () => {
       try {
-        const headers = { Authorization: `Bearer ${accessToken}` };
-
-        // API 병렬 호출
-        const [aiResponse, ingredientsResponse] = await Promise.all([
-          axios.get(
-            `${import.meta.env.VITE_API_URL}/api/v1/inventory/${id}/ai-analysis`,
-            { headers },
-          ),
-          axios.get(
-            `${import.meta.env.VITE_API_URL}/api/v1/inventory/${id}/ingredients`,
-            { headers },
-          ),
+        const [aiData, ingData] = await Promise.all([
+          getInventoryDetail(inventoryId),
+          getInventoryIngredients(inventoryId),
         ]);
-
-        const aiData = aiResponse.data.data;
-        const ingData = ingredientsResponse.data.data;
 
         console.log("AI 분석:", aiData, "성분 리스트:", ingData);
 
@@ -95,6 +89,24 @@ const ItemDetail = () => {
     }
   }, [id, accessToken, nickname, navigate]);
 
+  // 즐찾 취소/선택
+  const handleToggleFavorite = async () => {
+    if (!itemData) return;
+
+    try {
+      const newStatus = !itemData.isFavorite;
+      await updateFavorite(id, newStatus);
+
+      setItemData((prev) => ({
+        ...prev,
+        isFavorite: newFavoriteStatus,
+      }));
+    } catch (error) {
+      console.error("즐겨찾기 상태 변경에 실패했습니다.", error);
+      alert("변경에 실패했습니다. 다시 시도해주세요!");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -109,7 +121,11 @@ const ItemDetail = () => {
 
   return (
     <div>
-      <IngredientModal stepData={itemData} isModal={false} />
+      <IngredientModal
+        stepData={itemData}
+        isModal={false}
+        ToggleFavorite={handleToggleFavorite}
+      />
     </div>
   );
 };

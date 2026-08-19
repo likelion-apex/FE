@@ -15,7 +15,7 @@ import menuIcon from "../assets/icons/menu.svg";
 import soakMark from "../assets/logo/soak-mark.png";
 import soakWordmark from "../assets/logo/soak-wordmark.svg";
 
-import { getSummary, updateCondition } from "../api/Home";
+import { getSummary, updateCondition } from "../api/home";
 
 // SkinConditionCard의 id -> 서버가 받는 한글 컨디션 라벨
 const CONDITION_LABELS = {
