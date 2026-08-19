@@ -40,7 +40,7 @@ const BrandItemCard = ({
           <button
             onClick={(e) => {
               e.stopPropagation(); // 카드 전체 클릭 방지
-              onDelete?.(item); // 삭제 함수 실행 (나중에 추가할 기능)
+              onDelete?.(item);
             }}
             className="absolute right-2 top-2 z-10 flex size-5 items-center justify-center rounded-full bg-red-40"
           >

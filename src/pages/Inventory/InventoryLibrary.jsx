@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
+
 import BrandItemCard from "../../components/Inventory/BrandItemCard";
-import axios from "axios";
 import useInventoryStore from "../../store/inventoryStore";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
+
+import axios from "axios";
 import useAuthStore from "../../store/authStore";
 import useUserStore from "../../store/userStore";
+import { updateFavorite, deleteInventoryItem } from "../../api/inventory";
 
 const CATEGORIES = [
   { id: "ALL", name: "전체 화장품" },
@@ -48,13 +51,7 @@ const InventoryStar = () => {
     const newFavoriteStatus = !currentStatus;
 
     try {
-      await axios.patch(
-        `${import.meta.env.VITE_API_URL}/api/v1/inventory/${inventoryId}/favorite`,
-        { isFavorite: newFavoriteStatus },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        },
-      );
+      await updateFavorite(inventoryId, newFavoriteStatus);
 
       //스토어 새로고침
       fetchInventoryList();
@@ -69,10 +66,7 @@ const InventoryStar = () => {
       return;
 
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/v1/inventory/${item.inventoryId}`,
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+      await deleteInventoryItem(item.inventoryId);
 
       fetchInventoryList();
     } catch (error) {

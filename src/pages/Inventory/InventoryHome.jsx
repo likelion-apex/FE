@@ -5,10 +5,12 @@ import InventoryHomeCard from "../../components/Inventory/InventoryHomeCard";
 import { USER_NAME } from "../../mocks/mockData";
 import plusIcon from "../../assets/icons/plusIcon.svg";
 import soakImage from "../../assets/logo/soakImage.png";
+
 import useAuthStore from "../../store/authStore";
 import axios from "axios";
 import useInventoryStore from "../../store/inventoryStore";
 import useUserStore from "../../store/userStore";
+import { getMyInventory } from "../../api/inventory";
 
 //카테고리 명 사전
 const CATEGORY_NAME_MAP = {
@@ -42,16 +44,9 @@ const InventoryHome = () => {
     const fetchMyInventory = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/inventory`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-        console.log("내 인벤토리 목록.", response.data.data);
-        const data = response.data.data;
+        const data = await getMyInventory();
+
+        console.log("내 인벤토리 목록:", data);
 
         setInventoryList(data?.items || []); //인벤토리 아이템들 저장
         setTotalCount(data?.totalCount || 0); //전체 개수 저장
