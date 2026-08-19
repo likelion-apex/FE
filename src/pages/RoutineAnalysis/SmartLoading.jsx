@@ -20,15 +20,15 @@ const SmartLoading = () => {
     // 혹시라도 서버 응답이 더 빠를 수 있으니, Math.max로 역주행 방지
     const timer1 = setTimeout(
       () => setCurrentStep((prev) => Math.max(prev, 2)),
-      2000,
+      4000,
     );
     const timer2 = setTimeout(
       () => setCurrentStep((prev) => Math.max(prev, 3)),
-      4000,
+      8000,
     );
     const timer3 = setTimeout(
       () => setCurrentStep((prev) => Math.max(prev, 4)),
-      6000,
+      12000,
     );
 
     return () => {

@@ -12,7 +12,6 @@ const ScoreGoal = ({ data, isRoutine }) => {
           AI 매칭 점수 {data.overallScore}점
         </h3>
         <div className="flex flex-col gap-1">
-          {/* 💡 API 명세: matchDetails -> highlights */}
           {data.highlights?.map((detail, index) => (
             <div
               key={index}

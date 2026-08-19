@@ -70,7 +70,14 @@ const AnalyzeResult = () => {
   };
 
   if (isLoading) {
-    return <div className="p-5 text-center">결과를 구성하는 중입니다...</div>;
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-white px-5 pb-20">
+        <div className="mb-6 size-12 animate-spin rounded-full border-4 border-blue-50 border-t-transparent"></div>
+        <h3 className="mb-2 text-[18px] font-bold text-black text-center">
+          AI가 루틴 분석 데이터를 불러오고 있어요
+        </h3>
+      </div>
+    );
   }
 
   // 데이터 로드 실패 시 화면
@@ -125,7 +132,7 @@ const AnalyzeResult = () => {
             <div className="flex flex-1 flex-col gap-2">
               {leftColumnData.map((step) => (
                 <IngredientCard
-                  key={step.id}
+                  key={step.resultId}
                   step={step}
                   onClick={() => setSelectedStep(step)}
                 />
@@ -136,7 +143,7 @@ const AnalyzeResult = () => {
             <div className="flex flex-1 flex-col gap-2">
               {rightColumnData.map((step) => (
                 <IngredientCard
-                  key={step.id}
+                  key={step.resultId}
                   step={step}
                   onClick={() => setSelectedStep(step)}
                 />
@@ -154,6 +161,7 @@ const AnalyzeResult = () => {
             stepData={selectedStep}
             isModal={isModal}
             onClose={() => setSelectedStep(null)}
+            analysisId={analysisId}
           />
         </div>
       )}

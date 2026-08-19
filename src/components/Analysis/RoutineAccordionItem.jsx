@@ -10,7 +10,7 @@ const RoutineAccordionItem = ({ step }) => {
 
   // 상태에 따른 테마 색상 매핑
   const theme = {
-    none: {
+    VIDEO_PRODUCT: {
       badge: "bg-violet-02 text-violet-45",
       box: "bg-gray-05",
       iconColor: "bg-gray-40",
@@ -39,7 +39,7 @@ const RoutineAccordionItem = ({ step }) => {
     },
   };
   //대체 테마가 있다면 대체테마로, 아니라면 none으로 (오류방지)
-  const currentTheme = theme[step.badgeType] || theme.none;
+  const currentTheme = theme[step.status] || theme.VIDEO_PRODUCT;
 
   return (
     <div
@@ -52,27 +52,30 @@ const RoutineAccordionItem = ({ step }) => {
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-40 text-[16px] font-bold text-white">
+          <div className="flex size-5 items-center justify-center rounded-full bg-blue-50 text-[16px] font-semibold text-white shrink-0">
             {step.order}
           </div>
           <div className="size-[36px] shrink-0 rounded-lg bg-gray-40" />
 
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-center gap-1">
-              <span className="text-[16px] font-bold text-black">
-                {step.productName}
-              </span>
-              <span
+              <div className="text-[16px] font-bold text-black">
+                {step.replaceName || step.productName}
+              </div>
+              <div
                 className={`rounded px-2 py-1 text-[10px] whitespace-nowrap shrink-0 font-bold ${currentTheme.badge}`}
               >
                 {currentTheme.bedgeText}
-              </span>
+              </div>
             </div>
-            <span className="text-[12px] text-gray-60">{step.productName}</span>
+            <span className="text-[12px] text-gray-60">
+              {step.replaceName
+                ? step.productName
+                : "인벤토리 미등록 · 영상 속 루틴"}
+            </span>
           </div>
         </div>
 
-        {/* 화살표 아이콘(돌아가는 애니메이션 추가) */}
         <div
           className={`text-gray-400 transition-transform duration-300 ${
             isExpanded ? "rotate-270" : "rotate-90"
@@ -101,10 +104,16 @@ const RoutineAccordionItem = ({ step }) => {
               </span>
             </div>
             <div className="flex justify-between text-[12px] leading-relaxed text-gray-600">
-              <p>{step.reason}</p>
-              {step.actionText && (
+              <p>
+                {step.status === "VIDEO_PRODUCT"
+                  ? "대체 제품이 윤지님의 인벤토리에 없어요"
+                  : step.reason}
+              </p>
+
+              {/* 연결필요 ~ ㅜㅜ */}
+              {step.status === "VIDEO_PRODUCT" && (
                 <span className="ml-1 cursor-pointer font-bold text-blue-50">
-                  {step.reason}
+                  제품 등록하기
                 </span>
               )}
             </div>
