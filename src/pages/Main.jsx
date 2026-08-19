@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import BottomNavbar from "../components/layouts/BottomNavbar";
@@ -8,31 +8,23 @@ import SkinConditionCard from "../components/Home/SkinConditionCard";
 import NightCareCard from "../components/Home/NightCareCard";
 import AiAnalysisCard from "../components/Home/AiAnalysisCard";
 import FavoriteProducts from "../components/Home/FavoriteProducts";
+import NoRoutineCard from "../components/NoRoutineCard";
+import NoFavoriteCard from "../components/Home/NoFavoriteCard";
 
 import menuIcon from "../assets/icons/menu.svg";
 import soakMark from "../assets/logo/soak-mark.png";
 import soakWordmark from "../assets/logo/soak-wordmark.svg";
 
-// 오늘의 루틴. 추후 백엔드 응답으로 교체
-const TODAY_ROUTINE = {
-  tip: "확실한 안티에이징을 위한 최적의 액티브 조합이에요.",
-  steps: [
-    { id: 1, name: "1. 어성초 진정 패드", effect: "결 정돈 및 진정" },
-    { id: 2, name: "2. 비타민C 항산화 앰플", effect: "강력한 미백 및 안티에이징" },
-    { id: 3, name: "3. 세라마이드 캡슐 크림", effect: "장벽 보호 및 보습" },
-    { id: 4, name: "4. 아이 링클 코어 크림", effect: "눈가 주름 집중 케어" },
-  ],
-};
+import { getSummary, updateCondition } from "../api/home";
 
-// 즐겨찾는 화장품. 이미지는 아직 목업 placeholder
-const FAVORITE_PRODUCTS = [
-  { id: 1, name: "어성초 진정 패드", effect: "결 정돈" },
-  { id: 2, name: "비타민 C 앰플", effect: "항산화/미백" },
-  { id: 3, name: "시카 장벽 크림", effect: "장벽 보호" },
-  { id: 4, name: "레티놀 크림", effect: "나이트 케어" },
-  { id: 5, name: "히알루론 에센스", effect: "속건조 해결" },
-  { id: 6, name: "무기자차 선크림", effect: "자외선 차단" },
-];
+// SkinConditionCard의 id -> 서버가 받는 한글 컨디션 라벨
+const CONDITION_LABELS = {
+  trouble: "트러블있고예민해요",
+  dry: "건조하고푸석해요",
+  normal: "평범하고무난해요",
+  moist: "촉촉하고편안해요",
+  best: "컨디션최고예요",
+};
 
 function Main() {
   const navigate = useNavigate();
@@ -43,11 +35,44 @@ function Main() {
   const [checkedIds, setCheckedIds] = useState([]);
   const [url, setUrl] = useState("");
 
+  const [summary, setSummary] = useState(null);
+
   const toggleStep = (id) => {
     setCheckedIds((prev) =>
       prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
     );
   };
+
+  const loadSummary = async () => {
+    const data = await getSummary();
+    setSummary(data);
+  };
+
+  useEffect(() => {
+    loadSummary();
+  }, []);
+
+  const handleMemoSubmit = () => {
+    const condition = CONDITION_LABELS[selectedCondition] ?? null;
+
+    updateCondition(condition, memo).then(() => {
+      setIsMemoSaved(memo.trim().length > 0);
+    });
+  };
+
+  const mappedSteps = (summary?.todayRoutine?.steps ?? []).map((step) => ({
+    id: step.inventoryId ?? step.productId,
+    name: step.productName,
+    imageUrl: step.imageUrl,
+  }));
+
+  const mappedFavorites = (summary?.favoriteInventory?.items ?? []).map(
+    (item) => ({
+      id: item.inventoryId ?? item.productId,
+      name: item.productName,
+      imageUrl: item.imageUrl,
+    }),
+  );
 
   return (
     <div className="flex min-h-full flex-col bg-white text-black">
@@ -82,7 +107,7 @@ function Main() {
               setMemo(value);
               setIsMemoSaved(false);
             }}
-            onMemoSubmit={() => setIsMemoSaved(memo.trim().length > 0)}
+            onMemoSubmit={handleMemoSubmit}
             isMemoSaved={isMemoSaved}
           />
         </section>
@@ -93,13 +118,17 @@ function Main() {
             title="오늘의 나이트 케어"
             onAction={() => navigate("/MyRoutine")}
           />
-          <NightCareCard
-            tip={TODAY_ROUTINE.tip}
-            steps={TODAY_ROUTINE.steps}
-            checkedIds={checkedIds}
-            onToggleStep={toggleStep}
-            onRestart={() => setCheckedIds([])}
-          />
+          {summary?.todayRoutine ? (
+            <NightCareCard
+              tip="확실한 안티에이징을 위한 최적의 액티브 조합이예요."
+              steps={mappedSteps}
+              checkedIds={checkedIds}
+              onToggleStep={toggleStep}
+              onRestart={() => setCheckedIds([])}
+            />
+          ) : (
+            <NoRoutineCard onClick={()=>navigate("/RoutineAnalysis")}/>
+          )}
         </section>
 
         {/* AI 루틴분석 */}
@@ -115,7 +144,7 @@ function Main() {
         </section>
 
         {/* 즐겨찾는 화장품 */}
-        <section className="mt-12 flex flex-col gap-5">
+        <section className="mt-[60px] flex flex-col gap-5 px-5">
           <div className="px-5">
             <SectionHeader
               title="즐겨찾는 화장품"
@@ -123,12 +152,16 @@ function Main() {
               onAction={() => navigate("/inventory/star")}
             />
           </div>
-          <FavoriteProducts
-            products={FAVORITE_PRODUCTS}
-            onProductClick={(product) =>
-              navigate(`/inventory/item-detail/${product.id}`)
-            }
-          />
+          {mappedFavorites.length > 0 ? (
+            <FavoriteProducts
+              products={mappedFavorites}
+              onProductClick={(product) =>
+                navigate(`/inventory/item-detail/${product.id}`)
+              }
+            />
+          ) : (
+            <NoFavoriteCard />
+          )}
         </section>
       </div>
 

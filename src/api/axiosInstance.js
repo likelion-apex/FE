@@ -26,6 +26,12 @@ axiosInstance.interceptors.request.use((config) => {
 // 동시에 여러 요청이 401을 받아도 재발급은 한 번만 수행한다.
 let reissuePromise = null;
 
+const redirectToOnboarding = () => {
+  if (window.location.pathname !== "/") {
+    window.location.href = "/";
+  }
+};
+
 const reissue = async (refreshToken) => {
   const { data } = await plainAxios.post("/api/auth/reissue", { refreshToken });
   const tokens = data.data;
@@ -49,6 +55,7 @@ axiosInstance.interceptors.response.use(
 
     if (!refreshToken) {
       clearAuth();
+      redirectToOnboarding();
       return Promise.reject(error);
     }
 
@@ -62,6 +69,7 @@ axiosInstance.interceptors.response.use(
       return axiosInstance(config);
     } catch (reissueError) {
       clearAuth();
+      redirectToOnboarding();
       return Promise.reject(reissueError);
     } finally {
       reissuePromise = null;

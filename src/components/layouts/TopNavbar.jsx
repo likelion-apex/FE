@@ -11,7 +11,6 @@ const TopNavbar = ({
   stepName,
   rightAction,
   showBackButton = true,
-  con,
   onBack,
 }) => {
   const navigate = useNavigate();

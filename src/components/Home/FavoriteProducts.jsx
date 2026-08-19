@@ -20,9 +20,6 @@ const FavoriteProducts = ({ products = [], onProductClick }) => {
             <p className="text-sm font-semibold whitespace-nowrap text-black">
               {product.name}
             </p>
-            <p className="text-xs font-medium whitespace-nowrap text-gray-60">
-              {product.effect}
-            </p>
           </div>
         </button>
       ))}

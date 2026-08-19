@@ -31,6 +31,12 @@ function License() {
             </div>
           </div>
         ))}
+        <div className="flex w-full flex-col text-xs leading-4 text-gray-40">
+          본 앱에서 사용된 위 오픈소스 라이브러리는 MIT 라이선스에 따라 사용,
+          복사, 수정, 배포될 수 있습니다. 단, 각 라이브러리의 저작권 고지와
+          라이선스 고지는 함께 제공되어야 합니다. 라이선스 전문 및 최신 정보는
+          각 오픈소스 프로젝트의 공식 저장소에서 확인할 수 있습니다.
+        </div>
       </div>
     </div>
   );

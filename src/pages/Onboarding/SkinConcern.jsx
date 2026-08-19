@@ -14,6 +14,8 @@ import MaskIcon from "../../components/MaskIcon";
 import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 
+import { updateSkinConcerns } from "../../api/member";
+
 const SKIN_CONCERNS = [
   { id: 1, name: "속건조", icon: drynessIcon },
   { id: 2, name: "여드름", icon: acneIcon },
@@ -34,6 +36,19 @@ function SkinConcern() {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((it) => it !== id) : [...prev, id],
     );
+
+  const handleNext = async () => {
+    const concernNames = selectedIds.map(
+      (id) => SKIN_CONCERNS.find((concern) => concern.id === id )?.name,
+    );
+
+    try {
+      await updateSkinConcerns(concernNames);
+      navigate("/onboarding/skincare");
+    } catch (err) {
+      console.error("피부 고민 저장 실패:", err);
+    }
+  };
 
   return (
     <div className="relative min-h-full w-full bg-white px-5 pt-[51px] pb-[131px]">
@@ -95,7 +110,7 @@ function SkinConcern() {
       <div className="absolute right-5 bottom-[51px] left-5">
         <NextButton
           disabled={selectedIds.length === 0}
-          onClick={() => navigate("/onboarding/skincare")}
+          onClick={handleNext}
         />
       </div>
     </div>

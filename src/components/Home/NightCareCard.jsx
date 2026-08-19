@@ -72,13 +72,6 @@ const NightCareCard = ({ tip, steps, checkedIds, onToggleStep, onRestart }) => {
                         >
                           {step.name}
                         </span>
-                        <span
-                          className={`text-xs leading-[14px] ${
-                            isChecked ? "text-blue-50" : "text-gray-60"
-                          }`}
-                        >
-                          {step.effect}
-                        </span>
                       </span>
                     </span>
 

@@ -6,6 +6,8 @@ import cancelIcon from "../../assets/icons/cancel.svg";
 import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 
+import { updateNickname } from "../../api/member"
+
 const MAX_LENGTH = 10;
 
 function Nickname() {
@@ -14,6 +16,15 @@ function Nickname() {
   const [isFocused, setIsFocused] = useState(false);
 
   const isActive = isFocused || nickname.length > 0;
+
+  const handleNext = async () => {
+    try {
+      await updateNickname(nickname.trim());
+      navigate("/onboarding/skin-type");
+    } catch (err) {
+      console.error("닉네임 저장 실패:", err)
+    }
+  }
 
   return (
     <div className="relative min-h-full w-full bg-white px-5 pt-[51px] pb-[132px]">
@@ -80,7 +91,7 @@ function Nickname() {
         >
           <NextButton
             disabled={nickname.trim().length === 0}
-            onClick={() => navigate("/onboarding/skin-type")}
+            onClick={handleNext}
           ></NextButton>
         </motion.div>
       </div>

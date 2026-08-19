@@ -6,6 +6,7 @@ import searchIcon from "../../assets/icons/search.svg";
 import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 
+
 // TODO: 제품 검색 API 연동 시 교체
 const PRODUCTS = [
   { id: 1, brand: "아비브", name: "어성초 흔적 에센스 패드" },
