@@ -4,11 +4,6 @@ import BrandItemCard from "../../components/Inventory/BrandItemCard";
 import axios from "axios";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
 import useAuthStore from "../../store/authStore";
-import {
-  getFavorites,
-  updateFavorite,
-  deleteInventoryItem,
-} from "../../api/inventory";
 
 const InventoryStar = () => {
   const { setNavProps } = useOutletContext();
