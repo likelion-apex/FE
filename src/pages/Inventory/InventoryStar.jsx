@@ -4,7 +4,11 @@ import BrandItemCard from "../../components/Inventory/BrandItemCard";
 import axios from "axios";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
 import useAuthStore from "../../store/authStore";
-// 인벤토리 조회 API 응답 목데이터
+import {
+  getFavorites,
+  updateFavorite,
+  deleteInventoryItem,
+} from "../../api/inventory";
 
 const InventoryStar = () => {
   const { setNavProps } = useOutletContext();
@@ -27,14 +31,7 @@ const InventoryStar = () => {
   //즐찾 아이템 들고오기(토글 후 다시 불러오기 위해 useEffect 를 아래로내림)
   const fetchFavorites = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v1/inventory/favorites`,
-        {
-          //조회개수 기본 20개
-          params: { limit: 20 },
-          headers: { Authorization: `Bearer ${accessToken}` },
-        },
-      );
+      const data = await getFavorites(20);
       setItems(response.data.data?.items || []);
     } catch (error) {
       console.error("즐겨찾기 목록을 불러오는 데 실패했습니다.", error);
@@ -56,14 +53,7 @@ const InventoryStar = () => {
     }
 
     try {
-      // 💡 3. 명세서대로 확실한 데이터를 담아 백엔드에 요청합니다.
-      await axios.patch(
-        `${import.meta.env.VITE_API_URL}/api/v1/inventory/${inventoryId}/favorite`,
-        { isFavorite: newFavoriteStatus }, // 명세서 정답!
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        },
-      );
+      await updateFavorite(inventoryId, newFavoriteStatus);
       // 성공 시 이미 화면에서 지웠으므로 아무것도 안 해도 됩니다!
     } catch (error) {
       console.error("즐겨찾기 상태 변경에 실패했습니다.", error);
@@ -82,12 +72,8 @@ const InventoryStar = () => {
     setItems((prevItems) =>
       prevItems.filter((i) => i.inventoryId !== item.inventoryId),
     );
-
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/v1/inventory/${item.inventoryId}`,
-        { headers: { Authorization: `Bearer ${accessToken}` } },
-      );
+      await deleteInventoryItem(item.inventoryId);
     } catch (error) {
       console.error("삭제에 실패했습니다.", error);
       alert("삭제 중 오류가 발생했습니다.");
