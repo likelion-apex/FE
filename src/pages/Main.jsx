@@ -8,6 +8,7 @@ import SkinConditionCard from "../components/Home/SkinConditionCard";
 import NightCareCard from "../components/Home/NightCareCard";
 import AiAnalysisCard from "../components/Home/AiAnalysisCard";
 import FavoriteProducts from "../components/Home/FavoriteProducts";
+import NoRoutineCard from "../components/NoRoutineCard"
 
 import menuIcon from "../assets/icons/menu.svg";
 import soakMark from "../assets/logo/soak-mark.png";
@@ -117,13 +118,17 @@ function Main() {
             title="오늘의 나이트 케어"
             onAction={() => navigate("/MyRoutine")}
           />
-          <NightCareCard
+          { summary?.todayRoutine ? (
+            <NightCareCard
             tip="확실한 안티에이징을 위한 최적의 액티브 조합이예요."
             steps={mappedSteps}
             checkedIds={checkedIds}
             onToggleStep={toggleStep}
             onRestart={() => setCheckedIds([])}
           />
+          ) : (
+            <NoRoutineCard />
+          )}
         </section>
 
         {/* AI 루틴분석 */}
