@@ -8,7 +8,8 @@ import SkinConditionCard from "../components/Home/SkinConditionCard";
 import NightCareCard from "../components/Home/NightCareCard";
 import AiAnalysisCard from "../components/Home/AiAnalysisCard";
 import FavoriteProducts from "../components/Home/FavoriteProducts";
-import NoRoutineCard from "../components/NoRoutineCard"
+import NoRoutineCard from "../components/NoRoutineCard";
+import NoFavoriteCard from "../components/Home/NoFavoriteCard";
 
 import menuIcon from "../assets/icons/menu.svg";
 import soakMark from "../assets/logo/soak-mark.png";
@@ -73,7 +74,6 @@ function Main() {
     }),
   );
 
-
   return (
     <div className="flex min-h-full flex-col bg-white text-black">
       <div className="flex-1 pb-6">
@@ -118,14 +118,14 @@ function Main() {
             title="오늘의 나이트 케어"
             onAction={() => navigate("/MyRoutine")}
           />
-          { summary?.todayRoutine ? (
+          {summary?.todayRoutine ? (
             <NightCareCard
-            tip="확실한 안티에이징을 위한 최적의 액티브 조합이예요."
-            steps={mappedSteps}
-            checkedIds={checkedIds}
-            onToggleStep={toggleStep}
-            onRestart={() => setCheckedIds([])}
-          />
+              tip="확실한 안티에이징을 위한 최적의 액티브 조합이예요."
+              steps={mappedSteps}
+              checkedIds={checkedIds}
+              onToggleStep={toggleStep}
+              onRestart={() => setCheckedIds([])}
+            />
           ) : (
             <NoRoutineCard />
           )}
@@ -144,7 +144,7 @@ function Main() {
         </section>
 
         {/* 즐겨찾는 화장품 */}
-        <section className="mt-12 flex flex-col gap-5">
+        <section className="mt-[60px] flex flex-col gap-5 px-5">
           <div className="px-5">
             <SectionHeader
               title="즐겨찾는 화장품"
@@ -152,12 +152,16 @@ function Main() {
               onAction={() => navigate("/inventory/star")}
             />
           </div>
-          <FavoriteProducts
-            products={mappedFavorites}
-            onProductClick={(product) =>
-              navigate(`/inventory/item-detail/${product.id}`)
-            }
-          />
+          {mappedFavorites.length > 0 ? (
+            <FavoriteProducts
+              products={mappedFavorites}
+              onProductClick={(product) =>
+                navigate(`/inventory/item-detail/${product.id}`)
+              }
+            />
+          ) : (
+            <NoFavoriteCard />
+          )}
         </section>
       </div>
 
