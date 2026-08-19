@@ -7,6 +7,8 @@ import {
   getInventoryDetail,
   getInventoryIngredients,
   updateFavorite,
+  deleteInventoryItem,
+  addInventoryItem,
 } from "../../api/inventory";
 
 import IngredientModal from "../../components/Analysis/IngredientModal";
@@ -20,6 +22,8 @@ const ItemDetail = () => {
 
   const [itemData, setItemData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInInventory, setIsInInventory] = useState(true); //인벤 상태 관리
+  const [currentId, setCurrentId] = useState(inventoryId); // 추가/삭제를 반복할 경우 id가 달라지므로 이를 관리해야됨
 
   //수정
   useEffect(() => {
@@ -84,26 +88,52 @@ const ItemDetail = () => {
       }
     };
 
-    if (id) {
+    if (inventoryId) {
       fetchItemDetails();
+    } else {
+      console.error("URL에서 inventoryId를 찾을 수 없습니다.");
+      setIsLoading(false);
+      alert("잘못된 접근입니다.");
+      navigate(-1);
     }
-  }, [id, accessToken, nickname, navigate]);
+  }, [inventoryId, accessToken, nickname, navigate]);
 
-  // 즐찾 취소/선택
+  // 즐겨찾기 추가/삭제
   const handleToggleFavorite = async () => {
-    if (!itemData) return;
+    if (!itemData?.modalDetails) return;
 
     try {
-      const newStatus = !itemData.isFavorite;
-      await updateFavorite(id, newStatus);
+      // modalDetails 안쪽의 isFavorite 값을 반전
+      const newStatus = !itemData.modalDetails.isFavorite;
+      await updateFavorite(currentId, newStatus);
 
       setItemData((prev) => ({
         ...prev,
-        isFavorite: newFavoriteStatus,
+        modalDetails: {
+          ...prev.modalDetails,
+          isFavorite: newStatus,
+        },
       }));
     } catch (error) {
       console.error("즐겨찾기 상태 변경에 실패했습니다.", error);
       alert("변경에 실패했습니다. 다시 시도해주세요!");
+    }
+  };
+
+  // 인벤토리 삭제 로직
+  const handleToggleInventory = async () => {
+    const confirmDelete = window.confirm(
+      "이 제품을 인벤토리에서 삭제하시겠습니까?",
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await deleteInventoryItem(inventoryId);
+
+      navigate(-1);
+    } catch (error) {
+      console.error("인벤토리 삭제 실패:", error);
+      alert("삭제 중 오류가 발생했습니다.");
     }
   };
 
@@ -124,7 +154,10 @@ const ItemDetail = () => {
       <IngredientModal
         stepData={itemData}
         isModal={false}
+        nickname={nickname}
         ToggleFavorite={handleToggleFavorite}
+        isInInventory={isInInventory}
+        onToggleInventory={handleToggleInventory}
       />
     </div>
   );

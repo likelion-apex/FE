@@ -8,11 +8,12 @@ import {
 import IngredientCard from "../../components/Analysis/IngredientCard";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
-import useUserStore from "../../store/userStore";
 import IngredientModal from "../../components/Analysis/IngredientModal";
 import RoutineScore from "../../components/Analysis/RoutineScore";
+
 import axios from "axios";
 import useAuthStore from "../../store/authStore";
+import useUserStore from "../../store/userStore";
 
 const AnalyzeResult = () => {
   const [selectedStep, setSelectedStep] = useState(null);

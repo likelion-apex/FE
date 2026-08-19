@@ -17,7 +17,7 @@ export const getInventoryIngredients = (inventoryId) =>
     .get(`/api/v1/inventory/${inventoryId}/ingredients`)
     .then((res) => res.data.data);
 
-// 1. 즐겨찾기 목록 조회
+// 즐겨찾기 목록 조회
 export const getFavorites = (limit = 20) =>
   axiosInstance
     .get("/api/v1/inventory/favorites", { params: { limit } })
@@ -39,4 +39,10 @@ export const deleteInventoryItem = (inventoryId) =>
 export const searchProducts = (keyword) =>
   axiosInstance
     .get("/api/v1/products", { params: { keyword } })
+    .then((res) => res.data.data);
+
+// 인벤토리 아이템 추가
+export const addInventoryItem = (itemData) =>
+  axiosInstance
+    .post("/api/v1/inventory", itemData)
     .then((res) => res.data.data);

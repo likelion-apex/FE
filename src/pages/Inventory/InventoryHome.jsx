@@ -45,7 +45,6 @@ const InventoryHome = () => {
       setIsLoading(true);
       try {
         const data = await getMyInventory();
-
         console.log("내 인벤토리 목록:", data);
 
         setInventoryList(data?.items || []); //인벤토리 아이템들 저장
@@ -81,8 +80,8 @@ const InventoryHome = () => {
 
   //제품 등록은 검색 기반 플로우로 진입
 
-  const goToItemDetail = (id) => {
-    navigate(`/inventory/item-detail/${id}`);
+  const goToItemDetail = (inventoryId) => {
+    navigate(`/inventory/item-detail/${inventoryId}`);
   };
 
   const categorizedList = Object.entries(

@@ -17,7 +17,7 @@ const SavedRoutineList = ({ onClick }) => {
   const [routines, setRoutines] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 💡 화면의 글자를 백엔드 API가 알아듣는 Enum 값으로 변환
+  // 화면의 글자를 백엔드 API가 알아듣는 Enum 값으로 변환
   const getSortEnum = (display) => {
     switch (display) {
       case "최신순":
@@ -60,33 +60,6 @@ const SavedRoutineList = ({ onClick }) => {
 
     fetchRoutines();
   }, [year, sortOption, accessToken]);
-
-  const handleDelete = async () => {
-    // 1. 실수로 누를 수 있으니 확인창 띄우기
-    if (!window.confirm("보관함에서 이 루틴을 정말 삭제하시겠습니까?")) {
-      return;
-    }
-
-    try {
-      // 2. DELETE API 호출 (명세서 이미지와 동일하게 구현)
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/v1/routines/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-
-      console.log("삭제 완료:", response.data);
-      alert("루틴이 성공적으로 삭제되었습니다.");
-
-      navigate(-1);
-    } catch (error) {
-      console.error("루틴 삭제 실패:", error);
-      alert("루틴 삭제 중 오류가 발생했습니다.");
-    }
-  };
 
   const handleYearConfirm = () => {
     setYear(tempYear);
