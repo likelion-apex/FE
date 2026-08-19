@@ -48,10 +48,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Onboarding />} />
             <Route path="/onboarding/*" element={<Onboarding />} />
-            <Route
-              path="/onboarding/kakaocallback"
-              element={<KakaoCallback />}
-            />
+            <Route path="/onboarding/kakao" element={<KakaoCallback />} />
             <Route path="/onboarding/skin-type" element={<SkinType />} />
             <Route path="/onboarding/skin-concern" element={<SkinConcern />} />
             <Route path="/onboarding/skincare" element={<UsingSkincare />} />
