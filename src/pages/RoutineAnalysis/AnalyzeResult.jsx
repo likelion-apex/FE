@@ -160,6 +160,7 @@ const AnalyzeResult = () => {
             isModal={isModal}
             onClose={() => setSelectedStep(null)}
             analysisId={analysisId}
+            nickname={nickname}
           />
         </div>
       )}

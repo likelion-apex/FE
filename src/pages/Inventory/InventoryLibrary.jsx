@@ -5,6 +5,7 @@ import axios from "axios";
 import useInventoryStore from "../../store/inventoryStore";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
 import useAuthStore from "../../store/authStore";
+import useUserStore from "../../store/userStore";
 
 const CATEGORIES = [
   { id: "ALL", name: "전체 화장품" },
@@ -23,7 +24,7 @@ const InventoryStar = () => {
   const { setNavProps } = useOutletContext();
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const nickname = useUserStore((state) => state.nickname);
   const inventoryList = useInventoryStore((state) => state.inventoryList);
   const fetchInventoryList = useInventoryStore(
     (state) => state.fetchInventoryList,

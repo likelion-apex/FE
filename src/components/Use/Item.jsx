@@ -17,8 +17,14 @@ const Item = ({ data }) => {
           ""
         )}
 
-        <span className="rounded bg-gray-10 px-2.5 py-1 text-[10px] font-bold text-gray-60">
-          {data.category}
+        <span>
+          {data.category ? (
+            <span className="rounded bg-gray-10 px-2.5 py-1 text-[10px] font-bold text-gray-60">
+              {data.category}
+            </span>
+          ) : (
+            ""
+          )}
         </span>
       </div>
     </div>

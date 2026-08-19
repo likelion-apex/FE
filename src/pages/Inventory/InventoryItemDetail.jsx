@@ -1,62 +1,115 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import useAuthStore from "../../store/authStore";
+import useUserStore from "../../store/userStore";
+
 import IngredientModal from "../../components/Analysis/IngredientModal";
-import { ROUTINE_BRIEFING_DATA, USER_NAME } from "../../mocks/mockData";
 
-//임시(목데이터 긁어옴)
-const stepData = {
-  modalDetails: {
-    brand: "라운드랩",
-    productName: "1025 독도 토너",
-    volume: "200ml",
-    category: "토너",
-    score: 75,
-    matchTitle: `${USER_NAME}님(민감성) 주의 필요`,
-    reasons: [
-      {
-        id: 1,
-        type: "danger",
-        title: "민감성 피부, 각질 제거 성분 주의",
-        desc: "HATCHING EX-07 성분이 포함되어 있어 매일 사용 시 피부 장벽이 얇아질 수 있어요.",
-      },
-    ],
-    allIngredients: {
-      composition: { low: 85, medium: 10, high: 5 },
-      summary: { total: 18, caution20: 0, allergy: 0 },
-      list: [
-        {
-          id: 1,
-          risk: "1",
-          riskType: "low",
-          name: "정제수",
-          purpose: "용제, 피부컨디셔닝제",
-          effects: ["피부 보습"],
-        },
-        {
-          id: 2,
-          risk: "8",
-          riskType: "high",
-          name: "프로테아제",
-          purpose: "피부컨디셔닝제, 각질제거제",
-          effects: ["각질 제거", "피지 조절"],
-        },
-        {
-          id: 3,
-          risk: "1-2",
-          riskType: "low",
-          name: "부틸렌글라이콜",
-          purpose: "피부컨디셔닝제, 용제",
-          effects: ["강력 보습"],
-        },
-      ],
-    },
-  },
-};
-
-//여기로 누른 화장품의 데이터 보내주기(목데이터 파일 참고)
 const ItemDetail = () => {
-  const isModal = false;
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const nickname = useUserStore((state) => state.nickname);
+
+  const [itemData, setItemData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItemDetails = async () => {
+      try {
+        const headers = { Authorization: `Bearer ${accessToken}` };
+
+        // API 병렬 호출
+        const [aiResponse, ingredientsResponse] = await Promise.all([
+          axios.get(
+            `${import.meta.env.VITE_API_URL}/api/v1/inventory/${id}/ai-analysis`,
+            { headers },
+          ),
+          axios.get(
+            `${import.meta.env.VITE_API_URL}/api/v1/inventory/${id}/ingredients`,
+            { headers },
+          ),
+        ]);
+
+        const aiData = aiResponse.data.data;
+        const ingData = ingredientsResponse.data.data;
+
+        console.log("AI 분석:", aiData, "성분 리스트:", ingData);
+
+        // API에서 가져온 데이터를 IngredientModal 구조에 맞게 조립
+        const mappedData = {
+          modalDetails: {
+            displayBrand: "내 화장대 제품", // 브랜드
+            displayProductName: aiData.productName,
+            ingredientMarketOrVariant: "", //용량
+            category: "",
+            matchScore: aiData.score,
+            matchTitle: `${nickname || "고객"}님 맞춤 분석 결과`,
+            nickname: nickname,
+
+            //AI 분석 데이터 매핑
+            reasons: aiData.keywords.map((k, index) => ({
+              id: index + 1,
+              type: aiData.score >= 70 ? "safe" : "danger", //타입 필요
+              title: k.keyword,
+              description: k.reason,
+            })),
+
+            //전 성분 분석 데이터 매핑
+            ingredientStats: {
+              totalCount: ingData.ingredients.length,
+              // 위험도/알레르기 정보 없음
+              lowRiskCount: 0,
+              moderateRiskCount: 0,
+              highRiskCount: 0,
+              unknownRiskCount: ingData.ingredients.length,
+              caution20Count: 0,
+              allergenCount: 0,
+            },
+
+            ingredients: ingData.ingredients.map((ing, index) => ({
+              order: index + 1,
+              name: ing.ingredientName,
+
+              purposes: ing.purposes || [], //이부분 수정 필요
+              risk: "-",
+              riskType: "unknown", // 위험도 정보 없음
+            })),
+          },
+        };
+
+        setItemData(mappedData);
+      } catch (error) {
+        console.error("제품 상세 정보를 불러오지 못했습니다.", error);
+        alert("정보를 불러올 수 없습니다.");
+        navigate(-1);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchItemDetails();
+    }
+  }, [id, accessToken, nickname, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="mb-4 size-10 animate-spin rounded-full border-4 border-blue-50 border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  if (!itemData) {
+    return <div className="p-10 text-center">데이터가 없습니다.</div>;
+  }
+
   return (
     <div>
-      <IngredientModal stepData={stepData} isModal={isModal} />
+      <IngredientModal stepData={itemData} isModal={false} />
     </div>
   );
 };
