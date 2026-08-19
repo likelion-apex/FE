@@ -49,7 +49,7 @@ function App() {
             <Route path="/" element={<Onboarding />} />
             <Route path="/onboarding/*" element={<Onboarding />} />
             <Route
-              path="/onboarding/kakaocallback"
+              path="/onboarding/kakao"
               element={<KakaoCallback />}
             />
             <Route path="/onboarding/skin-type" element={<SkinType />} />

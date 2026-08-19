@@ -1,18 +1,19 @@
 import React from "react";
 import plusIconBlue from "../assets/icons/plusIcon_blue.svg";
 
-const NoRoutineCard = ({ onClick }) => {
+const NoRoutineCard = ({ title = "현재 등록된 루틴이 없어요.", onClick }) => {
   return (
-    <div className="border-1 border-dashed border-gray-20 rounded-[20px] px-[60px] py-[36px]">
-      <h3 className="flex flex-col items-center justify-center text-blue-50 text-[16px] font-semibold">
-        {" "}
-        루틴 등록이 필요해요{" "}
-      </h3>
-      <p className="flex flex-col items-center justify-center text-gray-60 text-[14px]">
-        {" "}
-        나만의 맞춤 스킨케어를 시작해보세요{" "}
-      </p>
-      <div className="flex flex-col items-center justify-center pt-[36px]">
+    <div className="flex w-full flex-col items-center overflow-hidden rounded-[20px] border border-dashed border-gray-20 px-[60px] py-[36px]">
+      <div className="flex w-full flex-col items-center gap-[36px]">
+        <div className="flex w-full flex-col items-center">
+          <p className="text-center text-[16px] leading-[28px] font-semibold text-blue-50">
+            {title}
+          </p>
+          <p className="text-center text-[14px] leading-[18px] whitespace-nowrap text-gray-60">
+            나만의 맞춤 스킨케어를 시작해 보세요.
+          </p>
+        </div>
+
         <button
           type="button"
           onClick={onClick}
