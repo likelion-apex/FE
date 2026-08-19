@@ -1,6 +1,5 @@
 import React from "react";
 import plusIconBlue from "../assets/icons/plusIcon_blue.svg";
-import { useNavigate } from "react-router-dom";
 
 const NoRoutineCard = ({ onClick }) => {
   return (

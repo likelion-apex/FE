@@ -11,6 +11,8 @@ import MaskIcon from "../../components/MaskIcon";
 import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 
+import { updateSkinType } from "../../api/member"
+
 const SKIN_TYPES = [
   {
     id: 1,
@@ -47,6 +49,17 @@ const SKIN_TYPES = [
 function SkinType() {
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState(null);
+
+  const handleNext = async () => {
+    const skinType = SKIN_TYPES.find((type) => type.id === selectedId,)?.name;
+
+    try {
+    await updateSkinType(skinType);
+    navigate("/onboarding/skin-concern");
+  } catch (err) {
+    console.error("피부 타입 저장 실패:", err);
+  }
+  }
 
   return (
     <div className="relative min-h-full w-full bg-white px-5 pt-[51px] pb-[131px]">
@@ -127,7 +140,7 @@ function SkinType() {
       <div className="absolute right-5 bottom-[51px] left-5">
         <NextButton
           disabled={selectedId === null}
-          onClick={() => navigate("/onboarding/skin-concern")}
+          onClick={handleNext}
         />
       </div>
     </div>
