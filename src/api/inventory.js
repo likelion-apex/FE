@@ -17,6 +17,12 @@ export const getInventoryIngredients = (inventoryId) =>
     .get(`/api/v1/inventory/${inventoryId}/ingredients`)
     .then((res) => res.data.data);
 
+// 1. 즐겨찾기 목록 조회
+export const getFavorites = (limit = 20) =>
+  axiosInstance
+    .get("/api/v1/inventory/favorites", { params: { limit } })
+    .then((res) => res.data.data);
+
 // 즐겨찾기 토글
 export const updateFavorite = (inventoryId, isFavorite) =>
   axiosInstance
@@ -27,4 +33,10 @@ export const updateFavorite = (inventoryId, isFavorite) =>
 export const deleteInventoryItem = (inventoryId) =>
   axiosInstance
     .delete(`/api/v1/inventory/${inventoryId}`)
+    .then((res) => res.data.data);
+
+//제품 검색
+export const searchProducts = (keyword) =>
+  axiosInstance
+    .get("/api/v1/products", { params: { keyword } })
     .then((res) => res.data.data);

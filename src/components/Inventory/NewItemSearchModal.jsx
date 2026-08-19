@@ -4,6 +4,7 @@ import searchIcon_gray from "../../assets/routine-analyze/searchIcon_gray.svg";
 import searchIcon_blue from "../../assets/routine-analyze/searchIcon_blue.svg";
 import notIcon from "../../assets/routine-analyze/notIcon_black.svg";
 import useAuthStore from "../../store/authStore";
+import { searchProducts } from "../../api/inventory";
 
 import { createPortal } from "react-dom";
 
@@ -23,19 +24,9 @@ const NewItemSearchModal = ({ onClose }) => {
     const timer = setTimeout(async () => {
       setIsLoading(true);
       try {
-        console.log("👉 현재 내 신분증(토큰) 상태:", accessToken);
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/products`,
-          {
-            params: { keyword: keyword.trim() },
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        );
-        console.log("현재 받아온 데이터", response.data.data);
+        const data = await searchProducts(keyword.trim());
 
-        const fetchedItems = response.data.data?.items || [];
+        const fetchedItems = data?.items || [];
 
         const filteredItems = fetchedItems.filter(
           (item) =>
