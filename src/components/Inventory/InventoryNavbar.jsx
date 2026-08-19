@@ -24,7 +24,7 @@ const InventoryNavbar = () => {
         <button
           type="button"
           onClick={() => navigate("/main")}
-          className="flex w-[46px] shrink-0 cursor-pointer flex-col items-center gap-1 pb-1"
+          className="flex w-[46px] shrink-0 cursor-pointer flex-col items-center gap-1 pb-1 pl-["
         >
           <span className="flex size-6 shrink-0 items-center justify-center overflow-clip rounded-full bg-gray-10">
             <img
