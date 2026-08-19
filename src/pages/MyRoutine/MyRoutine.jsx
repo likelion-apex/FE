@@ -14,7 +14,12 @@ import RoutineComplete from "../../components/MyRoutine/RoutineComplete";
 import NoRoutineCard from "../../components/NoRoutineCard";
 import MyCalendar from "../../components/MyRoutine/MyCalendar";
 
-import { getDailyRoutine, updateStepCompletion } from "../../api/routine";
+import {
+  getDailyRoutine,
+  updateStepCompletion,
+  completeAllSteps,
+  completeToday,
+} from "../../api/routine";
 
 const MyRoutine = () => {
   const location = useLocation();
@@ -88,7 +93,8 @@ const MyRoutine = () => {
     );
 
     try {
-      await updateStepCompletion(id, nextCompleted);
+      const data = await updateStepCompletion(id, nextCompleted);
+      setRoutine(data);
     } catch (err) {
       console.error("스텝 완료 상태 저장 실패:", err);
       setCheckedItems((prev) =>
@@ -101,19 +107,43 @@ const MyRoutine = () => {
   const isAllChecked = checkedItems.length === totalSteps;
 
   const handleCompleteAll = async () => {
-    const nextCompleted = !isAllChecked;
-    const allIds = routine.steps.map((step) => step.stepId);
-    const previousCheckedItems = checkedItems;
+    if (isAllChecked) {
+      // 전체 취소: 벌크 취소 API가 없어 스텝별로 개별 취소한다.
+      const previousCheckedItems = checkedItems;
+      setCheckedItems([]);
 
-    setCheckedItems(nextCompleted ? allIds : []);
+      try {
+        const allIds = routine.steps.map((step) => step.stepId);
+        const results = await Promise.all(
+          allIds.map((stepId) => updateStepCompletion(stepId, false)),
+        );
+        setRoutine(results[results.length - 1]);
+      } catch (err) {
+        console.error("전체 취소 실패:", err);
+        setCheckedItems(previousCheckedItems);
+      }
+      return;
+    }
+
+    const allIds = routine.steps.map((step) => step.stepId);
+    setCheckedItems(allIds);
 
     try {
-      await Promise.all(
-        allIds.map((stepId) => updateStepCompletion(stepId, nextCompleted)),
-      );
+      const data = await completeAllSteps();
+      setRoutine(data);
     } catch (err) {
-      console.error("전체 완료 상태 저장 실패:", err);
-      setCheckedItems(previousCheckedItems);
+      console.error("전체 완료 처리 실패:", err);
+      setCheckedItems([]);
+    }
+  };
+
+  const handleSubmitRoutine = async () => {
+    try {
+      const data = await completeToday();
+      setRoutine(data);
+      setIsRoutineSubmitted(true);
+    } catch (err) {
+      console.error("루틴 완료 처리 실패:", err);
     }
   };
 
@@ -200,13 +230,7 @@ const MyRoutine = () => {
                       borderColor={
                         isAllChecked ? "border-blue-50" : "border-gray-10"
                       }
-                      onClick={
-                        isAllChecked
-                          ? isAllChecked
-                            ? () => setIsRoutineSubmitted(true)
-                            : undefined
-                          : undefined
-                      }
+                      onClick={isAllChecked ? handleSubmitRoutine : undefined}
                     />
                   </div>
                 </div>

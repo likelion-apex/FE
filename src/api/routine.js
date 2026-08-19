@@ -12,3 +12,11 @@ export const updateStepCompletion = (stepId, completed) =>
     .patch(`/api/v1/routine-logs/today/steps/${stepId}`, { completed })
     .then(unwrap);
 
+// 오늘의 데일리 루틴 스텝을 전체완료 일괄처리한다.
+export const completeAllSteps = () =>
+  axiosInstance.post("/api/v1/routine-logs/today/steps/complete-all").then(unwrap);
+
+// 오늘의 데일리 루틴을 전체 완료 처리한다.
+export const completeToday = () =>
+  axiosInstance.post("/api/v1/routine-logs/today/complete").then(unwrap);
+
