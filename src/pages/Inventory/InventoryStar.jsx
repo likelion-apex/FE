@@ -96,6 +96,7 @@ const InventoryStar = () => {
     }
   };
 
+  //네브바
   useEffect(() => {
     setNavProps({
       step: 0,
@@ -122,7 +123,7 @@ const InventoryStar = () => {
     length: emptyCardCount > 0 ? emptyCardCount : 0,
   });
 
-  // 💡 공통 드래그 로직 (마우스와 터치 모두 여기서 처리)
+  // 공통 드래그 로직 (마우스와 터치 모두 여기서 처리)
   const onDragStart = (clientX) => {
     setIsDragging(true);
     setStartX(clientX);

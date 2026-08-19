@@ -105,7 +105,7 @@ const FinishModal = ({ onClose, analysisId }) => {
             bgColor={"white"}
             textColor={"gray-60"}
             borderColor={"border-gray-20"}
-            onClick={() => handleSaveRoutine("STORAGE")}
+            onClick={() => handleSaveRoutine("LIBRARY")}
           />
         </div>
       </div>

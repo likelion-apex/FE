@@ -11,6 +11,8 @@ import SummaryCard from "../../components/My/SummaryCard";
 import MenuSection from "../../components/My/MenuSection";
 import { MY_ICONS } from "../../constants/myIcons";
 
+import useUserStore from "../../store/userStore";
+
 const MONTH_SUMMARY = [
   {
     label: "컨디션 기록",
@@ -28,6 +30,8 @@ const MONTH_SUMMARY = [
 
 function MyPage() {
   const navigate = useNavigate();
+
+  const setGlobalNickname = useUserStore((state) => state.setNickname);
 
   const [nickname, setNickname] = useState("");
   const [skinTypeId, setSkinTypeId] = useState(null);
@@ -63,6 +67,7 @@ function MyPage() {
         const profile = await getMyProfile();
 
         setNickname(profile.nickname ?? "");
+        setGlobalNickname(profile.nickname ?? "");
         setSkinTypeId(
           SKIN_TYPES.find((type) => type.name === profile.skinType)?.id || null,
         );

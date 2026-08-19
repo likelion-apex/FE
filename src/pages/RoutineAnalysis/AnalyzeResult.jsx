@@ -8,11 +8,7 @@ import {
 import IngredientCard from "../../components/Analysis/IngredientCard";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
-import {
-  USER_NAME,
-  ROUTINE_BRIEFING_DATA,
-  ROUTINE_STEPS,
-} from "../../mocks/mockData";
+import useUserStore from "../../store/userStore";
 import IngredientModal from "../../components/Analysis/IngredientModal";
 import RoutineScore from "../../components/Analysis/RoutineScore";
 import axios from "axios";
@@ -28,7 +24,9 @@ const AnalyzeResult = () => {
 
   const [resultData, setResultData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
   const accessToken = useAuthStore((state) => state.accessToken);
+  const nickname = useUserStore((state) => state.nickname);
 
   //루틴 분석 결과 조회
   useEffect(() => {
@@ -107,7 +105,7 @@ const AnalyzeResult = () => {
       <div className="mt-7 flex flex-col">
         <div className="flex-col gap-3 mb-6">
           <h3 className="text-[20px] font-semibold leading-7 mb-[8px]">
-            {USER_NAME}님이 공유하신 영상에서 <br />
+            {nickname}님이 공유하신 영상에서 <br />
             핵심 루틴만 AI가 쏙 뽑아왔어요
           </h3>
           <span className="text-gray-60 text-[14px] leading-7">
@@ -167,7 +165,7 @@ const AnalyzeResult = () => {
       )}
       <div className="flex flex-col gap-2 items-center justify-center w-full mt-5">
         <p className="text-[12px] font-semibold text-blue-50">
-          이제 {USER_NAME}님의 인벤토리와 성분 충돌이 없는지 알아볼까요?
+          이제 {nickname}님의 인벤토리와 성분 충돌이 없는지 알아볼까요?
         </p>
         <div>
           <button
