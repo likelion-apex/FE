@@ -14,7 +14,7 @@ const Onboarding = () => {
     if (!accessToken) return;
 
     const timer = setTimeout(()=>{
-      navigate("/nickname", { replace: true })
+      navigate("/main", { replace: true })
     }, 1500);
 
     return () => clearTimeout(timer);

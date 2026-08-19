@@ -127,7 +127,7 @@ function Main() {
               onRestart={() => setCheckedIds([])}
             />
           ) : (
-            <NoRoutineCard />
+            <NoRoutineCard onClick={()=>navigate("/RoutineAnalysis")}/>
           )}
         </section>
 
