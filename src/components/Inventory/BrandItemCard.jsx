@@ -4,13 +4,14 @@ import NewItemSearchModal from "./NewItemSearchModal";
 const BrandItemCard = ({
   item,
   isEditing,
-  onClick,
+
   onDelete,
 
   isAddCard,
   onAddClick,
 
   onToggleFavorite,
+  onItemClick,
 }) => {
   if (isAddCard) {
     return (
@@ -28,7 +29,7 @@ const BrandItemCard = ({
   return (
     <div
       //편집 모드가 아닐 때만 상세 페이지로 이동하도록 막아둠
-      onClick={() => !isEditing && onClick?.(item)}
+      onClick={() => !isEditing && onItemClick?.(item)}
       className={`flex flex-col w-full shrink-0 gap-2 rounded-sm bg-white p-2 shadow-card border border-gray-20 h-[254px] ${
         !isEditing ? "cursor-pointer transition-transform active:scale-95" : ""
       }`}

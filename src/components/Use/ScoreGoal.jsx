@@ -36,7 +36,7 @@ const ScoreGoal = ({ data, isRoutine }) => {
           <></>
         )}
         <div className="flex items-center justify-between">
-          <span className="text-gray-60 font-normal">
+          <span className="text-gray-60 font-normal shrink-0">
             {isRoutine === true ? "루틴" : "제품"} 핵심 목표
           </span>
           {/* 💡 API 명세: coreGoal (이건 기존과 이름이 같습니다!) */}

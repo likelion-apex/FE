@@ -39,7 +39,20 @@ import InventoryStar from "./pages/Inventory/InventoryStar";
 import InventorySearch from "./pages/Inventory/InventorySearch";
 import InventoryLibrary from "./pages/Inventory/InventoryLibrary";
 
+import { useEffect } from "react";
+import useAuthStore from "./store/authStore";
+import useUserStore from "./store/userStore";
+
 function App() {
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const fetchUserInfo = useUserStore((state) => state.fetchUserInfo);
+
+  useEffect(() => {
+    if (accessToken) {
+      fetchUserInfo();
+    }
+  }, [accessToken, fetchUserInfo]);
+
   return (
     <div className="min-h-screen bg-gray-10 flex justify-center items-center">
       {/* 아이폰 17 컨테이너*/}
@@ -98,7 +111,10 @@ function App() {
             <Route path="/inventory" element={<InventoryLayout />}>
               <Route index element={<InventoryHome />} />
               <Route path="item-detail" element={<InventoryItemDetail />} />
-              <Route path="item-detail/:id" element={<InventoryItemDetail />} />
+              <Route
+                path="item-detail/:inventoryId"
+                element={<InventoryItemDetail />}
+              />
               <Route path="star" element={<InventoryStar />} />
               <Route path="library" element={<InventoryLibrary />} />
             </Route>

@@ -14,6 +14,11 @@ const IngredientModal = ({
   isModal,
   analysisId,
   nickname,
+
+  ToggleFavorite,
+  onDeleteInventory,
+  onToggleInventory,
+  isInInventory = true,
 }) => {
   const [activeTab, setActiveTab] = useState("AI 맞춤 분석");
 
@@ -107,11 +112,48 @@ const IngredientModal = ({
         </div>
       ) : (
         <div className="flex flex-col w-full">
-          <TopNavbar step={0} totalSteps={0} stepName={""} />
           {/* 이미지 삽입 필요 */}
           <div className="flex flex-col px-5 pt-6 pb-2">
-            <div className="size-[360px] rounded-xl bg-gray-10 mb-14" />
-            <Item data={data} />
+            <div className="size-[360px] rounded-xl bg-gray-10 mb-8" />
+
+            <div className="relative w-full">
+              <div className="pr-24">
+                <Item data={data} />
+              </div>
+
+              <div className="absolute right-0 top-[20px] flex items-center gap-2">
+                {/* 1. 즐겨찾기(별) 버튼 */}
+                <button
+                  onClick={() =>
+                    ToggleFavorite && ToggleFavorite(data.id, data.isFavorite)
+                  }
+                  className="cursor-pointer transition-transform active:scale-95"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill={
+                      data.isFavorite ? "#FFBB00" : "#CCD1D5"
+                    } /* 즐찾 여부에 따라 파란색/회색 전환 */
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={onToggleInventory}
+                  className={`flex items-center justify-center rounded-[6px] px-[10px] py-[4px] text-[12px] font-bold shadow-sm cursor-pointer transition-colors active:scale-95 ${
+                    isInInventory
+                      ? "bg-blue-50 text-white hover:bg-blue-50"
+                      : "bg-white text-blue-50 border border-blue-50 hover:bg-blue-05"
+                  }`}
+                >
+                  {isInInventory ? "인벤토리" : "+ 인벤토리"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

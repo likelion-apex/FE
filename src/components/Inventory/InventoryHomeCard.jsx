@@ -55,6 +55,7 @@ const InventoryHomeCard = ({
 
         {items.map((item) => (
           <InventoryItemCard
+            ket={item.inventoryId}
             item={item}
             onClick={() => onItemClick?.(item.inventoryId)}
           />

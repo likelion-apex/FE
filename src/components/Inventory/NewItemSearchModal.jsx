@@ -4,7 +4,7 @@ import searchIcon_gray from "../../assets/routine-analyze/searchIcon_gray.svg";
 import searchIcon_blue from "../../assets/routine-analyze/searchIcon_blue.svg";
 import notIcon from "../../assets/routine-analyze/notIcon_black.svg";
 import useAuthStore from "../../store/authStore";
-import { searchProducts } from "../../api/inventory";
+import { searchProducts, addInventoryItem } from "../../api/inventory";
 
 import { createPortal } from "react-dom";
 
@@ -69,30 +69,16 @@ const NewItemSearchModal = ({ onClose }) => {
 
     try {
       const addRequests = selectedItems.map((item) =>
-        axios.post(
-          `${import.meta.env.VITE_API_URL}/api/v1/inventory`,
-          {
-            // API 명세서 Request body에 맞게 데이터 세팅
-            productId: item.productId,
-            productName: item.productName,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
-        ),
+        addInventoryItem({
+          productId: item.productId,
+          productName: item.productName,
+        }),
       );
 
-      // 2. Promise.all을 통해 백엔드로 여러 개의 등록 요청을 동시에 보냅니다.
       await Promise.all(addRequests);
 
-      // 3. 모든 등록이 성공하면 모달을 닫고 사용자에게 알려줍니다.
       alert(`${selectedItems.length}개의 제품이 인벤토리에 등록되었습니다!`);
       onClose();
-
-      //여기서 모달이 닫힌 후 바깥쪽(InventoryHome) 화면이 새로고침 되도록
-      // 부모 컴포넌트에서 데이터 다시 불러오기(fetch) 함수를 prop으로 넘겨받아 호출해주면 더 완벽합니다!
     } catch (error) {
       console.error("인벤토리 등록에 실패했습니다.", error);
       alert("제품 등록 중 오류가 발생했습니다.");

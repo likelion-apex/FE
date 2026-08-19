@@ -4,6 +4,11 @@ import BrandItemCard from "../../components/Inventory/BrandItemCard";
 import axios from "axios";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
 import useAuthStore from "../../store/authStore";
+import {
+  getFavorites,
+  updateFavorite,
+  deleteInventoryItem,
+} from "../../api/inventory";
 
 const InventoryStar = () => {
   const { setNavProps } = useOutletContext();
@@ -27,7 +32,7 @@ const InventoryStar = () => {
   const fetchFavorites = async () => {
     try {
       const data = await getFavorites(20);
-      setItems(response.data.data?.items || []);
+      setItems(data?.items || []);
     } catch (error) {
       console.error("즐겨찾기 목록을 불러오는 데 실패했습니다.", error);
     }
@@ -49,10 +54,9 @@ const InventoryStar = () => {
 
     try {
       await updateFavorite(inventoryId, newFavoriteStatus);
-      // 성공 시 이미 화면에서 지웠으므로 아무것도 안 해도 됩니다!
     } catch (error) {
       console.error("즐겨찾기 상태 변경에 실패했습니다.", error);
-      // 🚨 만약 서버 오류로 실패했다면? 지웠던 카드를 다시 부활시킵니다.
+
       fetchFavorites();
     }
   };
