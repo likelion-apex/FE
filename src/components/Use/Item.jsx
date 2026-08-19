@@ -9,9 +9,14 @@ const Item = ({ data }) => {
         {data.displayProductName}
       </h2>
       <div className="mt-2 flex gap-1">
-        <span className="rounded bg-gray-10 px-2.5 py-1 text-[10px] font-bold text-gray-60">
-          {data.ingredientMarketOrVariant}
-        </span>
+        {data.ingredientMarketOrVariant ? (
+          <span className="rounded bg-gray-10 px-2.5 py-1 text-[10px] font-bold text-gray-60">
+            {data.ingredientMarketOrVariant}
+          </span>
+        ) : (
+          ""
+        )}
+
         <span className="rounded bg-gray-10 px-2.5 py-1 text-[10px] font-bold text-gray-60">
           {data.category}
         </span>

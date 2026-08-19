@@ -7,26 +7,28 @@ const IngredientInfo = ({ data }) => {
   // 💡 데이터가 아예 없을 경우를 대비한 최강의 방어 코드
   if (!data) return null;
 
-  // 💡 백엔드 응답 구조에 맞게 안전하게 데이터 추출 (없으면 빈 객체/배열)
   const stats = data?.ingredientStats || {};
   const ingredientsList = data?.ingredients || [];
 
-  // 💡 API에서 보내주는 통계 데이터 바로 사용 (숫자가 없으면 0으로 처리)
   const totalCount = stats?.totalCount || ingredientsList.length || 0;
+
   const lowCount = stats?.lowRiskCount || 0;
   const moderateCount = stats?.moderateRiskCount || 0;
   const highCount = stats?.highRiskCount || 0;
+  const unknownRiskCount = stats?.unknownRiskCount || 0;
+
   const caution20Count = stats?.caution20Count || 0;
   const allergenCount = stats?.allergenCount || 0;
 
-  // 💡 그래프 퍼센티지 계산 (0 나누기 에러 완벽 방지)
+  // 그래프 퍼센티지 계산
   const lowPercent = totalCount > 0 ? (lowCount / totalCount) * 100 : 0;
   const mediumPercent = totalCount > 0 ? (moderateCount / totalCount) * 100 : 0;
   const highPercent = totalCount > 0 ? (highCount / totalCount) * 100 : 0;
+  const unknownRiskPercent =
+    totalCount > 0 ? (unknownRiskCount / totalCount) * 100 : 0;
 
   return (
     <div className="flex flex-col">
-      {/* 1️⃣ 성분 구성 그래프 */}
       <div className="mb-4">
         <h3 className="mb-4 text-[15px] font-bold text-black">성분 구성</h3>
         <div className="mb-2 flex items-center gap-3 text-[12px] text-gray-500">
@@ -46,9 +48,14 @@ const IngredientInfo = ({ data }) => {
               <div className="size-2 rounded-full bg-red-40" /> 7-10 높은 위험
             </span>
           )}
+          {unknownRiskCount > 0 && (
+            <span className="flex items-center gap-2">
+              <div className="size-2 rounded-full bg-gray-30" /> 정보 없음
+            </span>
+          )}
         </div>
         {/* 막대 그래프 바 */}
-        <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+        <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-gray-10">
           <div
             style={{ width: `${lowPercent}%` }}
             className="bg-blue-50 transition-all duration-500"
@@ -60,6 +67,10 @@ const IngredientInfo = ({ data }) => {
           <div
             style={{ width: `${highPercent}%` }}
             className="bg-red-40 transition-all duration-500"
+          />
+          <div
+            style={{ width: `${unknownRiskPercent}%` }}
+            className="bg-gray-20 transition-all duration-500"
           />
         </div>
       </div>

@@ -41,7 +41,6 @@ const IngredientCard = ({ step, onClick }) => {
     },
   };
 
-  // 💡 백엔드 상태값(primaryAssessmentCategory 또는 safetyLevel)을 UI 스타일에 매핑하는 함수
   const getStyleByStatus = (status) => {
     const s = status?.toUpperCase();
     if (s === "EXCELLENT" || s === "GOOD") return STATUS_STYLE.good;
@@ -62,7 +61,6 @@ const IngredientCard = ({ step, onClick }) => {
     >
       <div className="mb-3 flex items-center gap-3">
         <div className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-50 text-[16px] font-bold text-white">
-          {/* 💡 API 명세: step.id -> step.order */}
           {step.order}
         </div>
         <span className="text-[13px] font-bold text-gray-800">
@@ -71,7 +69,6 @@ const IngredientCard = ({ step, onClick }) => {
         </span>
       </div>
 
-      {/* 💡 API 명세: 백엔드에서 전달받은 제품 이미지(imageUrl) 적용 */}
       {step.imageUrl ? (
         <img
           src={step.imageUrl}
@@ -83,7 +80,6 @@ const IngredientCard = ({ step, onClick }) => {
       )}
 
       <h4 className="mb-1 text-center text-[16px] font-semibold leading-snug whitespace-pre-line break-keep">
-        {/* 💡 브랜드명이 있다면 상단에 작게 표시, 그 아래에 제품명 표시 */}
         {step.displayBrand && (
           <span className="block text-[11px] font-medium text-gray-500 mb-0.5">
             {step.displayBrand}
@@ -93,7 +89,6 @@ const IngredientCard = ({ step, onClick }) => {
       </h4>
 
       <p className="mb-4 text-center text-[12px] text-gray-60 break-keep line-clamp-2">
-        {/* 💡 API 명세: step.desc -> step.matchSummary */}
         {step.matchSummary}
       </p>
 
@@ -111,12 +106,10 @@ const IngredientCard = ({ step, onClick }) => {
             />
           </div>
           <div className={`flex items-center gap-1 ${currentStyle.titleText}`}>
-            {/* 💡 API 명세: step.statusTitle -> step.safetyTitle */}
             {currentStyle.safetyTitle}
           </div>
         </div>
         <p className="break-keep leading-tight opacity-90">
-          {/* 💡 API 명세: step.statusDesc -> step.safetySummary */}
           {step.safetySummary}
         </p>
       </div>

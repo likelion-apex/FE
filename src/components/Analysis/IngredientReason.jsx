@@ -10,24 +10,24 @@ const IngredientReason = ({ reason }) => {
       iconBg: "bg-green-50",
       iconImg: safeIcon,
     },
-    safe: {
+    BENEFICIAL: {
       card: "bg-blue-05 border-blue-50",
       iconBg: "bg-blue-50",
       iconImg: thumbIcon,
     },
-    warning: {
+    CAUTION: {
       card: "bg-violet-02 border-violet-45",
       iconBg: "bg-violet-45",
       iconImg: infoIcon,
     },
-    danger: {
+    WARNING: {
       card: "bg-red-05 border-red-40",
       iconBg: "bg-red-40",
       iconImg: dangerIcon,
     },
   };
 
-  const currentStyle = typeStyles[reason.type] || typeStyles.safe;
+  const currentStyle = typeStyles[reason.tone] || typeStyles.POSITIVE;
 
   return (
     <div

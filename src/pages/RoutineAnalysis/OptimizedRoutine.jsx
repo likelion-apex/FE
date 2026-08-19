@@ -60,9 +60,36 @@ const OptimizedRoutine = () => {
     fetchOptimizedRoutine();
   }, [analysisId, accessToken, navigate]);
 
-  // 💡 [추가] 데이터 로드 실패 시 방어 코드
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-white px-5 pb-20">
+        <div className="mb-6 size-12 animate-spin rounded-full border-4 border-blue-50 border-t-transparent"></div>
+        <h3 className="mb-2 text-[18px] font-bold text-black text-center">
+          AI가 루틴을 최적화하고 있어요
+        </h3>
+        <p className="text-[14px] text-gray-60 text-center break-keep">
+          {USER_NAME}님의 인벤토리 제품과 비교하여
+          <br />
+          가장 안전한 피부 관리 조합을 찾는 중입니다...
+        </p>
+      </div>
+    );
+  }
+
   if (!optimizedData) {
-    return <div className="p-5 text-center">데이터를 불러오지 못했습니다.</div>;
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center">
+        <p className="text-[15px] text-gray-60">
+          데이터를 불러오지 못했습니다.
+        </p>
+        <button
+          onClick={() => navigate(-1)}
+          className="mt-4 px-4 py-2 bg-blue-50 text-white rounded-lg"
+        >
+          뒤로 가기
+        </button>
+      </div>
+    );
   }
 
   return (

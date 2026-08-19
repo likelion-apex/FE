@@ -259,7 +259,7 @@ const RoutineAnalyze = () => {
           </div>
           <div className="flex flex-col gap-2 flex-nowrap pb-2 no-scrollbar overflow-x-auto max-h-[200px]">
             {recentRoutines.map((routine) => (
-              <div key={routine.title} className="w-full">
+              <div key={routine.analysisId} className="w-full">
                 <RecentRoutineItem
                   title={routine.title}
                   day={routine.createdAt}

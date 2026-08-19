@@ -54,7 +54,20 @@ const FinishModal = ({ onClose, analysisId }) => {
       }
     } catch (error) {
       console.error("루틴 저장 실패:", error);
-      alert("루틴을 저장하는 중 오류가 발생했습니다.");
+      // 💡 1. 409 에러: 이미 저장된 경우
+      if (error.response && error.response.status === 409) {
+        alert("이미 저장되거나 적용이 완료된 루틴입니다!");
+        // 이미 저장됐으니 그냥 루틴 화면으로 보내버립니다.
+        navigate("/MyRoutine", { state: { activeTab: "데일리 루틴" } });
+      }
+      // 💡 2. 400 에러: 단어(Enum) 불일치
+      else if (error.response && error.response.status === 400) {
+        alert("저장 실패: 백엔드 명세서의 saveType 단어(Enum)를 확인해주세요.");
+      }
+      // 기타 에러
+      else {
+        alert("루틴을 저장하는 중 오류가 발생했습니다.");
+      }
     } finally {
       setIsSaving(false);
     }
