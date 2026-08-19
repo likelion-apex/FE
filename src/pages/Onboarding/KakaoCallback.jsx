@@ -45,6 +45,13 @@ const KakaoCallback = () => {
           replace: true,
         });
       } catch (err) {
+        // TODO(DEBUG): 원인 확인 후 아래 한 줄 삭제
+        console.error(
+          "[KAKAO_DEBUG] status:",
+          err.response?.status,
+          "data:",
+          err.response?.data,
+        );
         console.error("카카오 로그인 실패:", err);
         setMessage("로그인에 실패했습니다. 다시 시도해주세요.");
       }

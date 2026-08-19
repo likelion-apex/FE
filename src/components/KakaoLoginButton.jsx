@@ -10,7 +10,21 @@ const KakaoLoginButton = () => {
       redirect_uri: REDIRECT_URI,
       response_type: "code",
     });
-    window.location.href = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
+    const authorizeUrl = `https://kauth.kakao.com/oauth/authorize?${params.toString()}`;
+
+    // TODO(DEBUG): 원인 확인 후 이 블록 전체 삭제
+    console.log(
+      "[KAKAO_DEBUG] client_id:",
+      REST_API_KEY,
+      "length:",
+      REST_API_KEY?.length,
+    );
+    console.log("[KAKAO_DEBUG] redirect_uri:", REDIRECT_URI);
+    console.log("[KAKAO_DEBUG] full url:", authorizeUrl);
+    alert(`client_id: ${REST_API_KEY}\nredirect_uri: ${REDIRECT_URI}`);
+    // TODO(DEBUG) 끝
+
+    window.location.href = authorizeUrl;
   };
 
   return (
