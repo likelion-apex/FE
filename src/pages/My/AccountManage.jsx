@@ -8,6 +8,9 @@ import arrowRightIcon from "../../assets/icons/arrowRight.svg";
 import kakaoCircle from "../../assets/kakaoCircle.png";
 import { MY_ICONS } from "../../constants/myIcons";
 
+import { logout } from "../../api/auth"
+import useAuthStore from "../../store/authStore";
+
 // 연동된 계정 정보. 추후 백엔드 응답으로 교체
 const LINKED_ACCOUNT = {
   provider: "카카오톡으로 로그인됨",
@@ -17,11 +20,22 @@ const LINKED_ACCOUNT = {
 function AccountManage() {
   const navigate = useNavigate();
 
+  const clearAuth = useAuthStore((state)=> state.clearAuth);
+
+
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsLogoutDialogOpen(false);
-    // TODO: 로그아웃 API 연동
+
+    try {
+      await logout();
+    } catch (err) {
+      console;err.error("로그아웃 실패:", err)
+    } finally {
+      clearAuth();
+      navigate("/", {replace: true });
+    }
   };
 
   const handleWithdraw = () => navigate("/my/withdraw");
