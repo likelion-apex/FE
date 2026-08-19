@@ -4,7 +4,6 @@ import Information from "../../assets/routine-analyze/Information.svg";
 import dangerIcon from "../../assets/routine-analyze/dangerIcon.svg";
 
 const IngredientInfo = ({ data }) => {
-  // 💡 데이터가 아예 없을 경우를 대비한 최강의 방어 코드
   if (!data) return null;
 
   const stats = data?.ingredientStats || {};
@@ -121,7 +120,6 @@ const IngredientInfo = ({ data }) => {
           </div>
         </div>
         <div className="flex flex-col gap-4 pb-3">
-          {/* 💡 배열 렌더링. key는 고유한 order 값 사용 */}
           {ingredientsList.map((ing) => (
             <SolventItem key={ing.order} ing={ing} />
           ))}

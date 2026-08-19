@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import axios from "axios";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import BottomNavbar from "../../components/layouts/BottomNavbar";
-import axios from "axios";
+
 import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 import RecentRoutineItem from "../../components/Analysis/RecentRoutineItem";
 import AnalysisProcessCard from "../../components/Analysis/AnalysisProcessCard";
-import { RECENT_ROUTINES, MOCK_YOUTUBE_DATA } from "../../mocks/mockData";
 import SelectModal from "../../components/Analysis/SelectModal";
+
 import useAuthStore from "../../store/authStore";
+import useUserStore from "../../store/userStore";
+
 import thumbnail1 from "../../assets/routine-analyze/thumbnail/thumbnail1.png";
 import thumbnail2 from "../../assets/routine-analyze/thumbnail/thumbnail2.png";
 import thumbnail3 from "../../assets/routine-analyze/thumbnail/thumbnail3.png";

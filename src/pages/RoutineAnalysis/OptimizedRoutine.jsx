@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext, useLocation, useNavigate } from "react-router-dom";
 import RoutineAccordionItem from "../../components/Analysis/RoutineAccordionItem";
 import FinishModal from "../../components/Analysis/FinishModal";
-import {
-  USER_NAME,
-  MATCHING_REPORT_DATA,
-  ROUTINE_STEPS,
-} from "../../mocks/mockData";
+import useUserStore from "../../store/userStore";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import MatchingCard from "../../components/Analysis/MatchingCard";
 import axios from "axios";
@@ -14,6 +10,7 @@ import useAuthStore from "../../store/authStore";
 
 const OptimizedRoutine = () => {
   const isDetailPage = false;
+  const nickname = useUserStore((state) => state.nickname);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -68,7 +65,7 @@ const OptimizedRoutine = () => {
           AI가 루틴을 최적화하고 있어요
         </h3>
         <p className="text-[14px] text-gray-60 text-center break-keep">
-          {USER_NAME}님의 인벤토리 제품과 비교하여
+          {nickname}님의 인벤토리 제품과 비교하여
           <br />
           가장 안전한 피부 관리 조합을 찾는 중입니다...
         </p>
@@ -98,7 +95,7 @@ const OptimizedRoutine = () => {
       <div className="flex-1 overflow-y-auto pb-[100px] mt-7">
         <div className="mb-6 flex flex-col gap-2">
           <h1 className="break-keep text-[22px] font-semibold  leading-snug text-black">
-            {USER_NAME}님의 인벤토리 제품으로
+            {nickname}님의 인벤토리 제품으로
             <br />
             안전하게 루틴을 재구성했어요
           </h1>

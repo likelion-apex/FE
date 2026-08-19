@@ -19,7 +19,7 @@ const RoutineAccordionItem = ({ step }) => {
       bedgeText: "영상 속 제품",
       reasonTitle: "대체품 없음",
     },
-    replace: {
+    REPLACED: {
       badge: "bg-blue-05 text-blue-50",
       box: "bg-blue-05",
       iconColor: "bg-blue-50",
