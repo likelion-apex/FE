@@ -1,7 +1,6 @@
 import { useOutletContext, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import { TODAY_ROUTINE_DATA } from "../../mocks/mockData";
 import {
   ROUTINE_BRIEFING_DATA,
   SAVED_ROUTINE_DATA,
@@ -15,8 +14,7 @@ import RoutineComplete from "../../components/MyRoutine/RoutineComplete";
 import NoRoutineCard from "../../components/NoRoutineCard";
 import MyCalendar from "../../components/MyRoutine/MyCalendar";
 
-import { getSummary } from "../../api/home";
-import { getDailyRoutine } from "../../api/routine";
+import { getDailyRoutine, updateStepCompletion } from "../../api/routine";
 
 const MyRoutine = () => {
   const location = useLocation();
@@ -29,21 +27,7 @@ const MyRoutine = () => {
   // "루틴 완료하기" 버튼 클릭 여부
   const [isRoutineSubmitted, setIsRoutineSubmitted] = useState(false);
 
-  const [summary, setSummary] = useState(null);
   const [routine, setRoutine] = useState(null);
-
-  useEffect(() => {
-    const loadSummary = async () => {
-      try {
-        const data = await getSummary();
-        setSummary(data);
-      } catch (err) {
-        console.error("사용자 정보 조회 실패:", err);
-      }
-    };
-
-    loadSummary();
-  }, []);
 
   useEffect(() => {
     const loadRoutine = async () => {
@@ -57,6 +41,15 @@ const MyRoutine = () => {
 
     loadRoutine();
   }, []);
+
+  useEffect(() => {
+  if (routine) {
+    const completedIds = routine.steps
+      .filter((step) => step.completed)
+      .map((step) => step.stepId);
+    setCheckedItems(completedIds);
+  }
+}, [routine]);
 
 
   const { setNavProps } = useOutletContext();
@@ -79,34 +72,48 @@ const MyRoutine = () => {
 
   //진행률 계산
   //전체 단계수
-  const totalSteps = TODAY_ROUTINE_DATA.length;
+  const totalSteps = routine?.steps.length ?? 0;
   //완료된 단계 수
   const completedSteps = checkedItems.length;
   // 소수점이 나오지 않게 Math.round로 반올림 처리
   const progressPercentage = Math.round((completedSteps / totalSteps) * 100);
 
   //
-  const handleToggle = (id) => {
-    setCheckedItems((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((itemId) => itemId !== id);
-      } else {
-        return [...prev, id];
-      }
-    });
+  const handleToggle = async (id) => {
+    const nextCompleted = !checkedItems.includes(id);
+
+    // 낙관적 업데이트: 우선 화면부터 바꾸고, 실패하면 되돌린다.
+    setCheckedItems((prev) =>
+      nextCompleted ? [...prev, id] : prev.filter((itemId) => itemId !== id),
+    );
+
+    try {
+      await updateStepCompletion(id, nextCompleted);
+    } catch (err) {
+      console.error("스텝 완료 상태 저장 실패:", err);
+      setCheckedItems((prev) =>
+        nextCompleted ? prev.filter((itemId) => itemId !== id) : [...prev, id],
+      );
+    }
   };
 
   //진행 완료 표시
   const isAllChecked = checkedItems.length === totalSteps;
 
-  const handleCompleteAll = () => {
-    if (isAllChecked) {
-      // 전부 체크되어있다면 전체 취소
-      setCheckedItems([]);
-    } else {
-      // 체크 안된 id를 찾아 체크
-      const allIds = TODAY_ROUTINE_DATA.map((step) => step.id);
-      setCheckedItems(allIds);
+  const handleCompleteAll = async () => {
+    const nextCompleted = !isAllChecked;
+    const allIds = routine.steps.map((step) => step.stepId);
+    const previousCheckedItems = checkedItems;
+
+    setCheckedItems(nextCompleted ? allIds : []);
+
+    try {
+      await Promise.all(
+        allIds.map((stepId) => updateStepCompletion(stepId, nextCompleted)),
+      );
+    } catch (err) {
+      console.error("전체 완료 상태 저장 실패:", err);
+      setCheckedItems(previousCheckedItems);
     }
   };
 
@@ -141,7 +148,7 @@ const MyRoutine = () => {
                 </h3>
               </div>
 
-              {!summary?.todayRoutine ? (
+              {!routine ? (
                 <div className="mb-[68px]">
                   <NoRoutineCard onClick={() => navigate("/RoutineAnalysis")} />
                 </div>
@@ -176,12 +183,12 @@ const MyRoutine = () => {
                   </div>
 
                   <div className="flex flex-col gap-[8px] overflow-y-auto no-scrollbar mb-[48px]">
-                    {TODAY_ROUTINE_DATA.map((step) => (
+                    {routine.steps.map((step) => (
                       <CareCard
-                        key={step.id}
-                        step={step}
-                        isChecked={checkedItems.includes(step.id)}
-                        onClick={() => handleToggle(step.id)}
+                        key={step.stepId}
+                        step={{id: step.stepId, title: step.productName, description: `${step.brand} · ${step.category}`,}}
+                        isChecked={checkedItems.includes(step.stepId)}
+                        onClick={() => handleToggle(step.stepId)}
                       />
                     ))}
                   </div>
