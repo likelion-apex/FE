@@ -80,10 +80,10 @@ const OptimizedRoutine = () => {
           데이터를 불러오지 못했습니다.
         </p>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/RoutineAnalysis")}
           className="mt-4 px-4 py-2 bg-blue-50 text-white rounded-lg"
         >
-          뒤로 가기
+          홈으로 가기
         </button>
       </div>
     );

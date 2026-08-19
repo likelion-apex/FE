@@ -47,7 +47,7 @@ const RoutineDetail = () => {
   }, [id, accessToken, navigate]);
 
   const handleDelete = async () => {
-    // 1. 실수로 누를 수 있으니 확인창 띄우기
+    // 확인창
     if (!window.confirm("보관함에서 이 루틴을 정말 삭제하시겠습니까?")) {
       return;
     }
@@ -123,7 +123,6 @@ const RoutineDetail = () => {
         <MatchingCard data={routineData} />
 
         <div className="flex flex-col gap-2">
-          {/* 💡 백엔드에서 받아온 steps 배열을 매핑합니다. */}
           {routineData.steps.map((step, index) => (
             <RoutineAccordionItem key={step.productId || index} step={step} />
           ))}

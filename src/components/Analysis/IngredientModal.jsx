@@ -6,8 +6,15 @@ import IngredientInfo from "./IngredientInfo";
 import axios from "axios";
 import useAuthStore from "../../store/authStore";
 import Information from "../../assets/routine-analyze/Information.svg";
+import kirakiraIcon from "../../assets/icons/kirakiraIcon.svg";
 
-const IngredientModal = ({ onClose, stepData, isModal, analysisId }) => {
+const IngredientModal = ({
+  onClose,
+  stepData,
+  isModal,
+  analysisId,
+  nickname,
+}) => {
   const [activeTab, setActiveTab] = useState("AI 맞춤 분석");
 
   const [detailedData, setDetailedData] = useState(null);
@@ -16,8 +23,15 @@ const IngredientModal = ({ onClose, stepData, isModal, analysisId }) => {
 
   // 모달이 열릴 때 상세 API 호출
   useEffect(() => {
-    // resultId나 analysisId가 없으면 실행 안 함
-    if (!stepData?.resultId || !analysisId) return;
+    // 숏폼이 아니라 제품 상세 정보일때는 로딩을 false처리 해줘야됨
+    if (!analysisId) {
+      setDetailedData(stepData?.modalDetails || stepData);
+      setIsLoading(false);
+      return;
+    }
+
+    // 숏폼에서 부른거라면 API 호출
+    if (!stepData?.resultId) return;
 
     const fetchDetailedResult = async () => {
       try {
@@ -73,13 +87,14 @@ const IngredientModal = ({ onClose, stepData, isModal, analysisId }) => {
   return (
     <div
       className={`flex w-full flex-col bg-white overflow-hidden ${
-        isModal ? "rounded-t-[24px] h-[85vh]" : "min-h-screen pb-[100px]"
+        isModal ? "rounded-t-[24px] h-[85vh]" : "pb-[100px]"
       }`}
       onClick={isModal ? (e) => e.stopPropagation() : undefined}
     >
       {isModal ? (
         <div className="flex items-start justify-between px-5 py-6 shrink-0">
           <div className="flex gap-4">
+            {/* 이미지 삽입 필요 */}
             <div className="size-[64px] shrink-0 rounded-xl bg-gray-40" />
             <Item data={data} />
           </div>
@@ -93,6 +108,7 @@ const IngredientModal = ({ onClose, stepData, isModal, analysisId }) => {
       ) : (
         <div className="flex flex-col w-full">
           <TopNavbar step={0} totalSteps={0} stepName={""} />
+          {/* 이미지 삽입 필요 */}
           <div className="flex flex-col px-5 pt-6 pb-2">
             <div className="size-[360px] rounded-xl bg-gray-10 mb-14" />
             <Item data={data} />
@@ -103,10 +119,12 @@ const IngredientModal = ({ onClose, stepData, isModal, analysisId }) => {
       <div className="flex flex-1 flex-col px-5 min-h-0">
         {/* AI 매칭 점수 박스 */}
         <div className="mb-6 mt-2 flex items-center gap-3 rounded-2xl border border-blue-50 bg-blue-05 px-5 py-4 shrink-0">
-          <div className="size-9 shrink-0 rounded-lg bg-gray-40" />
+          <div className="bg-blue-50 size-9 rounded-xl flex items-center justify-center">
+            <img src={kirakiraIcon} alt="반짝이" />
+          </div>
           <div className="flex flex-col">
             <span className="text-[12px] font-bold text-blue-50">
-              윤지님 수부지 피부 맞춤(교체필요)
+              {nickname}님 피부 맞춤
             </span>
             <span className="text-[16px] font-bold text-black">
               AI 매칭 점수 {data.matchScore}점
@@ -140,7 +158,7 @@ const IngredientModal = ({ onClose, stepData, isModal, analysisId }) => {
                 이 제품이 {data.matchScore}점인 이유
               </h3>
               <div className="flex flex-col gap-3">
-                {data.reasons.map((reason) => (
+                {data.reasons?.map((reason) => (
                   <IngredientReason key={reason.order} reason={reason} />
                 ))}
               </div>

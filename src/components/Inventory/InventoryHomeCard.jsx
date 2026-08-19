@@ -54,7 +54,10 @@ const InventoryHomeCard = ({
         )}
 
         {items.map((item) => (
-          <InventoryItemCard item={item} onClick={() => onItemClick?.(item)} />
+          <InventoryItemCard
+            item={item}
+            onClick={() => onItemClick?.(item.inventoryId)}
+          />
         ))}
       </div>
       {isModalOpen && (
