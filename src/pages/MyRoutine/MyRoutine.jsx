@@ -34,6 +34,7 @@ const MyRoutine = () => {
 
   // 데일리 루틴은 store에서 구독한다. (홈 화면과 같은 데이터를 공유)
   const routine = useRoutineStore((state) => state.routine);
+
   const routineLoaded = useRoutineStore((state) => state.loaded);
   const isCompleting = useRoutineStore((state) => state.isCompleting);
   const loadRoutine = useRoutineStore((state) => state.loadRoutine);

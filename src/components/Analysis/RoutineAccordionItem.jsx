@@ -88,7 +88,10 @@ const RoutineAccordionItem = ({ step }) => {
           <div className="flex size-5 items-center justify-center rounded-full bg-blue-50 text-[16px] font-semibold text-white shrink-0">
             {step.order}
           </div>
-          <div className="size-[36px] shrink-0 rounded-lg bg-gray-40" />
+          <img
+            src={step.imageUrl}
+            className="size-[36px] shrink-0 rounded-lg border-gray-40"
+          />
 
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-center gap-1">

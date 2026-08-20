@@ -10,6 +10,7 @@ import RoutineAccordionItem from "../../components/Analysis/RoutineAccordionItem
 import Button from "../../components/Button";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import MatchingCard from "../../components/Analysis/MatchingCard";
+import ScoreGoal from "../../components/Use/ScoreGoal";
 
 import trashboxIcon from "../../assets/icons/trashboxIcon.svg";
 
@@ -115,12 +116,7 @@ const RoutineDetail = () => {
   }
 
   const isDetailPage = true;
-
-  const selectedBriefing = {
-    title: routineData.name,
-    tag: routineData.routineType === "NIGHT" ? "나이트케어" : "데이케어",
-    score: routineData.matchScore || 0,
-  };
+  const routineDeteilData = routineData.aiBriefing;
 
   return (
     <div className="relative flex h-full flex-col px-[20px]">
@@ -135,16 +131,23 @@ const RoutineDetail = () => {
       />
 
       <div className="flex-1 overflow-y-auto pb-[100px] pt-6 ">
-        <div className="mb-6 flex justify-between">
-          <h2 className="text-[16px] font-semibold text-gray-900">
-            {selectedBriefing.title}
+        <div className="mb-6 flex justify-between px-5">
+          <h2 className="text-[20px] font-semibold text-black">
+            {routineDeteilData.title}
           </h2>
-          <div className="flex items-center rounded-lg bg-gray-10 px-2 py-1 text-[12px] font-bold">
-            {selectedBriefing.tag}
+          <div className="flex items-center rounded-lg bg-blue-50 text-white px-2 py-1 text-[12px] font-bold">
+            {routineDeteilData.tag}
           </div>
         </div>
 
-        <MatchingCard data={routineData} />
+        <div className="mb-8 bg-gray-05 shadow-card rounded-2xl">
+          <div className="flex w-full flex-col gap-2 rounded-[24px] px-6 py-4">
+            <ScoreGoal data={routineDeteilData} isRoutine={true} />
+            <div className="text-[12px] text-gray-80">
+              {routineDeteilData.summary}
+            </div>
+          </div>
+        </div>
 
         <div className="flex flex-col gap-2">
           {routineData.steps.map((step, index) => (

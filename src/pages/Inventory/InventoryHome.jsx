@@ -13,14 +13,16 @@ import { getMyInventory } from "../../api/inventory";
 
 //카테고리 명 사전
 const CATEGORY_NAME_MAP = {
+  ALL: "전체 화장품",
   SKIN_TONER: "스킨/토너",
-  SERUM: "세럼/앰플",
-  CREAM: "크림",
-  ESSENCE: "에센스",
   LOTION: "로션/에멀전",
-  SUNCREAM: "선케어",
-  CLEANSER: "클렌징",
-  MASK: "마스크/팩",
+  ESSENCE_SERUM: "에센스/앰플/세럼",
+  FACEOIL: "페이스 오일",
+  CREAM: "크림",
+  EYECARE: "아이케어",
+  MIST: "미스트/젤",
+  SKIN_TONERPAD: "스킨/토너 패드",
+  BAM: "밤/멀티밤",
   ETC: "기타",
 };
 
@@ -85,21 +87,17 @@ const InventoryHome = () => {
 
   const categorizedList = Object.entries(
     inventoryList.reduce((acc, item) => {
-      // 백엔드에서 category 값이 안 오면 ETC로 분류
       const categoryKey = item.category || "ETC";
 
-      // 해당 카테고리 내 제품이 없다면 없으면 빈 배열로 만들어줍니다.
       if (!acc[categoryKey]) {
         acc[categoryKey] = [];
       }
-      // 해당 방에 아이템을 쏙 넣어줍니다.
       acc[categoryKey].push(item);
 
       return acc;
     }, {}),
   ).map(([key, items]) => ({
-    //배열 형태로 변환
-    title: CATEGORY_NAME_MAP[key] || key, // 한국어로 변환 (사전에 없으면 영문 그대로 노출)
+    title: CATEGORY_NAME_MAP[key] || "기타", // CATEGORY_NAME_MAP["ESSENCE_SERUM"] -> "에센스/앰플/세럼"
     items: items,
   }));
 
