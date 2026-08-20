@@ -1,4 +1,4 @@
-import productPlaceholder from "../../assets/home/product-placeholder.png";
+import ProductImage from "../ProductImage";
 
 // 홈에서는 오늘의 활성 루틴을 읽기 전용으로 보여준다.
 const NightCareCard = ({ tip, steps }) => {
@@ -15,22 +15,22 @@ const NightCareCard = ({ tip, steps }) => {
               key={step.id}
               className="flex w-full items-center rounded-lg border border-gray-20 bg-white p-3"
             >
-              <img
-                src={step.imageUrl || productPlaceholder}
+              <ProductImage
                 alt=""
+                category={step.category}
                 className="size-10 shrink-0 rounded-lg object-cover"
-                onError={(event) => {
-                  event.currentTarget.onerror = null;
-                  event.currentTarget.src = productPlaceholder;
-                }}
               />
-              <span className="ml-4 text-sm leading-[14px] font-semibold text-black">
-                {step.name}
-              </span>
+              <div className="ml-4 min-w-0">
+                <p className="truncate text-sm leading-5 font-semibold text-black">
+                  {step.order}. {step.name}
+                </p>
+                <p className="mt-1 truncate text-xs leading-4 text-gray-60">
+                  {[step.brand, step.category].filter(Boolean).join(" · ")}
+                </p>
+              </div>
             </li>
           ))}
         </ul>
-
       </div>
     </div>
   );

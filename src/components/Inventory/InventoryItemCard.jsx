@@ -1,3 +1,5 @@
+import ProductImage from "../ProductImage";
+
 const InvertoryItemCard = ({ item, onClick }) => {
   return (
     <div
@@ -7,13 +9,11 @@ const InvertoryItemCard = ({ item, onClick }) => {
     >
       {/* 이미지 영역 (가로 116px) */}
       <div className="size-[116px] rounded-[20px] bg-gray-40 overflow-clip shrink-0">
-        {item.imageUrl && (
-          <img
-            src={item.imageUrl}
-            alt={item.productName}
-            className="w-full h-full object-cover"
-          />
-        )}
+        <ProductImage
+          alt={item.productName}
+          category={item.category}
+          className="h-full w-full object-cover"
+        />
       </div>
 
       <div className="flex flex-col gap-1 items-start w-[116px] overflow-hidden">

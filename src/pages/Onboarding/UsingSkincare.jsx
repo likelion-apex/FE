@@ -5,6 +5,7 @@ import cancelIcon from "../../assets/icons/cancel.svg";
 import searchIcon from "../../assets/icons/search.svg";
 import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
+import ProductImage from "../../components/ProductImage";
 import { searchProducts, addInventoryItem } from "../../api/inventory";
 
 function UsingSkincare() {
@@ -177,13 +178,11 @@ function UsingSkincare() {
                 className="flex items-center gap-1 rounded-3xl border border-gray-20 bg-white p-1"
               >
                 <span className="size-8 shrink-0 overflow-hidden rounded-full bg-gray-10">
-                  {product.imageUrl && (
-                    <img
-                      src={product.imageUrl}
-                      alt={product.productName}
-                      className="h-full w-full object-cover"
-                    />
-                  )}
+                  <ProductImage
+                    alt={product.productName}
+                    category={product.category}
+                    className="h-full w-full object-cover"
+                  />
                 </span>
                 <span className="text-sm font-bold text-gray-60">
                   {product.productName}
@@ -224,13 +223,11 @@ function UsingSkincare() {
                   >
                     <div className="flex items-start justify-center gap-4">
                       <span className="size-[60px] shrink-0 overflow-hidden rounded-xl bg-gray-10">
-                        {product.imageUrl && (
-                          <img
-                            src={product.imageUrl}
-                            alt={product.productName}
-                            className="h-full w-full object-cover"
-                          />
-                        )}
+                        <ProductImage
+                          alt={product.productName}
+                          category={product.category}
+                          className="h-full w-full object-cover"
+                        />
                       </span>
                       <div className="flex flex-col gap-1 py-2">
                         <span className="text-xs text-gray-60">

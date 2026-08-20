@@ -212,6 +212,7 @@ const MyRoutine = () => {
                           title: step.productName,
                           description: `${step.brand} · ${step.category}`,
                           imageUrl: step.imageUrl,
+                          category: step.category,
                         }}
                         isChecked={checkedItems.includes(step.stepId)}
                         onClick={() => handleToggle(step.stepId)}

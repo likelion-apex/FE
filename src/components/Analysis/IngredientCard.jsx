@@ -1,5 +1,6 @@
 import glassesIcon from "../../assets/routine-analyze/glassesIcon.svg";
 import dangerIcon from "../../assets/routine-analyze/dangerIcon.svg";
+import ProductImage from "../ProductImage";
 
 const IngredientCard = ({ step, onClick }) => {
   // 단계 데이터가 없다면 렌더링하지 않음
@@ -69,15 +70,11 @@ const IngredientCard = ({ step, onClick }) => {
         </span>
       </div>
 
-      {step.imageUrl ? (
-        <img
-          src={step.imageUrl}
-          alt={step.displayProductName || step.productName}
-          className="mx-auto mb-3 size-[60px] rounded-xl object-cover border border-gray-10"
-        />
-      ) : (
-        <div className="mx-auto mb-3 size-[60px] rounded-xl bg-gray-400"></div>
-      )}
+      <ProductImage
+        alt={step.displayProductName || step.productName}
+        category={step.category}
+        className="mx-auto mb-3 size-[60px] rounded-xl border border-gray-10 object-cover"
+      />
 
       <h4 className="mb-1 text-center text-[16px] font-semibold leading-snug whitespace-pre-line break-keep">
         {step.displayBrand && (

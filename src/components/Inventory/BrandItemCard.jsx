@@ -1,5 +1,5 @@
 import plusIcon from "../../assets/icons/plusIcon_blue.svg";
-import NewItemSearchModal from "./NewItemSearchModal";
+import ProductImage from "../ProductImage";
 
 const BrandItemCard = ({
   item,
@@ -72,13 +72,11 @@ const BrandItemCard = ({
         )}
 
         {/* 제품 이미지 */}
-        {item.imageUrl && (
-          <img
-            src={item.imageUrl}
-            alt={item.productName}
-            className="h-full w-full object-cover"
-          />
-        )}
+        <ProductImage
+          alt={item.productName}
+          category={item.category}
+          className="h-full w-full object-cover"
+        />
       </div>
 
       {/* 텍스트 영역 */}
