@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import RecordDetailModal from "./RecordDetailModal";
+import useRoutineStore from "../../store/routineStore";
 
 // 서버 일별 상세 응답(untyped)을 모달이 기대하는 형태로 정규화한다.
 // 실제 필드명이 다르면 이 함수 한 곳만 고치면 된다. (console.log로 확인)
@@ -27,6 +28,35 @@ const normalizeRecord = (raw, dateLabel) => {
   };
 };
 
+// 오늘 모달에는 일별 로그(컨디션/메모) 위에 활성 루틴(store)의 진행 상황을 얹는다.
+// 오늘 로그엔 아직 루틴/실천도가 안 담겨오므로 활성 루틴으로 채워준다.
+const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
+  const base = normalizeRecord(dailyRaw, dateLabel);
+
+  // 오늘이 아니거나 활성 루틴이 없으면 로그 그대로 사용
+  if (!isToday || !activeRoutine) return base;
+
+  // 이미 로그에 진행 루틴이 담겨오면 그대로 둔다
+  if (base && (base.routines?.length ?? 0) > 0) return base;
+
+  const steps = activeRoutine.steps ?? [];
+  const completedCount = steps.filter((s) => s.completed).length;
+  const totalCount = steps.length;
+  const routineInfo = {
+    completedCount,
+    totalCount,
+    completionRate:
+      activeRoutine.completionRate ??
+      (totalCount ? Math.round((completedCount / totalCount) * 100) : 0),
+    routines: steps.map((s) => ({ name: s.productName ?? s.name })),
+  };
+
+  // 컨디션/메모(base)가 있으면 그 위에 루틴 정보만 얹고, 없으면 새로 구성
+  return base
+    ? { ...base, ...routineInfo }
+    : { date: dateLabel, memo: null, ...routineInfo };
+};
+
 const MyCalendar = ({
   progressPercentage,
   monthlyData = [],
@@ -39,6 +69,9 @@ const MyCalendar = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDateInfo, setSelectedDateInfo] = useState(null);
   const [isToday, setIsToday] = useState();
+
+  // 오늘 모달에 얹을 활성 루틴 (홈/데일리와 공유하는 store)
+  const activeRoutine = useRoutineStore((state) => state.routine);
 
   const handleDateClick = (dayNum) => {
     // 클릭한 날짜가 오늘인지 판별
@@ -294,7 +327,12 @@ const MyCalendar = ({
       <RecordDetailModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        recordData={normalizeRecord(dailyRecord, selectedDateInfo)}
+        recordData={buildModalRecord(
+          dailyRecord,
+          selectedDateInfo,
+          isToday,
+          activeRoutine,
+        )}
         isToday={isToday} // 💡 전달 완료!
       />
     </div>

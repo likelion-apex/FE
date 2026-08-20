@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import SavedRoutineCard from "./SavedRoutineCard";
 import YearModal from "./YearModal";
 
 import axios from "axios";
 import useAuthStore from "../../store/authStore";
+import useRoutineStore from "../../store/routineStore";
 
 const SavedRoutineList = ({ onClick }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
-  const navigate = useNavigate();
 
   const [year, setYear] = useState(2026);
   const [sortOption, setSortOption] = useState("최신순");
@@ -19,6 +18,29 @@ const SavedRoutineList = ({ onClick }) => {
 
   const [routines, setRoutines] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // 오늘의 활성 루틴은 보관함 목록(/routines)에서 빠져있으므로 store에서 가져와 합친다.
+  const activeRoutine = useRoutineStore((state) => state.routine);
+
+  const activeCard = activeRoutine
+    ? {
+        routineId: activeRoutine.routineId,
+        name: activeRoutine.name,
+        routineType: activeRoutine.routineType,
+        stepCount: activeRoutine.steps?.length ?? 0,
+        createdAt: null, // 활성 루틴 응답엔 생성일/점수가 없다
+        matchScore: null,
+        isActive: true, // 카드에 "오늘 적용중" 뱃지 표시용
+      }
+    : null;
+
+  // 활성 루틴을 맨 앞에, 보관함 목록은 중복 제거 후 뒤에 붙인다.
+  const displayRoutines = activeCard
+    ? [
+        activeCard,
+        ...routines.filter((r) => r.routineId !== activeCard.routineId),
+      ]
+    : routines;
 
   // 화면의 글자를 백엔드 API가 알아듣는 Enum 값으로 변환
   const getSortEnum = (display) => {
@@ -83,7 +105,7 @@ const SavedRoutineList = ({ onClick }) => {
       {/* 상단 타이틀 및 필터 영역 */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-[16px] font-bold text-gray-900">
-          보관된 루틴 ({routines.length})
+          보관된 루틴 ({displayRoutines.length})
         </h2>
 
         <div className="flex items-center gap-4 text-[14px] font-medium text-black">
@@ -155,13 +177,12 @@ const SavedRoutineList = ({ onClick }) => {
           <div className="py-10 text-center text-[13px] text-gray-400">
             목록을 불러오는 중입니다...
           </div>
-        ) : routines.length > 0 ? (
-          routines.map((routine) => (
+        ) : displayRoutines.length > 0 ? (
+          displayRoutines.map((routine) => (
             <SavedRoutineCard
               key={routine.routineId}
               data={routine}
               onClick={() => onClick(routine.routineId)}
-              onApply={(e) => handleApplyToday(routine.routineId, e)}
             />
           ))
         ) : (
