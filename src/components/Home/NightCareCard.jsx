@@ -31,9 +31,6 @@ const NightCareCard = ({ tip, steps }) => {
           ))}
         </ul>
 
-        <p className="text-center text-xs text-gray-60">
-          루틴을 진행하거나 완료하려면 루틴 탭에서 확인해 주세요.
-        </p>
       </div>
     </div>
   );
