@@ -203,11 +203,12 @@ const MyRoutine = () => {
                   </div>
 
                   <div className="flex flex-col gap-[8px] overflow-y-auto no-scrollbar mb-[48px]">
-                    {routine.steps.map((step) => (
+                    {routine.steps.map((step, index) => (
                       <CareCard
                         key={step.stepId}
                         step={{
-                          id: step.stepId,
+                          // stepId는 서버 요청용 식별자이고, 화면에는 루틴 순번을 표시한다.
+                          id: index + 1,
                           title: step.productName,
                           description: `${step.brand} · ${step.category}`,
                         }}
