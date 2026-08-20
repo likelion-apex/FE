@@ -103,12 +103,12 @@ const SavedRoutineList = ({ onClick }) => {
   return (
     <div className="mx-auto flex w-full flex-col relative">
       {/* 상단 타이틀 및 필터 영역 */}
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-[16px] font-bold text-gray-900">
+      <div className="mb-[23px] flex items-center justify-between">
+        <h2 className="text-[18px] leading-[28px] font-semibold text-black">
           보관된 루틴 ({displayRoutines.length})
         </h2>
 
-        <div className="flex items-center gap-4 text-[14px] font-medium text-black">
+        <div className="flex items-center gap-4 text-[14px] font-bold text-black">
           {/* 연도 선택 버튼 */}
           <button
             className="flex items-center gap-1 cursor-pointer"
@@ -155,12 +155,12 @@ const SavedRoutineList = ({ onClick }) => {
 
             {/* 정렬 드롭다운 메뉴 (시안 적용) */}
             {isSortOpen && (
-              <div className="absolute right-0 top-6 z-10 w-[130px] rounded-lg bg-white shadow-lg border border-gray-100 flex flex-col py-1 overflow-hidden">
+              <div className="absolute right-0 top-6 z-10 flex w-[130px] flex-col overflow-hidden rounded-[4px] border border-gray-20 bg-white/95 shadow-[0px_4px_8px_0px_rgba(0,0,0,0.06),0px_1px_2px_0px_rgba(0,0,0,0.04)]">
                 {sortOptionsList.map((option) => (
                   <button
                     key={option}
                     onClick={() => handleSortSelect(option)}
-                    className="px-4 py-2.5 text-center text-[13px] text-gray-500 hover:bg-gray-50 border-b border-gray-100 last:border-0"
+                    className="flex h-[40px] items-center justify-center border-b border-gray-20 px-[16px] text-center text-[12px] font-medium text-gray-60 last:border-0 hover:bg-gray-05"
                   >
                     {option}
                   </button>

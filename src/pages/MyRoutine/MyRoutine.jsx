@@ -253,7 +253,7 @@ const MyRoutine = () => {
         )}
 
         {activeTab === "내 루틴 보관함" && (
-          <div className="mt-7">
+          <div className="mt-[23px]">
             <SavedRoutineList
               data={SAVED_ROUTINE_DATA}
               onClick={(id) => {
