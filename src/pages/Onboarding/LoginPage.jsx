@@ -39,7 +39,7 @@ const LoginPage = () => {
 
       // 2. 온보딩 여부에 따른 라우팅 분기 처리
       if (data.onboardingRequired) {
-        navigate("/onboarding");
+        navigate("/onboarding/nickname");
       } else {
         navigate("/");
       }
