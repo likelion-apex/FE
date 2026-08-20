@@ -2,28 +2,17 @@ import React, { useState } from "react";
 import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 import RecordDetailModal from "./RecordDetailModal";
 
-const MyCalendar = ({ progressPercentage }) => {
+const MyCalendar = ({
+  progressPercentage,
+  monthlyData = [],
+  onDateSelect,
+  onMonthChange,
+}) => {
   // 오늘 날짜 기준 이번달 정보 자동 계산
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDateInfo, setSelectedDateInfo] = useState(null);
   const [isToday, setIsToday] = useState();
-
-  // 💡 1. 여기에 모달용 목데이터를 추가해 주세요!
-  const mockRecordData = {
-    date: selectedDateInfo || "8월 4일 (화)",
-    conditionId: "moist",
-    memo: null,
-    completionRate: 100,
-    completedCount: 4,
-    totalCount: 4,
-    routines: [
-      { name: "초미세먼지 세정 클렌저" },
-      { name: "라운드랩 1025 독도 토너" },
-      { name: "라운드랩 자작나무 수분 앰플" },
-      { name: "고함량 판테놀 10% 재생 크림" },
-    ],
-  };
 
   const handleDateClick = (dayNum) => {
     // 클릭한 날짜가 오늘인지 판별
@@ -38,6 +27,13 @@ const MyCalendar = ({ progressPercentage }) => {
     setSelectedDateInfo(`${month + 1}월 ${dayNum}일 (${dayOfWeek})`);
     setIsToday(isClickedToday); // 오늘 여부를 상태나 변수로 저장
     setIsModalOpen(true);
+
+    //"YYYY-MM-DD" 형태로 클릭한 날짜를 전달
+    if (onDateSelect) {
+      const formattedMonth = String(month + 1).padStart(2, "0");
+      const formattedDay = String(dayNum).padStart(2, "0");
+      onDateSelect(`${year}-${formattedMonth}-${formattedDay}`);
+    }
   };
 
   const year = currentDate.getFullYear();
@@ -55,8 +51,28 @@ const MyCalendar = ({ progressPercentage }) => {
   // 이번 달이 총 며칠인지 계산
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  // 루틴 완료한 날짜(백엔드가 보내줌(마이데이터))
-  const completedDays = [2, 3, 4, 5, 6, 7, 8];
+  //배열 관리
+  const safeMonthlyData = Array.isArray(monthlyData)
+    ? monthlyData
+    : monthlyData?.days || [];
+
+  //compelted가 true인 날짜만 추출(루틴을 완료한 날짜)
+  const completedDays = safeMonthlyData
+    .filter((item) => item.entries?.some((entry) => entry.completed))
+    .map((item) => {
+      if (item && item.date) {
+        // "2026-08-18" -> 18 추출
+        return parseInt(item.date.split("-")[2], 10);
+      }
+      return null;
+    })
+    .filter((day) => day !== null);
+
+  // 기록이 있는 날짜
+  const recordedDays = safeMonthlyData
+    .filter((item) => item.entries && item.entries.length > 0)
+    .map((item) => (item.date ? parseInt(item.date.split("-")[2], 10) : null))
+    .filter(Boolean);
 
   // 요일 배열
   const weekDays = [
@@ -69,13 +85,22 @@ const MyCalendar = ({ progressPercentage }) => {
     { day: "토", color: "text-blue-60" },
   ];
 
-  //화살표 클릭시 다음달/이전달로 넘어가도록 하는 함수
+  //달을 바꾸면 부모 컴포넌트에 연/월을 보내 API 재호출
   const handlePrevMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1));
+    const newDate = new Date(year, month - 1, 1);
+    setCurrentDate(newDate);
+    if (onMonthChange) {
+      onMonthChange(newDate.getFullYear(), newDate.getMonth() + 1);
+    }
   };
 
+  //화살표 클릭시 다음달/이전달로 넘어가도록 하는 함수
   const handleNextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1));
+    const newDate = new Date(year, month + 1, 1);
+    setCurrentDate(newDate);
+    if (onMonthChange) {
+      onMonthChange(newDate.getFullYear(), newDate.getMonth() + 1);
+    }
   };
 
   return (
@@ -156,8 +181,9 @@ const MyCalendar = ({ progressPercentage }) => {
                 month === actualMonth &&
                 dayNum === actualDate;
 
-              // 루틴을 완수한 날만 진하게, 나머지는 연하게
+              // 루틴 완료 or 기록 가짐 두개로 나뉨
               const isCompleted = completedDays.includes(dayNum);
+              const hasRecord = recordedDays.includes(dayNum);
 
               //진행도 테두리가 있는 원 (오늘))
               if (isToday) {
@@ -166,14 +192,29 @@ const MyCalendar = ({ progressPercentage }) => {
                   <div
                     key={dayNum}
                     onClick={() => handleDateClick(dayNum)}
-                    className="relative flex size-[32px] items-center justify-center rounded-full"
+                    className="relative flex size-[32px] items-center justify-center rounded-full cursor-pointer"
                     style={{
                       // conic-gradient: 진행률만큼 색 채우기
                       background: `conic-gradient(#03c1fb ${progressPercentage}%, #f7f7f8 ${progressPercentage}%)`,
                     }}
                   >
                     {/* 안쪽 원 : 바깥쪽 그라데이션이 테두리로 보이도록 하기 */}
-                    <div className="flex size-[28px] items-center justify-center rounded-full bg-gray-05 text-[14px] font-medium text-black">
+                    <div className="flex size-[28px] items-center justify-center rounded-full bg-blue-05 text-[14px] font-medium text-black">
+                      {dayNum}
+                    </div>
+                  </div>
+                );
+              }
+
+              // 2. compeleted == true
+              if (isCompleted) {
+                return (
+                  <div
+                    key={dayNum}
+                    onClick={() => handleDateClick(dayNum)}
+                    className="flex size-[32px] items-center justify-center cursor-pointer transition-transform active:scale-95"
+                  >
+                    <div className="flex size-[28px] items-center justify-center rounded-full border-blue-50 bg-gray-05 text-[14px] font-bold text-white shadow-sm">
                       {dayNum}
                     </div>
                   </div>
@@ -185,12 +226,20 @@ const MyCalendar = ({ progressPercentage }) => {
                 // 여기도 바깥쪽 크기는 32px로 똑같이 맞춰줍니다. (정렬 유지)
                 <div
                   key={dayNum}
-                  onClick={() => handleDateClick(dayNum)}
-                  className="flex size-[32px] items-center justify-center"
+                  onClick={() =>
+                    hasRecord ? handleDateClick(dayNum) : undefined
+                  }
+                  className={`flex size-[32px] items-center justify-center ${
+                    hasRecord
+                      ? "cursor-pointer transition-transform active:scale-95"
+                      : "cursor-default"
+                  }`}
                 >
                   <div
-                    className={`flex size-[28px] items-center justify-center rounded-full bg-gray-05 text-[14px] font-medium ${
-                      isCompleted ? "text-black" : "text-gray-30"
+                    className={`flex size-[28px] items-center justify-center rounded-full text-[14px] ${
+                      hasRecord
+                        ? "bg-gray-05 font-semibold text-black" // 정보가 있는 날 (활성화)
+                        : "bg-transparent font-normal text-gray-30" // 정보가 없는 날 (비활성화)
                     }`}
                   >
                     {dayNum}
@@ -210,14 +259,16 @@ const MyCalendar = ({ progressPercentage }) => {
 
       <div className="mt-6 flex w-full items-center justify-center rounded-[12px] bg-blue-05 p-[8px] text-[12px] font-semibold text-gray-60">
         이번 달은 총{" "}
-        <span className="mx-1 text-blue-50">{completedDays.length}일</span>{" "}
+        <span className="mx-1 text-blue-50">
+          {monthlyData?.completedDaysCount ?? completedDays.length}일
+        </span>{" "}
         루틴을 완수했어요!
       </div>
 
       <RecordDetailModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        recordData={mockRecordData}
+        recordData
         isToday={isToday} // 💡 전달 완료!
       />
     </div>

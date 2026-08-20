@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "../../store/authStore";
+import { applyRoutineToToday } from "../../api/routine";
 
 import RoutineScore from "../../components/Analysis/RoutineScore";
 import RoutineAccordionItem from "../../components/Analysis/RoutineAccordionItem";
@@ -46,6 +47,7 @@ const RoutineDetail = () => {
     }
   }, [id, accessToken, navigate]);
 
+  //보관 루틴 삭제
   const handleDelete = async () => {
     // 확인창
     if (!window.confirm("보관함에서 이 루틴을 정말 삭제하시겠습니까?")) {
@@ -70,6 +72,24 @@ const RoutineDetail = () => {
     } catch (error) {
       console.error("루틴 삭제 실패:", error);
       alert("루틴 삭제 중 오류가 발생했습니다.");
+    }
+  };
+
+  //오늘 루틴 적용
+  const handleApplyToday = async () => {
+    if (!window.confirm("이 루틴을 오늘의 루틴으로 설정하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      await applyRoutineToToday(id); // URL에서 뽑아온 id를 그대로 넘겨줍니다.
+
+      alert("오늘의 루틴으로 적용되었습니다!");
+      // 적용 완료 후 데일리 루틴 탭으로 이동!
+      navigate("/MyRoutine", { state: { activeTab: "데일리 루틴" } });
+    } catch (error) {
+      console.error("오늘의 루틴 적용 실패:", error);
+      alert("루틴 적용 중 오류가 발생했습니다.");
     }
   };
 
@@ -136,6 +156,7 @@ const RoutineDetail = () => {
           bgColor={"blue-50"}
           textColor={"white"}
           borderColor={"blue-50"}
+          onClick={handleApplyToday}
         />
       </div>
     </div>

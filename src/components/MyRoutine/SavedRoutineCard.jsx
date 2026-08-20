@@ -1,6 +1,6 @@
 import React from "react";
 
-const SavedRoutineCard = ({ data, onClick }) => {
+const SavedRoutineCard = ({ data, onClick, onApply }) => {
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const dateObj = new Date(dateString);
