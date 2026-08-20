@@ -131,17 +131,7 @@ const IngredientModal = ({
       {isModal ? (
         //모달일때
         <div className="relative flex w-full items-center justify-between px-5 pt-8 pb-6 shrink-0">
-          {/* 1. 닫기(X) 버튼: absolute로 우측 상단 공중에 띄우기 */}
-        <div className="flex items-start justify-between px-5 py-6 shrink-0">
-          <div className="flex gap-4">
-            {/* 이미지 삽입 필요 */}
-            <ProductImage
-              alt=""
-              category={data.category}
-              className="size-[36px] shrink-0 rounded-lg border-gray-40"
-            />
-            <Item data={data} />
-          </div>
+          {/* 1. 닫기(X) 버튼 */}
           <button
             onClick={onClose}
             className="absolute right-4 top-4 flex size-7 items-center justify-center rounded-full bg-gray-10 text-[16px] font-bold text-gray-50 cursor-pointer"
@@ -151,11 +141,12 @@ const IngredientModal = ({
 
           {/* 2. 제품 썸네일 & 제품 정보 */}
           <div className="flex flex-1 items-center gap-3 pr-2">
-            {/* 이미지 크기를 시안처럼 큼직하게 키우고 테두리 추가 */}
             <div className="flex size-[64px] shrink-0 items-center justify-center overflow-hidden rounded-[12px] border border-gray-20 bg-white">
-              <img
-                src={data.imageUrl}
+              {/* 유저님이 추가하신 ProductImage 적용! */}
+              <ProductImage
                 alt="제품 썸네일"
+                category={data.category}
+                imageUrl={data.imageUrl}
                 className="h-full w-full object-cover p-1"
               />
             </div>
@@ -163,7 +154,6 @@ const IngredientModal = ({
               <Item data={data} />
             </div>
           </div>
-
           {/* 3. 인벤토리 버튼 */}
           <button
             onClick={handleAddInventory}
