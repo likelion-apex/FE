@@ -134,6 +134,7 @@ const InventoryStar = () => {
       if (currentPage > 1) setCurrentPage((prev) => prev - 1); // 이전 페이지
     }
   };
+
   const goToItemDetail = (itemOrId) => {
     if (typeof itemOrId === "number" || typeof itemOrId === "string") {
       navigate(`/inventory/item-detail/${itemOrId}`);

@@ -282,7 +282,7 @@ const MyCalendar = ({
                     onClick={() => handleDateClick(dayNum)}
                     className="flex size-[32px] items-center justify-center cursor-pointer transition-transform active:scale-95"
                   >
-                    <div className="flex size-[28px] items-center justify-center rounded-full border-blue-50 bg-gray-05 text-[14px] font-bold text-white shadow-sm">
+                    <div className="flex size-[28px] items-center justify-center rounded-full bg-gray-10 text-[14px] text-black shadow-sm shadow-card">
                       {dayNum}
                     </div>
                   </div>
@@ -306,8 +306,8 @@ const MyCalendar = ({
                   <div
                     className={`flex size-[28px] items-center justify-center rounded-full text-[14px] ${
                       hasRecord
-                        ? "bg-gray-05 font-semibold text-black" // 정보가 있는 날 (활성화)
-                        : "bg-transparent font-normal text-gray-30" // 정보가 없는 날 (비활성화)
+                        ? "bg-gray-10 font-semibold text-black" // 정보가 있는 날 (활성화)
+                        : "bg-gray-05 font-normal text-black" // 정보가 없는 날 (비활성화)
                     }`}
                   >
                     {dayNum}

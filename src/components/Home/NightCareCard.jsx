@@ -18,7 +18,7 @@ const NightCareCard = ({ tip, steps }) => {
               <ProductImage
                 alt=""
                 category={step.category}
-                className="size-10 shrink-0 rounded-lg object-cover"
+                className="size-10 shrink-0 rounded-lg object-cover border border-gray-20"
               />
               <div className="ml-4 min-w-0">
                 <p className="truncate text-sm leading-5 font-semibold text-black">

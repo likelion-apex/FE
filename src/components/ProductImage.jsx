@@ -42,9 +42,22 @@ const getProductIcon = (category = "") => {
   return creamIcon;
 };
 
-// 서버 제품 사진 대신 카테고리에 맞는 프로젝트 기본 아이콘을 표시한다.
-const ProductImage = ({ alt = "", category, className = "" }) => (
-  <img src={getProductIcon(category)} alt={alt} className={className} />
-);
+const ProductImage = ({
+  alt = "",
+  category = "",
+  productName = "",
+  className = "",
+}) => {
+  // 카테고리가 비어있을 경우를 대비해, 카테고리와 제품명을 하나의 문장으로 합쳐서 검사합니다.
+  // 예: "" + " " + "라운드랩 독도 토너" -> " 라운드랩 독도 토너" (여기서 '토너'를 찾아냄!)
+  const combinedText = `${category} ${productName}`;
 
+  return (
+    <img
+      src={getProductIcon(combinedText)}
+      alt={alt || productName || "제품 이미지"}
+      className={className}
+    />
+  );
+};
 export default ProductImage;
