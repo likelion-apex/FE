@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import BrandItemCard from "../../components/Inventory/BrandItemCard";
 import axios from "axios";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
@@ -12,6 +12,7 @@ import {
 
 const InventoryStar = () => {
   const { setNavProps } = useOutletContext();
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -133,6 +134,23 @@ const InventoryStar = () => {
       if (currentPage > 1) setCurrentPage((prev) => prev - 1); // 이전 페이지
     }
   };
+  const goToItemDetail = (itemOrId) => {
+    if (typeof itemOrId === "number" || typeof itemOrId === "string") {
+      navigate(`/inventory/item-detail/${itemOrId}`);
+      return;
+    }
+
+    const targetId =
+      itemOrId?.inventoryId || itemOrId?.id || itemOrId?.productId;
+
+    if (!targetId) {
+      console.error("아이디를 찾을 수 없는 데이터입니다:", itemOrId);
+      alert("제품 정보를 불러올 수 없습니다.");
+      return;
+    }
+
+    navigate(`/inventory/item-detail/${targetId}`);
+  };
 
   return (
     <div className="flex flex-col px-[20px] pt-15 pb-20">
@@ -160,6 +178,7 @@ const InventoryStar = () => {
                 isEditing={isEditing}
                 onToggleFavorite={toggleFavorite}
                 onDelete={handleDeleteItem}
+                onItemClick={goToItemDetail}
               />
             </div>
           ))}

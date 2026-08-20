@@ -118,13 +118,14 @@ function App() {
             <Route path="/inventory" element={<InventoryLayout />}>
               <Route index element={<InventoryHome />} />
               <Route path="item-detail" element={<InventoryItemDetail />} />
-              <Route
-                path="item-detail/:inventoryId"
-                element={<InventoryItemDetail />}
-              />
+
               <Route path="star" element={<InventoryStar />} />
               <Route path="library" element={<InventoryLibrary />} />
             </Route>
+            <Route
+              path="/inventory/item-detail/:inventoryId"
+              element={<InventoryItemDetail />}
+            />
             <Route path="/inventory/search" element={<InventorySearch />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -75,6 +75,18 @@ const RoutineAccordionItem = ({ step }) => {
     }
   };
 
+  // 텍스트 방어막 (이유 & 안전성 평가)
+  const displayReason =
+    step.reason || step.aiReason || "상세 분석 내용이 없습니다.";
+  const displaySafety = step.safetyEvaluation || "";
+
+  // 서브 타이틀 방어막 (replaceName이 없을 때 brand 활용)
+  const subTitle = step.replaceName
+    ? step.replaceName
+    : step.brand
+      ? `${step.brand} · 내 화장대 제품`
+      : "인벤토리 미등록 · 영상 속 루틴";
+
   return (
     <div
       className={`flex flex-col overflow-hidden rounded-[16px] border bg-white transition-colors ${
@@ -106,11 +118,7 @@ const RoutineAccordionItem = ({ step }) => {
                 {currentTheme.bedgeText}
               </div>
             </div>
-            <span className="text-[12px] text-gray-60">
-              {step.replaceName
-                ? step.replaceName
-                : "인벤토리 미등록 · 영상 속 루틴"}
-            </span>
+            <span className="text-[12px] text-gray-60">{subTitle}</span>
           </div>
         </div>
 
@@ -145,10 +153,9 @@ const RoutineAccordionItem = ({ step }) => {
               <p>
                 {step.status === "VIDEO_PRODUCT"
                   ? `대체 제품이 ${nickname}님의 인벤토리에 없어요`
-                  : step.reason}
+                  : displayReason}
               </p>
 
-              {/* 연결필요 ~ ㅜㅜ */}
               {step.status === "VIDEO_PRODUCT" &&
                 (!isRegistered ? (
                   <span

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import TopNavbar from "../layouts/TopNavbar";
+
 import IngredientReason from "../../components/Analysis/IngredientReason";
 import Item from "../../components/Use/Item";
 import IngredientInfo from "./IngredientInfo";
@@ -28,16 +30,13 @@ const IngredientModal = ({
   const [isLoading, setIsLoading] = useState(true);
   const accessToken = useAuthStore((state) => state.accessToken);
 
-  // 모달이 열릴 때 상세 API 호출
   useEffect(() => {
-    // 숏폼이 아니라 제품 상세 정보일때는 로딩을 false처리 해줘야됨
     if (!analysisId) {
       setDetailedData(stepData?.modalDetails || stepData);
       setIsLoading(false);
       return;
     }
 
-    // 숏폼에서 부른거라면 API 호출
     if (!stepData?.resultId) return;
 
     const fetchDetailedResult = async () => {
@@ -50,7 +49,6 @@ const IngredientModal = ({
             },
           },
         );
-        console.log("제품 상세 분석 결과:", response.data.data.result);
         setDetailedData(response.data.data.result);
       } catch (error) {
         console.error("상세 분석 결과를 불러오지 못했습니다:", error);
@@ -62,7 +60,6 @@ const IngredientModal = ({
     fetchDetailedResult();
   }, [stepData, analysisId, accessToken]);
 
-  //스크롤 방지 로직
   useEffect(() => {
     const scrollBox = document.getElementById("main-scroll-box");
     if (scrollBox && isModal) {
@@ -88,16 +85,23 @@ const IngredientModal = ({
     );
   }
 
-  const data = detailedData;
+  // 🚀 1. 데이터 구조 호환성 패치 (어떤 포맷이 오든 Item 컴포넌트가 렌더링할 수 있게 정규화)
+  const data = detailedData
+    ? {
+        ...detailedData,
+        productName:
+          detailedData.displayProductName || detailedData.productName,
+        brand: detailedData.displayBrand || detailedData.brand,
+      }
+    : null;
+
   if (!data) return null;
 
-  // 모달 전용 인벤토리 추가 로직
   const handleAddInventory = async (e) => {
-    e.stopPropagation(); // 버튼 눌렀을 때 엉뚱한 이벤트 발생 방지
+    e.stopPropagation();
 
     if (localIsInInventory) {
       alert("이미 인벤토리에 등록된 제품입니다.");
-
       return;
     }
 
@@ -106,17 +110,16 @@ const IngredientModal = ({
 
     try {
       await addInventoryItem({
-        productName: data.displayProductName || stepData.productName,
+        productName: data.productName || stepData.productName,
       });
       alert("인벤토리에 성공적으로 등록되었습니다!");
-      setLocalIsInInventory(true); // 버튼을 파란색(추가 완료)으로 변경
+      setLocalIsInInventory(true);
     } catch (error) {
       if (error.response && error.response.status === 409) {
         alert("이미 인벤토리에 등록되어 있는 제품입니다! 🪞");
-        setLocalIsInInventory(true); // 이미 있으니 상태만 완료로 변경
+        setLocalIsInInventory(true);
       } else {
         alert("등록 중 오류가 발생했습니다.");
-        console.error("인벤토리 등록 실패:", error);
       }
     }
   };
@@ -129,20 +132,15 @@ const IngredientModal = ({
       onClick={isModal ? (e) => e.stopPropagation() : undefined}
     >
       {isModal ? (
-        //모달일때
         <div className="relative flex w-full items-center justify-between px-5 pt-8 pb-6 shrink-0">
-          {/* 1. 닫기(X) 버튼 */}
           <button
             onClick={onClose}
             className="absolute right-4 top-4 flex size-7 items-center justify-center rounded-full bg-gray-10 text-[16px] font-bold text-gray-50 cursor-pointer"
           >
             ✕
           </button>
-
-          {/* 2. 제품 썸네일 & 제품 정보 */}
           <div className="flex flex-1 items-center gap-3 pr-2">
             <div className="flex size-[64px] shrink-0 items-center justify-center overflow-hidden rounded-[12px] border border-gray-20 bg-white">
-              {/* 유저님이 추가하신 ProductImage 적용! */}
               <ProductImage
                 alt="제품 썸네일"
                 category={data.category}
@@ -154,7 +152,6 @@ const IngredientModal = ({
               <Item data={data} />
             </div>
           </div>
-          {/* 3. 인벤토리 버튼 */}
           <button
             onClick={handleAddInventory}
             className={`flex shrink-0 items-center justify-center rounded-[8px] px-3 py-[6px] text-[12px] font-bold transition-colors active:scale-95 z-10 ${
@@ -168,13 +165,12 @@ const IngredientModal = ({
         </div>
       ) : (
         <div className="flex flex-col w-full">
-          {/* 이미지 삽입 필요 */}
+          <TopNavbar step={0} totalSteps={0} stepName="" />
           <div className="flex flex-col px-5 pt-6 pb-2">
             <div className="flex w-full justify-center mb-8">
-              <ProductImage
-                imageUrl={data.imageUrl}
-                category={data.category}
-                alt="제품 이미지"
+              <img
+                src={data.imageUrl} // 🚀 여기도 서버 이미지 바로 꽂기!
+                alt={data.displayProductName || data.productName}
                 className="size-[360px] rounded-xl object-cover bg-gray-10 border border-gray-10"
               />
             </div>
@@ -186,8 +182,13 @@ const IngredientModal = ({
 
               <div className="absolute right-0 top-[20px] flex items-center gap-2">
                 <button
+                  // 🚀 2. id가 데이터에 없을 때를 대비한 방어막 추가 (stepData.id 또는 inventoryId 활용)
                   onClick={() =>
-                    ToggleFavorite && ToggleFavorite(data.id, data.isFavorite)
+                    ToggleFavorite &&
+                    ToggleFavorite(
+                      data.id || stepData?.id || stepData?.inventoryId,
+                      data.isFavorite,
+                    )
                   }
                   className="cursor-pointer transition-transform active:scale-95"
                 >
@@ -195,9 +196,7 @@ const IngredientModal = ({
                     width="24"
                     height="24"
                     viewBox="0 0 24 24"
-                    fill={
-                      data.isFavorite ? "#FFBB00" : "#CCD1D5"
-                    } /* 즐찾 여부에 따라 파란색/회색 전환 */
+                    fill={data.isFavorite ? "#FFBB00" : "#CCD1D5"}
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
@@ -221,22 +220,20 @@ const IngredientModal = ({
       )}
 
       <div className="flex flex-1 flex-col px-5 min-h-0">
-        {/* AI 매칭 점수 박스 */}
         <div className="mb-6 mt-2 flex items-center gap-3 rounded-2xl border border-blue-50 bg-blue-05 px-5 py-4 shrink-0">
           <div className="bg-blue-50 size-9 rounded-xl flex items-center justify-center">
             <img src={kirakiraIcon} alt="반짝이" />
           </div>
           <div className="flex flex-col">
             <span className="text-[12px] font-bold text-blue-50">
-              {nickname}님 피부 맞춤
+              {nickname || data.nickname}님 피부 맞춤
             </span>
             <span className="text-[16px] font-bold text-black">
-              AI 매칭 점수 {data.matchScore}점
+              AI 매칭 점수 {data.matchScore || 0}점
             </span>
           </div>
         </div>
 
-        {/* 탭 메뉴 */}
         <div className="flex w-full justify-around border-b border-gray-20 shrink-0">
           {["AI 맞춤 분석", "전체 성분"].map((tab) => (
             <button
@@ -253,27 +250,34 @@ const IngredientModal = ({
           ))}
         </div>
 
-        {/* 탭 컨텐츠 영역 */}
         <div className="flex flex-1 flex-col pt-4 pb-6 overflow-y-auto no-scrollbar">
-          {/* 탭 1. AI 맞춤 분석 */}
           {activeTab === "AI 맞춤 분석" && (
             <div className="flex flex-col">
-              <h3 className="mb-4 text-[16px] font-bold text-black">
-                이 제품이 {data.matchScore}점인 이유
-              </h3>
-              <div className="flex flex-col gap-3">
-                {data.reasons?.map((reason) => (
-                  <IngredientReason key={reason.order} reason={reason} />
-                ))}
-              </div>
+              {/* 🚀 3. reasons 데이터가 있을 때만 렌더링하고, 없으면 빈 문구 표시 */}
+              {data.reasons && data.reasons.length > 0 ? (
+                <>
+                  <h3 className="mb-4 text-[16px] font-bold text-black">
+                    이 제품이 {data.matchScore}점인 이유
+                  </h3>
+                  <div className="flex flex-col gap-3">
+                    {data.reasons.map((reason) => (
+                      <IngredientReason key={reason.order} reason={reason} />
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="mt-6 flex flex-col items-center justify-center text-gray-40 text-[14px]">
+                  <p>이 제품의 상세 AI 분석 코멘트가 없습니다.</p>
+                </div>
+              )}
             </div>
           )}
 
-          {/* 탭 2. 전체 성분 */}
           {activeTab === "전체 성분" && <IngredientInfo data={data} />}
         </div>
       </div>
-      {activeTab === "AI 맞춤 분석" ? (
+
+      {activeTab === "AI 맞춤 분석" && (
         <div className="flex flex-col items-center text-center text-[11px] leading-tight text-gray-40">
           <img src={Information} alt="info" className="mb-1" />
           <p>
@@ -281,10 +285,9 @@ const IngredientModal = ({
             실사용 결과는 보장되지 않으니 제품 정보를 확인해 주세요
           </p>
         </div>
-      ) : (
-        <div></div>
       )}
-      {isModal === true ? (
+
+      {isModal && (
         <div className="px-5 pb-6 pt-2">
           <button
             onClick={onClose}
@@ -293,8 +296,6 @@ const IngredientModal = ({
             확인
           </button>
         </div>
-      ) : (
-        <div></div>
       )}
     </div>
   );
