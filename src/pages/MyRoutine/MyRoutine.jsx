@@ -1,5 +1,5 @@
 import { useOutletContext, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import CareCard from "../../components/MyRoutine/CareCard";
 import Button from "../../components/Button";
@@ -90,24 +90,32 @@ const MyRoutine = () => {
 
   // 루틴 로그 조회 API 로 받아올 데이터
   const [monthlyLogs, setMonthlyLogs] = useState([]); // 달력에 점 찍을 월별 데이터
+  const [completedDaysCount, setCompletedDaysCount] = useState(0); // 이번 달 루틴 완수 일수
   const [dailyRoutine, setDailyRoutine] = useState([]); // 하루 루틴 리스트
+
+  // 달력용 요약 데이터 조회 (월 이동 / 루틴 완료 후 재조회에 공용으로 쓴다)
+  const fetchMonthlyLogs = useCallback(async () => {
+    try {
+      const data = await getRoutineLogs({
+        year: currentMonth.year,
+        month: currentMonth.month,
+      });
+      setMonthlyLogs(data); // 달력에 넘겨줄 데이터 저장
+      setCompletedDaysCount(data?.completedDaysCount ?? 0); // 완수 일수는 별도 상태로 관리
+    } catch (error) {
+      console.error("월별 루틴 요약 실패:", error);
+    }
+  }, [currentMonth.year, currentMonth.month]);
 
   // 월(Month)이 바뀔 때마다 달력용 요약 데이터 불러오기
   useEffect(() => {
-    const fetchMonthlyLogs = async () => {
-      try {
-        const data = await getRoutineLogs({
-          year: currentMonth.year,
-          month: currentMonth.month,
-        });
-        console.log("월별 데이터:", data);
-        setMonthlyLogs(data); // 달력에 넘겨줄 데이터 저장
-      } catch (error) {
-        console.error("월별 루틴 요약 실패:", error);
-      }
-    };
     fetchMonthlyLogs();
-  }, [currentMonth.year, currentMonth.month]);
+  }, [fetchMonthlyLogs]);
+
+  // 오늘의 루틴을 완료하면 완수 일수가 늘어나므로 즉시 다시 불러온다
+  useEffect(() => {
+    if (routine?.completed) fetchMonthlyLogs();
+  }, [routine?.completed, fetchMonthlyLogs]);
 
   // 날짜를 클릭할 때마다 하단 상세 루틴 데이터 불러오기
   useEffect(() => {
@@ -147,6 +155,7 @@ const MyRoutine = () => {
               <MyCalendar
                 progressPercentage={progressPercentage}
                 monthlyData={monthlyLogs} //달력에 월별 데이터 전달
+                completedDaysCount={completedDaysCount} //이번 달 루틴 완수 일수
                 dailyRecord={dailyRoutine} //선택한 날짜의 상세 기록(모달용)
                 onDateSelect={(date) => setSelectedDate(date)} //날짜 클릭 시 선택된 날짜 변경
                 onMonthChange={(year, month) =>
