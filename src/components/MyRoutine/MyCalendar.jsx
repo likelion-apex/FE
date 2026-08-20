@@ -28,6 +28,7 @@ const normalizeRecord = (raw, dateLabel) => {
       name: s.productName ?? s.name,
       imageUrl: s.imageUrl ?? s.productImageUrl,
       category: s.category,
+      completed: Boolean(s.completed),
     })),
   };
 };
@@ -48,13 +49,14 @@ const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
   const routineInfo = {
     completedCount,
     totalCount,
-    completionRate:
-      activeRoutine.completionRate ??
-      (totalCount ? Math.round((completedCount / totalCount) * 100) : 0),
+    completionRate: totalCount
+      ? Math.round((completedCount / totalCount) * 100)
+      : 0,
     routines: steps.map((s) => ({
       name: s.productName ?? s.name,
       imageUrl: s.imageUrl ?? s.productImageUrl,
       category: s.category,
+      completed: Boolean(s.completed),
     })),
   };
 
