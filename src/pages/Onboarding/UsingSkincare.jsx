@@ -32,7 +32,8 @@ function UsingSkincare() {
         // 서버가 키워드로 안 걸러줄 경우를 대비해 클라이언트에서도 한 번 더 필터
         const filtered = items.filter(
           (item) =>
-            item.productName?.includes(keyword) || item.brand?.includes(keyword),
+            item.productName?.includes(keyword) ||
+            item.brand?.includes(keyword),
         );
         setResults(filtered);
       } catch (error) {
@@ -75,10 +76,21 @@ function UsingSkincare() {
       );
 
       const rejected = results.filter((r) => r.status === "rejected");
+      const succeededCount = results.filter(
+        (r) => r.status === "fulfilled",
+      ).length;
       // 409(Conflict) = 이미 등록된 제품 / 그 외 = 실제 오류
       const conflicts = rejected.filter(
         (r) => r.reason?.response?.status === 409,
       );
+      const conflictedProductIds = results
+        .map((result, index) =>
+          result.status === "rejected" &&
+          result.reason?.response?.status === 409
+            ? registered[index].productId
+            : null,
+        )
+        .filter((productId) => productId !== null);
       const realErrors = rejected.filter(
         (r) => r.reason?.response?.status !== 409,
       );
@@ -89,11 +101,26 @@ function UsingSkincare() {
         return;
       }
 
-      // 이미 등록된 제품이 있으면 알려준다.
+      // 전부 중복이면 인벤토리에 새로 등록된 제품이 없으므로 온보딩을 진행하지 않는다.
       if (conflicts.length > 0) {
-        alert("이미 등록된 제품입니다.");
+        // 중복 제품은 선택 목록에서 제거해, 정상 등록 가능한 제품만 남긴다.
+        setRegistered((prev) =>
+          prev.filter((item) => !conflictedProductIds.includes(item.productId)),
+        );
+
+        if (succeededCount === 0) {
+          alert(
+            "이미 등록된 제품입니다. 이미 등록되지 않은 제품을 하나 이상 추가해주세요.",
+          );
+          return;
+        }
+
+        alert(
+          "일부 제품은 이미 등록되어 있어요. 새로 등록된 제품으로 시작합니다.",
+        );
       }
 
+      // 새 제품이 최소 한 개 등록된 경우에만 메인으로 이동한다.
       navigate("/main");
     } finally {
       setIsSubmitting(false);
@@ -137,44 +164,46 @@ function UsingSkincare() {
         </div>
       </div>
 
-      {keyword && (
-        <div className="mt-6">
-          <div className="bg-gray-05 px-[18px] pt-[13px] pb-4">
-            <p className="text-xs leading-[14px] font-bold text-gray-60">
-              등록된 제품({registered.length})
-            </p>
+      {registered.length > 0 && (
+        <div className="mt-6 bg-gray-05 px-[18px] pt-[13px] pb-4">
+          <p className="text-xs leading-[14px] font-bold text-gray-60">
+            등록된 제품({registered.length})
+          </p>
 
-            <div className="mt-3 flex flex-wrap gap-2">
-              {registered.map((product) => (
-                <div
-                  key={product.productId}
-                  className="flex items-center gap-1 rounded-3xl border border-gray-20 bg-white p-1"
+          <div className="mt-3 flex flex-wrap gap-2">
+            {registered.map((product) => (
+              <div
+                key={product.productId}
+                className="flex items-center gap-1 rounded-3xl border border-gray-20 bg-white p-1"
+              >
+                <span className="size-8 shrink-0 overflow-hidden rounded-full bg-gray-10">
+                  {product.imageUrl && (
+                    <img
+                      src={product.imageUrl}
+                      alt={product.productName}
+                      className="h-full w-full object-cover"
+                    />
+                  )}
+                </span>
+                <span className="text-sm font-bold text-gray-60">
+                  {product.productName}
+                </span>
+                <button
+                  type="button"
+                  aria-label={`${product.productName} 삭제`}
+                  onClick={() => removeProduct(product.productId)}
+                  className="flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-full bg-gray-10"
                 >
-                  <span className="size-8 shrink-0 overflow-hidden rounded-full bg-gray-10">
-                    {product.imageUrl && (
-                      <img
-                        src={product.imageUrl}
-                        alt={product.productName}
-                        className="h-full w-full object-cover"
-                      />
-                    )}
-                  </span>
-                  <span className="text-sm font-bold text-gray-60">
-                    {product.productName}
-                  </span>
-                  <button
-                    type="button"
-                    aria-label={`${product.productName} 삭제`}
-                    onClick={() => removeProduct(product.productId)}
-                    className="flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-full bg-gray-10"
-                  >
-                    <img src={cancelIcon} alt="" className="size-3" />
-                  </button>
-                </div>
-              ))}
-            </div>
+                  <img src={cancelIcon} alt="" className="size-3" />
+                </button>
+              </div>
+            ))}
           </div>
+        </div>
+      )}
 
+      {keyword && (
+        <div className={registered.length > 0 ? "" : "mt-6"}>
           <div className="rounded-t-[20px] bg-white px-[30px] pt-[18px]">
             {isLoading ? (
               <p className="py-8 text-center text-sm text-gray-60">
