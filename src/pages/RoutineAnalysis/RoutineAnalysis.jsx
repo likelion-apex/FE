@@ -132,7 +132,7 @@ const RoutineAnalyze = () => {
   }, [setNavProps]);
 
   return (
-    <div className="flex min-h-full flex-col text-black mt-[24px] mb-[70px] px-[20px]">
+    <div className="flex min-h-full flex-col text-black mt-[24px]  px-[20px]">
       <div className="flex-1 pb-6 ">
         {/* 제목 */}
         <section>
@@ -264,6 +264,7 @@ const RoutineAnalyze = () => {
             {recentRoutines.map((routine) => (
               <div key={routine.analysisId} className="w-full">
                 <RecentRoutineItem
+                  thumbnailUrl={routine.thumbnailUrl}
                   title={routine.title}
                   day={routine.createdAt}
                   score={routine.overallScore}

@@ -3,10 +3,15 @@ import more_Arrow from "../../assets/routine-analyze/more_arrow.svg";
 import notIcon from "../../assets/routine-analyze/notIcon.svg";
 import glassesIcon from "../../assets/routine-analyze/glassesIcon.svg";
 
+import { addInventoryItem } from "../../api/inventory"; // 🚀 1. API 임포트
+import useUserStore from "../../store/userStore"; // 🚀 2. 닉네임 스토어 임포트
+
 const RoutineAccordionItem = ({ step }) => {
   // 기본적으로 열려있도록 설정
   const [isExpanded, setIsExpanded] = useState(true);
-  //단계에서 아이디와 대체품 가져오기
+  const nickname = useUserStore((state) => state.nickname);
+  // 등록 완료 상태를 관리하는 State 추가
+  const [isRegistered, setIsRegistered] = useState(false);
 
   // 상태에 따른 테마 색상 매핑
   const theme = {
@@ -40,6 +45,34 @@ const RoutineAccordionItem = ({ step }) => {
   };
   //대체 테마가 있다면 대체테마로, 아니라면 none으로 (오류방지)
   const currentTheme = theme[step.status] || theme.VIDEO_PRODUCT;
+
+  //인벤토리 단일 제품 등록
+  const handleRegisterProduct = async (e) => {
+    e.stopPropagation();
+
+    const confirmAdd = window.confirm(
+      `'${step.productName}'을(를) 인벤토리에 등록하시겠습니까?`,
+    );
+    if (!confirmAdd) return;
+
+    try {
+      await addInventoryItem({
+        productName: step.productName,
+      });
+      alert("성공적으로 등록되었습니다!");
+
+      setIsRegistered(true);
+    } catch (error) {
+      console.error("인벤토리 등록 실패:", error);
+      if (error.response && error.response.status === 409) {
+        alert("이미 화장대에 등록되어 있는 제품입니다! 🪞");
+        // 이미 등록된 제품이므로 굳이 버튼을 또 누를 필요가 없게 '등록 완료' 처리
+        setIsRegistered(true);
+      } else {
+        alert("등록 중 오류가 발생했습니다.");
+      }
+    }
+  };
 
   return (
     <div
@@ -106,16 +139,24 @@ const RoutineAccordionItem = ({ step }) => {
             <div className="flex justify-between text-[12px] leading-relaxed text-gray-600">
               <p>
                 {step.status === "VIDEO_PRODUCT"
-                  ? "대체 제품이 윤지님의 인벤토리에 없어요"
+                  ? `대체 제품이 ${nickname}님의 인벤토리에 없어요`
                   : step.reason}
               </p>
 
               {/* 연결필요 ~ ㅜㅜ */}
-              {step.status === "VIDEO_PRODUCT" && (
-                <span className="ml-1 cursor-pointer font-bold text-blue-50">
-                  제품 등록하기
-                </span>
-              )}
+              {step.status === "VIDEO_PRODUCT" &&
+                (!isRegistered ? (
+                  <span
+                    onClick={handleRegisterProduct}
+                    className="ml-1 cursor-pointer font-bold text-blue-50 shrink-0 whitespace-nowrap"
+                  >
+                    제품 등록하기
+                  </span>
+                ) : (
+                  <span className="ml-1 font-bold text-gray-40 shrink-0 whitespace-nowrap cursor-default">
+                    등록 완료
+                  </span>
+                ))}
             </div>
           </div>
         </div>

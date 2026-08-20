@@ -1,7 +1,7 @@
 import video_button from "../../assets/routine-analyze/video_button.svg";
 import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 
-const RecentRoutineItem = ({ title, day, score }) => {
+const RecentRoutineItem = ({ title, day, score, thumbnailUrl }) => {
   const getDaysAgo = (dateString) => {
     if (!dateString) return "";
 
@@ -23,12 +23,13 @@ const RecentRoutineItem = ({ title, day, score }) => {
     <div className="flex items-center w-full gap-3">
       <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center">
         <div className="rotate-90">
-          <div className="relative h-[60px] w-[60px] overflow-clip rounded-lg bg-gray-200">
-            <div className="absolute left-[18px] top-[18px] flex size-6 items-center justify-center">
-              <div className="-rotate-90">
-                <img src={video_button} alt="" className="size-6" />
-              </div>
-            </div>
+          <div className="relative h-[40px] w-[60px] overflow-clip rounded-lg bg-gray-200">
+            {/* 배경으로 깔리는 유튜브 썸네일 */}
+            <img
+              src={thumbnailUrl}
+              alt="유튜브 썸네일"
+              className="absolute inset-0 h-full w-full object-fill -rotate-90 scale-150"
+            />
           </div>
         </div>
       </div>

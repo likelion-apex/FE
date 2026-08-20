@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import NewItemSearchModal from "../../components/Inventory/NewItemSearchModal";
 import InventoryHomeCard from "../../components/Inventory/InventoryHomeCard";
-import { USER_NAME } from "../../mocks/mockData";
 import plusIcon from "../../assets/icons/plusIcon.svg";
 import soakImage from "../../assets/logo/soakImage.png";
 
@@ -117,7 +116,7 @@ const InventoryHome = () => {
 
           <div className="flex flex-col">
             <h2 className="text-[20px] font-bold  text-black">
-              {USER_NAME}님의 화장대에는
+              {nickname}님의 화장대에는
               <br />
               <span className="text-blue-50">{totalCount}개</span>의 제품이
               있어요
