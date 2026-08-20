@@ -16,7 +16,7 @@ const KakaoLoginButton = () => {
   return (
     <button
       onClick={handleKakaoLogin}
-      className="flex h-[68px] w-full cursor-pointer items-center justify-center gap-[50px] rounded-lg bg-white px-5 py-4"
+      className="flex h-[68px] w-full cursor-pointer items-center justify-center gap-[50px] rounded-lg bg-white px-5 py-4 mb-7"
     >
       <img src={KakaoCircle} alt="" className="size-[35px] shrink-0" />
       <p className="text-[18px] leading-[30px] font-semibold text-blue-60">

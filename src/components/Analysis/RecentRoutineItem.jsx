@@ -29,6 +29,8 @@ const RecentRoutineItem = ({
 
   const clickable = status === "COMPLETED";
 
+  if (!title || !day || !score) return null;
+
   return (
     <button
       type="button"
