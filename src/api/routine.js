@@ -30,14 +30,14 @@ export const getRoutineLogs = async ({ year, month, date }) => {
   if (month) params.month = month;
   if (date) params.date = date; // ex: "2026-08-20"
 
-  const response = await axiosInstance
+  return await axiosInstance
     .get("/api/v1/routines/logs", { params })
     .then(unwrap);
 };
 
 export const applyRoutineToToday = async (routineId) => {
   // unwrap이나 axiosInstance 등 기존에 쓰시던 방식에 맞춰주시면 됩니다!
-  const response = await axiosInstance
+  return await axiosInstance
     .post(`/api/v1/routines/${routineId}/apply-today`)
     .then(unwrap);
 };

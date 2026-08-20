@@ -82,10 +82,10 @@ const RoutineDetail = () => {
     }
 
     try {
-      await applyRoutineToToday(id); // URL에서 뽑아온 id를 그대로 넘겨줍니다.
+      const data = await applyRoutineToToday(id); // URL에서 뽑아온 id를 그대로 넘겨줍니다.
 
       alert("오늘의 루틴으로 적용되었습니다!");
-      // 적용 완료 후 데일리 루틴 탭으로 이동!
+      console.log("적용 결과 데이터", data);
       navigate("/MyRoutine", { state: { activeTab: "데일리 루틴" } });
     } catch (error) {
       console.error("오늘의 루틴 적용 실패:", error);
