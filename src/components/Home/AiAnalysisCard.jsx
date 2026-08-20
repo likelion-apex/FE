@@ -13,8 +13,8 @@ const AiAnalysisCard = ({ url, onUrlChange, onSubmit }) => {
         <p className="text-base leading-7 font-bold text-white">
           AI 분석 요청하기
         </p>
-        <p className="text-center text-xs leading-4 font-medium text-gray-80">
-          링크를 붙여넣으세요. 내 피부에 진짜 필요한
+        <p className="text-center text-xs leading-4 font-medium text-gray-80 pt-[10px] pb-[5px]">
+          오늘의 루틴을 만들어보세요. 내 피부에 진짜 필요한
           <br />
           제품인지, 집에 있는 화장품으로 대신할 수 있는지 AI가
           <br />
@@ -29,13 +29,6 @@ const AiAnalysisCard = ({ url, onUrlChange, onSubmit }) => {
         }}
         className="flex w-full flex-col gap-2"
       >
-        <input
-          type="url"
-          value={url}
-          onChange={(e) => onUrlChange?.(e.target.value)}
-          placeholder="분석하고 싶은 영상의 URL을 입력하세요"
-          className="h-12 w-full rounded border border-gray-20 bg-white px-[10px] text-sm leading-[14px] text-blue-50 outline-none placeholder:text-gray-60"
-        />
         <button
           type="submit"
           className="w-full cursor-pointer rounded-[20px] bg-blue-50 px-2 py-4 text-base leading-[14px] font-medium text-white"
