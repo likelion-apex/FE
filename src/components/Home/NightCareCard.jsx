@@ -4,7 +4,7 @@ import productPlaceholder from "../../assets/home/product-placeholder.png";
 import completeImage from "../../assets/home/routine-complete.png";
 
 // 루틴을 모두 완료했을 때 보여주는 카드 내용
-const CompletedState = ({ onRestart }) => (
+const CompletedState = () => (
   <div className="flex w-full flex-col items-center px-3 pt-[34px] pb-[34px]">
     <img src={completeImage} alt="" className="size-[124px]" />
     <p className="mt-5 text-center text-xl leading-7 font-semibold text-blue-50">
@@ -15,18 +15,11 @@ const CompletedState = ({ onRestart }) => (
       <br />
       오늘 하루도 수고 많으셨습니다.
     </p>
-    <button
-      type="button"
-      onClick={onRestart}
-      className="mt-[60px] h-[46px] w-full cursor-pointer rounded-[20px] bg-blue-50 text-sm leading-[14px] font-medium text-white"
-    >
-      새로운 루틴으로 다시하기
-    </button>
   </div>
 );
 
 // 오늘의 나이트 케어 카드. 전 단계 완료 시 완료 화면으로 전환된다.
-const NightCareCard = ({ tip, steps, checkedIds, onToggleStep, onRestart }) => {
+const NightCareCard = ({ tip, steps, checkedIds, onToggleStep }) => {
   const totalSteps = steps.length;
   const doneCount = checkedIds.length;
   const donePercent =
@@ -36,7 +29,7 @@ const NightCareCard = ({ tip, steps, checkedIds, onToggleStep, onRestart }) => {
   return (
     <div className="w-full overflow-clip rounded-[20px] border border-gray-10 bg-white shadow-[0px_12px_24px_0px_rgba(0,0,0,0.08),0px_2px_8px_0px_rgba(0,0,0,0.04)]">
       {isAllDone ? (
-        <CompletedState onRestart={onRestart} />
+        <CompletedState />
       ) : (
         <div className="flex flex-col gap-3 px-5 py-9">
           {/* 오늘 루틴 한 줄 요약 */}

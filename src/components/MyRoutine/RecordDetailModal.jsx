@@ -41,15 +41,28 @@ const SKIN_CONDITIONS = [
   },
 ];
 
+// 서버가 내려주는 condition(한글 문자열)을 위 SKIN_CONDITIONS의 id로 매핑한다.
+// 예) "촉촉하고편안해요" -> "moist" (공백이 섞여 와도 되도록 비교 시 공백 제거)
+const CONDITION_LABEL_TO_ID = {
+  트러블있고예민해요: "trouble",
+  건조하고푸석해요: "dry",
+  평범하고무난해요: "normal",
+  촉촉하고편안해요: "moist",
+  컨디션최고예요: "best",
+};
+
 const RecordDetailModal = ({ isOpen, onClose, recordData, isToday }) => {
   if (!isOpen || !recordData) return null;
 
-  // 데이터에 있는 conditionId로 해당하는 피부 컨디션 객체를 찾습니다(이거 변경 예정)
+  // 서버 condition(한글)을 우선 매핑하고, 없으면 conditionId(영어 id)로 폴백한다.
+  const conditionId =
+    CONDITION_LABEL_TO_ID[(recordData.condition || "").replace(/\s/g, "")] ??
+    recordData.conditionId;
   const condition =
-    SKIN_CONDITIONS.find((c) => c.id === recordData.conditionId) ||
-    SKIN_CONDITIONS[2]; // 기본값: normal
+    SKIN_CONDITIONS.find((c) => c.id === conditionId) || SKIN_CONDITIONS[2]; // 기본값: normal
 
-  const [memoInput, setMemoInput] = useState("");
+  // 오늘 모달을 열 때, 저장돼 있던 메모로 입력창을 채운다. (없으면 빈 값)
+  const [memoInput, setMemoInput] = useState(recordData.memo ?? "");
 
   return (
     // 배경 오버레이 (클릭 시 모달 닫힘)
@@ -155,7 +168,7 @@ const RecordDetailModal = ({ isOpen, onClose, recordData, isToday }) => {
             <div className="absolute bottom-4 left-[13px] top-3 w-[2px] bg-blue-50" />
 
             <ul className="flex flex-col gap-5">
-              {recordData.routines.map((routine, idx) => (
+              {(recordData.routines || []).map((routine, idx) => (
                 <li key={idx} className="relative z-10 flex items-center gap-3">
                   <div className="flex size-[22px] shrink-0 items-center justify-center rounded-full bg-blue-50">
                     <img src={checkIcon} alt="체크" className="size-3" />
