@@ -70,17 +70,48 @@ const NewItemSearchModal = ({ onClose }) => {
     try {
       const addRequests = selectedItems.map((item) =>
         addInventoryItem({
-          productId: item.productId,
           productName: item.productName,
         }),
       );
 
-      await Promise.all(addRequests);
+      // 모든 요청이 끝날 때까지 대기 (일부 실패해도 멈추지 않음)
+      const results = await Promise.allSettled(addRequests);
 
-      alert(`${selectedItems.length}개의 제품이 인벤토리에 등록되었습니다!`);
-      onClose();
+      let successCount = 0;
+      let duplicateCount = 0;
+      let otherErrorCount = 0;
+
+      results.forEach((res) => {
+        if (res.status === "fulfilled") {
+          successCount++;
+        } else if (res.status === "rejected") {
+          if (res.reason?.response?.status === 409) {
+            duplicateCount++;
+          } else {
+            otherErrorCount++;
+          }
+        }
+      });
+
+      // 결과별 알림 처리
+      if (otherErrorCount > 0 && successCount === 0) {
+        alert("제품 등록 중 오류가 발생했습니다.");
+        return;
+      }
+
+      if (duplicateCount > 0 && successCount > 0) {
+        alert(
+          `이미 등록된 ${duplicateCount}개 제품을 제외하고 ${successCount}개 제품이 등록되었습니다.`,
+        );
+        onClose();
+      } else if (duplicateCount > 0 && successCount === 0) {
+        alert("선택한 제품이 모두 이미 보관함에 등록되어 있습니다.");
+      } else if (successCount > 0) {
+        alert(`${successCount}개의 제품이 인벤토리에 등록되었습니다!`);
+        onClose();
+      }
     } catch (error) {
-      console.error("인벤토리 등록에 실패했습니다.", error);
+      console.error("인벤토리 등록 처리 중 오류 발생:", error);
       alert("제품 등록 중 오류가 발생했습니다.");
     }
   };

@@ -11,8 +11,7 @@ const MatchingCard = ({ data }) => {
         </div>
         <div className="flex flex-col gap-2 rounded-[16px] bg-blue-05 py-3 px-9">
           <h3 className="text-[14px] font-bold text-blue-50">
-            {/* 💡 API 명세: score -> overallScore */}
-            AI 매칭 점수 {data.matchScroe}점
+            AI 매칭 점수 {data.overallScore}점
           </h3>
           <div className="flex flex-col gap-1">
             {data.highlights?.map((detail, index) => (

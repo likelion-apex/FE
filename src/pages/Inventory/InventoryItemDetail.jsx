@@ -139,8 +139,11 @@ const ItemDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="mb-4 size-10 animate-spin rounded-full border-4 border-blue-50 border-t-transparent"></div>
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-white px-5 pb-20">
+        <div className="mb-6 size-12 animate-spin rounded-full border-4 border-blue-50 border-t-transparent"></div>
+        <h3 className="mb-2 text-[18px] font-bold text-black text-center">
+          제품 상세 정보를 불러오고 있어요. <br /> 잠시만 기다려주세요!
+        </h3>
       </div>
     );
   }
