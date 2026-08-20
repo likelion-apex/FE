@@ -1,31 +1,58 @@
-# 💧 SOAK - Frontend Repository
+# 💧 SOAK
 
-AI 맞춤형 화장품 성분 분석 및 데일리 케어 루틴 관리 서비스 'SOAK'의 프론트엔드 레포지토리입니다.
+> **AI 기반 맞춤형 화장품 성분 분석 및 데일리 케어 루틴 관리 서비스**
+
+SOAK은 사용자의 피부 상태와 보유 화장품을 바탕으로  
+더 나은 스킨케어 루틴을 제안하고, 매일의 피부 기록과 루틴 실천을 관리할 수 있도록 돕는 서비스입니다.
+
+<br />
 
 ## 🛠 Tech Stack
-- **Framework:** React (Vite)
-- **Styling:** Tailwind CSS
-- **State Management:** Zustand (w/ persist)
-- **Routing:** React Router DOM
-- **HTTP Client:** Axios
 
----
+![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-443E38?style=flat-square&logo=zustand&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=flat-square&logo=reactrouter&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat-square&logo=axios&logoColor=white)
 
-## 🚀 Key Features (주요 기능)
+<br />
+
+## ✨ Key Features
 
 ### 1. 사용자 인증 및 온보딩
-- 카카오 OAuth 2.0 기반 메인 소셜 로그인 및 심사/시연용 ID/PW 로컬 로그인 지원
-- Zustand 기반 JWT(`accessToken`, `refreshToken`) 및 회원 정보 세션 관리
-- 신규 유저 온보딩(피부 타입, 고민 설정) 여부에 따른 라우팅 분기 처리
 
-### 2. 마이 인벤토리 (화장대 관리)
-- 보유 중인 화장품 등록, 삭제 및 즐겨찾기 기능
-- 터치/마우스 스와이프 기반 인벤토리 페이지네이션 및 제품 상세 정보 확인
+- 카카오 OAuth 2.0 기반 소셜 로그인 및 심사·시연용 ID/PW 로컬 로그인 지원
+- Zustand Persist를 활용한 JWT(access token, refresh token) 및 회원 세션 관리
+- 피부 타입과 피부 고민 설정 여부에 따른 신규 사용자 온보딩 라우팅 분기
 
-### 3. AI 화장품 성분 분석 및 최적화 루틴
-- 숏폼 영상 속 제품의 성분 분석 및 피부 맞춤 점수 제공
-- 보유 인벤토리 제품을 활용한 AI 대체 추천 및 맞춤 루틴 생성
-- 데일리 루틴 단계별 완료 체크 및 루틴 기록(로그) 캘린더 관리
+### 2. 마이 인벤토리 · 화장대 관리
+
+- 보유 화장품 등록, 삭제 및 즐겨찾기 기능
+- 터치·마우스 스와이프 기반 인벤토리 페이지네이션
+- 등록한 제품의 상세 정보와 성분 정보 확인
+
+### 3. AI 성분 분석 및 맞춤 루틴
+
+- 숏폼 영상 속 화장품을 분석해 성분 정보와 피부 맞춤 점수 제공
+- 보유 중인 인벤토리 제품을 활용한 AI 대체 제품 추천
+- 피부 상태와 제품 정보를 바탕으로 한 개인 맞춤형 스킨케어 루틴 생성
+
+### 4. 데일리 루틴 및 피부 기록 관리
+
+- 오늘의 루틴을 단계별로 체크하고, 전체 완료 및 실천 진행률을 한눈에 확인
+- Zustand 전역 상태를 통해 홈과 데일리 루틴 화면의 완료 상태를 실시간으로 동기화
+- 월별 캘린더에서 루틴을 완료했거나 피부 기록을 남긴 날짜를 확인
+- 날짜 선택 시 해당 일자의 피부 컨디션, 메모, 수행 루틴 및 실천도를 상세 모달로 제공
+- 과거 기록은 저장된 루틴 로그를, 오늘 기록은 현재 진행 중인 활성 루틴을 기준으로 표시
+- 루틴 완료 후 월별 완료 일수와 캘린더 데이터를 즉시 갱신하여 최신 상태 유지
+
+### 5. 마이페이지
+
+- 사용자 프로필 및 기본 회원 정보 확인
+- 피부 타입과 피부 고민 등 개인 피부 정보 조회
+- 서비스 이용에 필요한 계정 설정 및 로그아웃 기능 제공
+- 사용자 정보를 기반으로 개인화된 SOAK 서비스 경험 지원
 
 ---
 
