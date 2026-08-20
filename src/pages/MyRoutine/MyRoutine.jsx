@@ -129,7 +129,7 @@ const MyRoutine = () => {
 
   return (
     <div className="relative flex h-full flex-col px-[20px]">
-      <div className="flex-1 overflow-y-auto pb-[100px] pt-6 ">
+      <div className="flex-1 overflow-y-auto no-scrollbar pb-[100px] pt-6">
         <div className="flex h-[44px] w-full justify-between rounded-[20px] bg-gray-10 p-[4px]">
           {/*나중에 옆으로 넘어가는 모션 넣으면 좋을듯*/}
           {["데일리 루틴", "내 루틴 보관함"].map((tab) => (
