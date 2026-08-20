@@ -6,34 +6,39 @@ import cancelIcon from "../../assets/icons/cancel.svg";
 import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 
-import { updateNickname } from "../../api/member"
+import { updateNickname } from "../../api/member";
+import useOnboardingStore from "../../store/onboardingStore";
 
 const MAX_LENGTH = 10;
 
 function Nickname() {
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
+  const nickname = useOnboardingStore((state) => state.nickname);
+  const setNickname = useOnboardingStore((state) => state.setNickname);
   const [isFocused, setIsFocused] = useState(false);
 
   const isActive = isFocused || nickname.length > 0;
 
   const handleNext = async () => {
+    const trimmedNickname = nickname.trim();
+
     try {
-      await updateNickname(nickname.trim());
+      await updateNickname(trimmedNickname);
+      setNickname(trimmedNickname);
       navigate("/onboarding/skin-type");
     } catch (err) {
-      console.error("닉네임 저장 실패:", err)
+      console.error("닉네임 저장 실패:", err);
     }
-  }
+  };
 
   return (
-    <div className="relative min-h-full w-full bg-white px-5 pt-[51px] pb-[132px]">
+    <div className="relative min-h-full w-full bg-white px-5 pt-[47px] pb-[132px]">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
-        <TopNavbar step={1} totalSteps={4} />
+        <TopNavbar step={1} totalSteps={4} showBackButton={false} />
 
         <div className="mt-6 flex flex-col items-center gap-12">
           <div className="flex w-full flex-col gap-4">

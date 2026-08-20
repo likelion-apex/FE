@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import more_Arrow from "../../assets/routine-analyze/more_arrow.svg";
 import notIcon from "../../assets/routine-analyze/notIcon.svg";
 import glassesIcon from "../../assets/routine-analyze/glassesIcon.svg";
+import ProductImage from "../ProductImage";
 
 import { addInventoryItem } from "../../api/inventory"; // 🚀 1. API 임포트
 import useUserStore from "../../store/userStore"; // 🚀 2. 닉네임 스토어 임포트
@@ -88,8 +89,9 @@ const RoutineAccordionItem = ({ step }) => {
           <div className="flex size-5 items-center justify-center rounded-full bg-blue-50 text-[16px] font-semibold text-white shrink-0">
             {step.order}
           </div>
-          <img
-            src={step.imageUrl}
+          <ProductImage
+            alt=""
+            category={step.category}
             className="size-[36px] shrink-0 rounded-lg border-gray-40"
           />
 

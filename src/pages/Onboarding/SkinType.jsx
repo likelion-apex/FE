@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import checkIcon from "../../assets/skin-type/check.svg";
@@ -12,6 +11,7 @@ import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 
 import { updateSkinType } from "../../api/member"
+import useOnboardingStore from "../../store/onboardingStore";
 
 const SKIN_TYPES = [
   {
@@ -48,7 +48,8 @@ const SKIN_TYPES = [
 
 function SkinType() {
   const navigate = useNavigate();
-  const [selectedId, setSelectedId] = useState(null);
+  const selectedId = useOnboardingStore((state) => state.skinTypeId);
+  const setSelectedId = useOnboardingStore((state) => state.setSkinTypeId);
 
   const handleNext = async () => {
     const skinType = SKIN_TYPES.find((type) => type.id === selectedId,)?.name;

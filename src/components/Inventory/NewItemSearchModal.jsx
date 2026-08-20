@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import searchIcon_gray from "../../assets/routine-analyze/searchIcon_gray.svg";
 import searchIcon_blue from "../../assets/routine-analyze/searchIcon_blue.svg";
 import notIcon from "../../assets/routine-analyze/notIcon_black.svg";
-import useAuthStore from "../../store/authStore";
 import { searchProducts, addInventoryItem } from "../../api/inventory";
+import ProductImage from "../ProductImage";
 
 import { createPortal } from "react-dom";
 
@@ -13,7 +12,6 @@ const NewItemSearchModal = ({ onClose }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]); // 선택된 제품들을 담는 배열
   const [isLoading, setIsLoading] = useState(false);
-  const accessToken = useAuthStore((state) => state.accessToken);
 
   useEffect(() => {
     if (!keyword.trim()) {
@@ -187,13 +185,11 @@ const NewItemSearchModal = ({ onClose }) => {
                     >
                       {/* 작은 원형 썸네일 */}
                       <div className="size-6 shrink-0 overflow-hidden rounded-full bg-gray-10">
-                        {selected.imageUrl && (
-                          <img
-                            src={selected.imageUrl}
-                            alt={selected.productName}
-                            className="h-full w-full object-cover"
-                          />
-                        )}
+                        <ProductImage
+                          alt={selected.productName}
+                          category={selected.category}
+                          className="h-full w-full object-cover"
+                        />
                       </div>
 
                       {/* 제품명 (너무 길면 말줄임표 처리) */}
@@ -237,13 +233,11 @@ const NewItemSearchModal = ({ onClose }) => {
                           {/* 왼쪽: 이미지 + 제품 정보 */}
                           <div className="flex items-center gap-3">
                             <div className="size-[52px] shrink-0 overflow-hidden rounded-lg bg-gray-10">
-                              {item.imageUrl && (
-                                <img
-                                  src={item.imageUrl}
-                                  alt={item.productName}
-                                  className="h-full w-full object-cover"
-                                />
-                              )}
+                              <ProductImage
+                                alt={item.productName}
+                                category={item.category}
+                                className="h-full w-full object-cover"
+                              />
                             </div>
                             <div className="flex flex-col gap-0.5">
                               <span className="text-[11px] text-gray-40">

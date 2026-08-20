@@ -24,7 +24,11 @@ const normalizeRecord = (raw, dateLabel) => {
     completionRate,
     completedCount,
     totalCount,
-    routines: steps.map((s) => ({ name: s.productName ?? s.name })),
+    routines: steps.map((s) => ({
+      name: s.productName ?? s.name,
+      imageUrl: s.imageUrl ?? s.productImageUrl,
+      category: s.category,
+    })),
   };
 };
 
@@ -36,9 +40,8 @@ const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
   // 오늘이 아니거나 활성 루틴이 없으면 로그 그대로 사용
   if (!isToday || !activeRoutine) return base;
 
-  // 이미 로그에 진행 루틴이 담겨오면 그대로 둔다
-  if (base && (base.routines?.length ?? 0) > 0) return base;
-
+  // 오늘 모달은 데일리 루틴 화면과 같은 활성 루틴을 기준으로 표시한다.
+  // 일별 로그에 이전 단계 목록이 있어도 현재 활성 루틴으로 덮어써서 단계/진행률을 맞춘다.
   const steps = activeRoutine.steps ?? [];
   const completedCount = steps.filter((s) => s.completed).length;
   const totalCount = steps.length;
@@ -48,7 +51,11 @@ const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
     completionRate:
       activeRoutine.completionRate ??
       (totalCount ? Math.round((completedCount / totalCount) * 100) : 0),
-    routines: steps.map((s) => ({ name: s.productName ?? s.name })),
+    routines: steps.map((s) => ({
+      name: s.productName ?? s.name,
+      imageUrl: s.imageUrl ?? s.productImageUrl,
+      category: s.category,
+    })),
   };
 
   // 컨디션/메모(base)가 있으면 그 위에 루틴 정보만 얹고, 없으면 새로 구성

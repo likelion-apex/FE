@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import IngredientReason from "../../components/Analysis/IngredientReason";
-import TopNavbar from "../layouts/TopNavbar";
 import Item from "../../components/Use/Item";
 import IngredientInfo from "./IngredientInfo";
 import axios from "axios";
 import useAuthStore from "../../store/authStore";
 import Information from "../../assets/routine-analyze/Information.svg";
 import kirakiraIcon from "../../assets/icons/kirakiraIcon.svg";
+import ProductImage from "../ProductImage";
 
 import { addInventoryItem } from "../../api/inventory";
 
@@ -18,7 +18,6 @@ const IngredientModal = ({
   nickname,
 
   ToggleFavorite,
-  onDeleteInventory,
   onToggleInventory,
   isInInventory = true,
 }) => {
@@ -133,6 +132,16 @@ const IngredientModal = ({
         //모달일때
         <div className="relative flex w-full items-center justify-between px-5 pt-8 pb-6 shrink-0">
           {/* 1. 닫기(X) 버튼: absolute로 우측 상단 공중에 띄우기 */}
+        <div className="flex items-start justify-between px-5 py-6 shrink-0">
+          <div className="flex gap-4">
+            {/* 이미지 삽입 필요 */}
+            <ProductImage
+              alt=""
+              category={data.category}
+              className="size-[36px] shrink-0 rounded-lg border-gray-40"
+            />
+            <Item data={data} />
+          </div>
           <button
             onClick={onClose}
             className="absolute right-4 top-4 flex size-7 items-center justify-center rounded-full bg-gray-10 text-[16px] font-bold text-gray-50 cursor-pointer"

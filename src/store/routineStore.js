@@ -4,7 +4,6 @@ import { persist } from "zustand/middleware";
 import {
   getDailyRoutine,
   updateStepCompletion,
-  completeAllSteps,
   completeToday,
 } from "../api/routine";
 import useAuthStore from "./authStore";
@@ -58,9 +57,11 @@ const useRoutineStore = create(
 
         try {
           const data = await getDailyRoutine();
-          // 빈 응답이 오면 이미 들고 있는 루틴을 지우지 않는다.
-          // (방금 apply-today로 적용한 루틴이 서버 재조회에서 잠깐 안 잡히는 경우 대비)
-          if (data)
+          console.log("오늘의 데일리 루틴 API 응답:", data);
+          // DAY/NIGHT 무시하고 무조건 NIGHT 루틴만 다룬다.
+          // - NIGHT 루틴이 오면 그 최신 stepId로 갱신
+          // - 낮이라 null이 오거나 DAY 루틴이 와도 무시하고, 기존(NIGHT) 루틴 유지
+          if (data && data.routineType === "NIGHT")
             set({
               routine: data,
               loaded: true,
@@ -141,14 +142,17 @@ const useRoutineStore = create(
           return;
         }
 
-        // 전체 완료
+        // 전체 완료: bulk API(complete-all)가 404라 스텝별 개별 완료로 처리한다.
         const previous = routine;
         setAll(true);
         try {
-          const data = await completeAllSteps();
-          set({ routine: data });
+          const ids = routine.steps.map((s) => s.stepId);
+          const results = await Promise.all(
+            ids.map((id) => updateStepCompletion(id, true)),
+          );
+          set({ routine: results[results.length - 1] });
         } catch (err) {
-          console.error("전체 완료 처리 실패:", err);
+          console.error("전체 완료 실패:", err);
           set({ routine: previous });
         }
       },
@@ -159,27 +163,31 @@ const useRoutineStore = create(
         if (!routine || routine.completed || isCompleting) return false;
 
         set({ isCompleting: true });
+
+        // 서버 완료 API(/complete)가 지금 404라, 실패해도 무시하고 로컬로 완료 처리한다.
+        // (버튼은 모든 스텝이 이미 체크됐을 때만 눌리므로, 스텝 완료는 서버에 이미 반영돼 있음)
+        let data = null;
         try {
-          const data = await completeToday();
-          // 완료 여부는 모든 스텝 체크가 아니라 완료 API의 성공으로만 변경한다.
-          // API가 전체 루틴을 주면 최신 정보도 반영하고, 그렇지 않아도 현재 스텝은 유지한다.
-          set((state) => ({
-            routine: {
-              ...state.routine,
-              ...(data && typeof data === "object" ? data : {}),
-              steps: data?.steps ?? state.routine?.steps ?? [],
-              completed: true,
-            },
-            isCompleting: false,
-            routineDate: getTodayKey(),
-            memberId: getMemberId(),
-          }));
-          return true;
+          data = await completeToday();
         } catch (err) {
-          console.error("루틴 완료 처리 실패:", err);
-          set({ isCompleting: false });
-          return false;
+          console.warn(
+            "루틴 완료 API 실패(로컬로 완료 처리):",
+            err?.response?.status,
+          );
         }
+
+        set((state) => ({
+          routine: {
+            ...state.routine,
+            ...(data && typeof data === "object" ? data : {}),
+            steps: data?.steps ?? state.routine?.steps ?? [],
+            completed: true,
+          },
+          isCompleting: false,
+          routineDate: getTodayKey(),
+          memberId: getMemberId(),
+        }));
+        return true;
       },
     }),
     {

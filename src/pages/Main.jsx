@@ -79,10 +79,14 @@ function Main() {
     });
   };
 
-  const mappedSteps = (routine?.steps ?? []).map((step) => ({
+  const mappedSteps = (routine?.steps ?? []).map((step, index) => ({
     id: step.stepId,
+    // 데일리 루틴 화면과 동일하게 화면에서는 1부터 순서대로 보여준다.
+    order: index + 1,
     name: step.productName,
+    brand: step.brand,
     imageUrl: step.imageUrl,
+    category: step.category,
   }));
 
   const mappedFavorites = (summary?.favoriteInventory?.items ?? []).map(
@@ -90,6 +94,7 @@ function Main() {
       id: item.inventoryId ?? item.productId,
       name: item.productName,
       imageUrl: item.imageUrl,
+      category: item.category,
     }),
   );
 
