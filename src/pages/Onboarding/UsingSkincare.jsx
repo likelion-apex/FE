@@ -65,7 +65,7 @@ function UsingSkincare() {
 
     setIsSubmitting(true);
     try {
-      await Promise.all(
+      const results = await Promise.allSettled(
         registered.map((item) =>
           addInventoryItem({
             productId: item.productId,
@@ -73,10 +73,28 @@ function UsingSkincare() {
           }),
         ),
       );
+
+      const rejected = results.filter((r) => r.status === "rejected");
+      // 409(Conflict) = 이미 등록된 제품 / 그 외 = 실제 오류
+      const conflicts = rejected.filter(
+        (r) => r.reason?.response?.status === 409,
+      );
+      const realErrors = rejected.filter(
+        (r) => r.reason?.response?.status !== 409,
+      );
+
+      if (realErrors.length > 0) {
+        console.error("인벤토리 등록 실패:", realErrors);
+        alert("제품 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+        return;
+      }
+
+      // 이미 등록된 제품이 있으면 알려준다.
+      if (conflicts.length > 0) {
+        alert("이미 등록된 제품입니다.");
+      }
+
       navigate("/main");
-    } catch (error) {
-      console.error("인벤토리 등록 실패:", error);
-      alert("제품 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
     } finally {
       setIsSubmitting(false);
     }
