@@ -170,7 +170,14 @@ const IngredientModal = ({
         <div className="flex flex-col w-full">
           {/* 이미지 삽입 필요 */}
           <div className="flex flex-col px-5 pt-6 pb-2">
-            <div className="size-[360px] rounded-xl bg-gray-10 mb-8" />
+            <div className="flex w-full justify-center mb-8">
+              <ProductImage
+                imageUrl={data.imageUrl}
+                category={data.category}
+                alt="제품 이미지"
+                className="size-[360px] rounded-xl object-cover bg-gray-10 border border-gray-10"
+              />
+            </div>
 
             <div className="relative w-full">
               <div className="pr-24">
