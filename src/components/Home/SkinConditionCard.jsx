@@ -105,6 +105,7 @@ const SkinConditionCard = ({
         />
         <button
           type="submit"
+          onClick = {()=>alert("메모 저장 완료!")}
           className="shrink-0 cursor-pointer rounded bg-blue-50 p-[10px] text-sm leading-[14px] whitespace-nowrap text-white shadow-[0px_12px_12px_0px_rgba(0,0,0,0.08),0px_2px_4px_0px_rgba(0,0,0,0.04)]"
         >
           {isMemoSaved ? "수정" : "작성"}

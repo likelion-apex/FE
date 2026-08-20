@@ -13,7 +13,7 @@ const AiAnalysisCard = ({ url, onUrlChange, onSubmit }) => {
         <p className="text-base leading-7 font-bold text-white">
           AI 분석 요청하기
         </p>
-        <p className="text-center text-xs leading-4 font-medium text-gray-80 pt-[10px] pb-[5px]">
+        <p className="text-center text-xs leading-4 font-medium text-gray-80 pt-[10px] pb-[5px]https://www.figma.com/design/QBP8w8uZG7c45uXHkkFE7A/%ED%95%B4%EC%BB%A4%ED%86%A4?node-id=688-2097&t=qSGRnlEVsyKwcQfN-0">
           오늘의 루틴을 만들어보세요. 내 피부에 진짜 필요한
           <br />
           제품인지, 집에 있는 화장품으로 대신할 수 있는지 AI가

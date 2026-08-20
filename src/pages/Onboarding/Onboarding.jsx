@@ -45,12 +45,14 @@ const Onboarding = () => {
         </div>
 
         {!accessToken && <KakaoLoginButton />}
-      </div>
-      <div
-        className="underline text-blue-05 font-semibold text-[14px] text-center cursor-pointer"
-        onClick={() => navigate("/onboarding/LoginPage")}
-      >
-        ID/PW로 로그인
+        {!accessToken && (
+          <div
+            className="underline text-blue-05 font-semibold text-[14px] text-center cursor-pointer"
+            onClick={() => navigate("/onboarding/LoginPage")}
+          >
+            ID/PW로 로그인
+          </div>
+        )}
       </div>
     </div>
   );

@@ -67,7 +67,9 @@ const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
     routineType: activeRoutine.routineType ?? "NIGHT",
     completedCount,
     totalCount,
-    completionRate: totalCount ? Math.round((completedCount / totalCount) * 100) : 0,
+    completionRate: totalCount
+      ? Math.round((completedCount / totalCount) * 100)
+      : 0,
     routines: steps.map((s) => ({
       order: s.order ?? s.stepOrder,
       name: s.productName ?? s.name,
@@ -86,6 +88,7 @@ const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
 const MyCalendar = ({
   progressPercentage,
   monthlyData = [],
+  completedDaysCount,
   dailyRecord = null,
   onDateSelect,
   onMonthChange,
@@ -345,7 +348,10 @@ const MyCalendar = ({
       <div className="mt-6 flex w-full items-center justify-center rounded-[12px] bg-blue-05 p-[8px] text-[12px] font-semibold text-gray-60">
         이번 달은 총{" "}
         <span className="mx-1 text-blue-50">
-          {monthlyData?.completedDaysCount ?? completedDays.length}일
+          {completedDaysCount ??
+            monthlyData?.completedDaysCount ??
+            completedDays.length}
+          일
         </span>{" "}
         루틴을 완수했어요!
       </div>
