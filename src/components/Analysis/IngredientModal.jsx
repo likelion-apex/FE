@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import IngredientReason from "../../components/Analysis/IngredientReason";
-import TopNavbar from "../layouts/TopNavbar";
 import Item from "../../components/Use/Item";
 import IngredientInfo from "./IngredientInfo";
 import axios from "axios";
 import useAuthStore from "../../store/authStore";
 import Information from "../../assets/routine-analyze/Information.svg";
 import kirakiraIcon from "../../assets/icons/kirakiraIcon.svg";
+import ProductImage from "../ProductImage";
 
 const IngredientModal = ({
   onClose,
@@ -16,7 +16,6 @@ const IngredientModal = ({
   nickname,
 
   ToggleFavorite,
-  onDeleteInventory,
   onToggleInventory,
   isInInventory = true,
 }) => {
@@ -100,10 +99,11 @@ const IngredientModal = ({
         <div className="flex items-start justify-between px-5 py-6 shrink-0">
           <div className="flex gap-4">
             {/* 이미지 삽입 필요 */}
-            <img
-            src={data.imageUrl}
-            className="size-[36px] shrink-0 rounded-lg border-gray-40"
-          />
+            <ProductImage
+              alt=""
+              category={data.category}
+              className="size-[36px] shrink-0 rounded-lg border-gray-40"
+            />
             <Item data={data} />
           </div>
           <button
