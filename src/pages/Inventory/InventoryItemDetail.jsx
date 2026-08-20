@@ -12,6 +12,7 @@ import {
 } from "../../api/inventory";
 
 import IngredientModal from "../../components/Analysis/IngredientModal";
+import { m } from "framer-motion";
 
 const ItemDetail = () => {
   const { inventoryId } = useParams();
@@ -39,6 +40,8 @@ const ItemDetail = () => {
         // API에서 가져온 데이터를 IngredientModal 구조에 맞게 조립
         const mappedData = {
           modalDetails: {
+            inventoryId: inventoryId,
+
             displayBrand: "내 화장대 제품", // 브랜드
             displayProductName: aiData.productName,
             ingredientMarketOrVariant: "", //용량
@@ -46,6 +49,9 @@ const ItemDetail = () => {
             matchScore: aiData.score,
             matchTitle: `${nickname || "고객"}님 맞춤 분석 결과`,
             nickname: nickname,
+            brand: ingData.brand,
+            isFavorite: aiData.isFavorite,
+            imageUrl: aiData.imageUrl,
 
             //AI 분석 데이터 매핑
             reasons: aiData.keywords.map((k, index) => ({
@@ -59,12 +65,12 @@ const ItemDetail = () => {
             ingredientStats: {
               totalCount: ingData.ingredients.length,
               // 위험도/알레르기 정보 없음
-              lowRiskCount: 0,
-              moderateRiskCount: 0,
-              highRiskCount: 0,
-              unknownRiskCount: ingData.ingredients.length,
-              caution20Count: 0,
-              allergenCount: 0,
+              lowRiskCount: ingData.riskDistribution.low,
+              moderateRiskCount: ingData.riskDistribution.medium,
+              highRiskCount: ingData.riskDistribution.high,
+              unknownRiskCount: 0,
+              caution20Count: ingData.caution20Count,
+              allergenCount: ingData.allergyCount,
             },
 
             ingredients: ingData.ingredients.map((ing, index) => ({
@@ -78,6 +84,7 @@ const ItemDetail = () => {
           },
         };
 
+        console.log("필드명 매핑", mappedData);
         setItemData(mappedData);
       } catch (error) {
         console.error("제품 상세 정보를 불러오지 못했습니다.", error);
