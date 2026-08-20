@@ -65,6 +65,7 @@ const RecordDetailModal = ({ isOpen, onClose, recordData, isToday }) => {
   const condition =
     SKIN_CONDITIONS.find((item) => item.id === conditionId) ||
     SKIN_CONDITIONS[2];
+  const routineLogs = recordData.routineLogs ?? [];
 
   return (
     <div
@@ -130,74 +131,75 @@ const RecordDetailModal = ({ isOpen, onClose, recordData, isToday }) => {
             </div>
           </section>
 
-          <hr className="my-6 border-gray-10" />
+          {routineLogs.map((routineLog, routineIndex) => (
+            <section
+              key={routineLog.routineId ?? `${routineLog.name}-${routineIndex}`}
+              className={`border-t border-gray-10 py-6 ${
+                routineIndex === 0 ? "mt-6" : ""
+              }`}
+            >
+              <div className="mb-2 flex items-center justify-between gap-3">
+                <h3 className="truncate text-[14px] font-semibold text-gray-60">
+                  {routineLog.name} 실천도
+                </h3>
+                <span className="shrink-0 text-[14px] font-bold text-blue-50">
+                  {routineLog.completionRate}%({routineLog.completedCount}/
+                  {routineLog.totalCount})
+                </span>
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-10">
+                <div
+                  className="h-full rounded-full bg-blue-50 transition-all duration-500"
+                  style={{ width: `${routineLog.completionRate}%` }}
+                />
+              </div>
 
-          <section>
-            <div className="mb-2 flex items-center justify-between">
-              <h3 className="text-[14px] font-semibold text-gray-60">
-                나이트 케어 실천도
+              <h3 className="mb-4 mt-6 text-[14px] font-semibold text-gray-60">
+                진행한 루틴
               </h3>
-              <span className="text-[14px] font-bold text-blue-50">
-                {recordData.completionRate}%({recordData.completedCount}/
-                {recordData.totalCount})
-              </span>
-            </div>
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-10">
-              <div
-                className="h-full rounded-full bg-blue-50 transition-all duration-500"
-                style={{ width: `${recordData.completionRate}%` }}
-              />
-            </div>
-          </section>
+              <div className="relative pl-1">
+                <div className="absolute top-3 bottom-4 left-[13px] w-[2px] bg-blue-50" />
 
-          <hr className="my-6 border-gray-10" />
-
-          <section className="pb-2">
-            <h3 className="mb-4 text-[14px] font-semibold text-gray-60">
-              진행한 루틴
-            </h3>
-            <div className="relative pl-1">
-              <div className="absolute top-3 bottom-4 left-[13px] w-[2px] bg-blue-50" />
-
-              <ul className="flex flex-col gap-5">
-                {(recordData.routines || []).map((routine, index) => (
-                  <li
-                    key={`${routine.name}-${index}`}
-                    className="relative z-10 flex items-center gap-3"
-                  >
-                    <div
-                      className={`flex size-[22px] shrink-0 items-center justify-center rounded-full border ${
-                        routine.completed
-                          ? "border-blue-50 bg-blue-50"
-                          : "border-gray-20 bg-white"
-                      }`}
+                <ul className="flex flex-col gap-5">
+                  {routineLog.routines.map((routine, index) => (
+                    <li
+                      key={`${routine.name}-${index}`}
+                      className="relative z-10 flex items-center gap-3"
                     >
-                      {routine.completed && (
-                        <img src={checkIcon} alt="완료" className="size-3" />
-                      )}
-                    </div>
+                      <div
+                        className={`flex size-[22px] shrink-0 items-center justify-center rounded-full border ${
+                          routine.completed
+                            ? "border-blue-50 bg-blue-50"
+                            : "border-gray-20 bg-white"
+                        }`}
+                      >
+                        {routine.completed && (
+                          <img src={checkIcon} alt="완료" className="size-3" />
+                        )}
+                      </div>
 
-                    <ProductImage
-                      alt=""
-                      category={routine.category}
-                      className="size-[30px] shrink-0 rounded-md object-cover"
-                    />
+                      <ProductImage
+                        alt=""
+                        category={routine.category}
+                        className="size-[30px] shrink-0 rounded-md object-cover"
+                      />
 
-                    <span
-                      className={`shrink-0 text-[14px] font-semibold ${
-                        routine.completed ? "text-blue-50" : "text-gray-40"
-                      }`}
-                    >
-                      {routine.order ?? index + 1}단계
-                    </span>
-                    <span className="truncate text-[14px] text-black">
-                      {routine.name}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
+                      <span
+                        className={`shrink-0 text-[14px] font-semibold ${
+                          routine.completed ? "text-blue-50" : "text-gray-40"
+                        }`}
+                      >
+                        {routine.order ?? index + 1}단계
+                      </span>
+                      <span className="truncate text-[14px] text-black">
+                        {routine.name}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+          ))}
         </div>
       </div>
     </div>

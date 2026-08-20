@@ -8,7 +8,6 @@ import drynessIcon from "../../assets/skin-concern/dryness.svg";
 import rednessIcon from "../../assets/skin-concern/redness.svg";
 import sebumIcon from "../../assets/skin-concern/sebum.svg";
 import sensitiveIcon from "../../assets/skin-concern/sensitive.svg";
-import wrinkleIcon from "../../assets/skin-concern/wrinkle.svg";
 import MaskIcon from "../../components/MaskIcon";
 import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
@@ -20,12 +19,11 @@ const SKIN_CONCERNS = [
   { id: 1, name: "속건조", icon: drynessIcon },
   { id: 2, name: "여드름", icon: acneIcon },
   { id: 3, name: "민감성", icon: sensitiveIcon },
-  { id: 4, name: "미백/잡티", icon: brighteningIcon },
+  { id: 4, name: "미백·잡티", icon: brighteningIcon },
   { id: 5, name: "다크서클", icon: darkCircleIcon },
-  { id: 6, name: "주름/탄력", icon: wrinkleIcon },
-  { id: 7, name: "피지/블랙헤드", icon: sebumIcon },
-  { id: 8, name: "홍조", icon: rednessIcon },
-  { id: 9, name: "아토피", icon: atopyIcon },
+  { id: 6, name: "색소·블랙헤드", icon: sebumIcon },
+  { id: 7, name: "홍조", icon: rednessIcon },
+  { id: 8, name: "아토피", icon: atopyIcon },
 ];
 
 function SkinConcern() {
