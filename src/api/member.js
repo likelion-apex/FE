@@ -22,3 +22,6 @@ export const updateSkinConcerns = (skinConcerns) =>
   axiosInstance
     .patch("/api/members/me/skin-concerns", { skinConcerns })
     .then(unwrap);
+
+export const completeOnboarding = () =>
+  axiosInstance.post("/api/members/me/onboarding/complete").then(unwrap);

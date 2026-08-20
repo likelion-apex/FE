@@ -17,6 +17,7 @@ import SkinType from "./pages/Onboarding/SkinType";
 import SkinConcern from "./pages/Onboarding/SkinConcern";
 import UsingSkincare from "./pages/Onboarding/UsingSkincare";
 import Nickname from "./pages/Onboarding/Nickname";
+import IdPasswordLogin from "./pages/Onboarding/IdPasswordLogin";
 
 import MyRoutine from "./pages/MyRoutine/MyRoutine";
 import RoutineDetail from "./pages/MyRoutine/RoutineDetail";
@@ -62,6 +63,10 @@ function App() {
             <Route path="/" element={<Onboarding />} />
             <Route path="/onboarding/*" element={<Onboarding />} />
             <Route path="/onboarding/kakao" element={<KakaoCallback />} />
+            <Route
+              path="/onboarding/id-login"
+              element={<IdPasswordLogin />}
+            />
             <Route path="/onboarding/skin-type" element={<SkinType />} />
             <Route path="/onboarding/skin-concern" element={<SkinConcern />} />
             <Route path="/onboarding/skincare" element={<UsingSkincare />} />

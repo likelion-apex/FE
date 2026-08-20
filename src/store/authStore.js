@@ -14,6 +14,7 @@ const useAuthStore = create(
       accessToken: null,
       refreshToken: null,
       member: null,
+      onboardingRequired: false,
 
       // 로그인 성공 시 받은 TokenResponse를 그대로 넘긴다.
       setAuth: (tokenResponse) =>
@@ -21,29 +22,48 @@ const useAuthStore = create(
           accessToken: tokenResponse.accessToken,
           refreshToken: tokenResponse.refreshToken ?? null,
           member: tokenResponse.member ?? null,
+          onboardingRequired:
+            tokenResponse.onboardingRequired ??
+            tokenResponse.isNewMember ??
+            false,
         }),
 
       // 재발급으로 토큰만 갱신할 때 사용한다.
-      setTokens: ({ accessToken, refreshToken }) =>
+      setTokens: ({ accessToken, refreshToken, onboardingRequired }) =>
         set({
           accessToken,
           refreshToken: refreshToken ?? get().refreshToken,
+          onboardingRequired:
+            onboardingRequired ?? get().onboardingRequired,
         }),
 
       // /api/members/me 응답 등으로 회원 정보만 갱신할 때 사용한다.
       setMember: (member) => set({ member }),
 
+      markOnboardingComplete: () => set({ onboardingRequired: false }),
+
       clearAuth: () =>
-        set({ accessToken: null, refreshToken: null, member: null }),
+        set({
+          accessToken: null,
+          refreshToken: null,
+          member: null,
+          onboardingRequired: false,
+        }),
 
       isAuthenticated: () => Boolean(get().accessToken),
     }),
     {
       name: "soak-auth",
-      partialize: ({ accessToken, refreshToken, member }) => ({
+      partialize: ({
         accessToken,
         refreshToken,
         member,
+        onboardingRequired,
+      }) => ({
+        accessToken,
+        refreshToken,
+        member,
+        onboardingRequired,
       }),
     },
   ),

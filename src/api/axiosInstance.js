@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
 });
 
 // 재발급 요청은 인터셉터를 타면 안 되므로 별도 인스턴스를 쓴다.
-const plainAxios = axios.create({
+export const plainAxios = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   timeout: 30000,
 });

@@ -6,9 +6,14 @@ import searchIcon from "../../assets/icons/search.svg";
 import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import { searchProducts, addInventoryItem } from "../../api/inventory";
+import { completeOnboarding } from "../../api/member";
+import useAuthStore from "../../store/authStore";
 
 function UsingSkincare() {
   const navigate = useNavigate();
+  const markOnboardingComplete = useAuthStore(
+    (state) => state.markOnboardingComplete,
+  );
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -120,8 +125,13 @@ function UsingSkincare() {
         );
       }
 
-      // 새 제품이 최소 한 개 등록된 경우에만 메인으로 이동한다.
-      navigate("/main");
+      // 새 제품이 최소 한 개 등록된 경우에만 서버 온보딩을 완료하고 메인으로 이동한다.
+      await completeOnboarding();
+      markOnboardingComplete();
+      navigate("/main", { replace: true });
+    } catch (error) {
+      console.error("온보딩 완료 실패:", error?.response?.status);
+      alert("온보딩을 완료하지 못했습니다. 입력한 정보를 확인해주세요.");
     } finally {
       setIsSubmitting(false);
     }

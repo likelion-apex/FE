@@ -41,7 +41,9 @@ const KakaoCallback = () => {
 
         // 신규 회원은 온보딩부터, 기존 회원은 홈으로.
         // 뒤로가기로 이 콜백 화면에 다시 들어오지 않도록 replace로 이동합니다.
-        navigate(tokens.isNewMember ? "/onboarding/nickname" : "/main", {
+        const onboardingRequired =
+          tokens.onboardingRequired ?? tokens.isNewMember ?? false;
+        navigate(onboardingRequired ? "/onboarding/nickname" : "/main", {
           replace: true,
         });
       } catch (err) {
