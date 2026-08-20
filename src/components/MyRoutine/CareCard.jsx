@@ -1,5 +1,6 @@
 import React from "react";
 import checkIcon from "../../assets/routine-analyze/checkIcon.svg";
+import productPlaceholder from "../../assets/home/product-placeholder.png";
 
 const RoutineCard = ({ step, isChecked, onClick }) => {
   return (
@@ -16,7 +17,15 @@ const RoutineCard = ({ step, isChecked, onClick }) => {
         <div className="flex size-[20px] items-center justify-center rounded-full bg-gray-40 text-[12px] font-semibold text-white">
           {step.id}
         </div>
-        <div className="size-[40px] rounded-[10px] bg-gray-40"></div>
+        <img
+          src={step.imageUrl || productPlaceholder}
+          alt=""
+          className="size-[40px] rounded-[10px] object-cover"
+          onError={(event) => {
+            event.currentTarget.onerror = null;
+            event.currentTarget.src = productPlaceholder;
+          }}
+        />
       </div>
 
       {/* 중앙: 텍스트 영역 */}
