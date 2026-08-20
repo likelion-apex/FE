@@ -212,7 +212,7 @@ const SmartLoading = () => {
             strokeWidth="2"
             strokeDasharray="590"
             strokeDashoffset="590"
-            style={{ animation: "fill-up 15s linear forwards" }}
+            style={{ animation: "fill-up 60s linear forwards" }}
           />
         </svg>
 
