@@ -28,8 +28,8 @@ const SavedRoutineList = ({ onClick }) => {
         name: activeRoutine.name,
         routineType: activeRoutine.routineType,
         stepCount: activeRoutine.steps?.length ?? 0,
-        createdAt: null, // 활성 루틴 응답엔 생성일/점수가 없다
-        matchScore: null,
+        createdAt: null, // 활성 루틴 응답엔 생성일이 없다
+        overallScore: activeRoutine.aiBriefing?.overallScore ?? null,
         isActive: true, // 카드에 "오늘 적용중" 뱃지 표시용
       }
     : null;
