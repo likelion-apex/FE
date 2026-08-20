@@ -4,6 +4,8 @@ import { getMyProfile } from "../api/member"; // 방금 찾으신 API
 const useUserStore = create((set) => ({
   nickname: "",
 
+  setNickname: (nickname) => set({ nickname }),
+
   fetchUserInfo: async () => {
     try {
       const data = await getMyProfile();
