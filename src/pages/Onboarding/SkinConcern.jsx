@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import acneIcon from "../../assets/skin-concern/acne.svg";
@@ -15,6 +14,7 @@ import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 
 import { updateSkinConcerns } from "../../api/member";
+import useOnboardingStore from "../../store/onboardingStore";
 
 const SKIN_CONCERNS = [
   { id: 1, name: "속건조", icon: drynessIcon },
@@ -30,7 +30,10 @@ const SKIN_CONCERNS = [
 
 function SkinConcern() {
   const navigate = useNavigate();
-  const [selectedIds, setSelectedIds] = useState([]);
+  const selectedIds = useOnboardingStore((state) => state.skinConcernIds);
+  const setSelectedIds = useOnboardingStore(
+    (state) => state.setSkinConcernIds,
+  );
 
   const toggle = (id) =>
     setSelectedIds((prev) =>

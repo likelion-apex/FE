@@ -7,19 +7,24 @@ import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 
 import { updateNickname } from "../../api/member";
+import useOnboardingStore from "../../store/onboardingStore";
 
 const MAX_LENGTH = 10;
 
 function Nickname() {
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
+  const nickname = useOnboardingStore((state) => state.nickname);
+  const setNickname = useOnboardingStore((state) => state.setNickname);
   const [isFocused, setIsFocused] = useState(false);
 
   const isActive = isFocused || nickname.length > 0;
 
   const handleNext = async () => {
+    const trimmedNickname = nickname.trim();
+
     try {
-      await updateNickname(nickname.trim());
+      await updateNickname(trimmedNickname);
+      setNickname(trimmedNickname);
       navigate("/onboarding/skin-type");
     } catch (err) {
       console.error("닉네임 저장 실패:", err);

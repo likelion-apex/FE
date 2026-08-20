@@ -7,9 +7,13 @@ import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import ProductImage from "../../components/ProductImage";
 import { searchProducts, addInventoryItem } from "../../api/inventory";
+import useOnboardingStore from "../../store/onboardingStore";
 
 function UsingSkincare() {
   const navigate = useNavigate();
+  const resetOnboarding = useOnboardingStore(
+    (state) => state.resetOnboarding,
+  );
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -122,6 +126,7 @@ function UsingSkincare() {
       }
 
       // 새 제품이 최소 한 개 등록된 경우에만 메인으로 이동한다.
+      resetOnboarding();
       navigate("/main");
     } finally {
       setIsSubmitting(false);
