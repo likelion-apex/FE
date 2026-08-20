@@ -181,7 +181,7 @@ const RecordDetailModal = ({ isOpen, onClose, recordData, isToday }) => {
                       <ProductImage
                         alt=""
                         category={routine.category}
-                        className="size-[30px] shrink-0 rounded-md object-cover"
+                        className="size-[30px] shrink-0 rounded-md object-cover border border-gray-20"
                       />
 
                       <span

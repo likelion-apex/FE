@@ -171,7 +171,7 @@ const IngredientModal = ({
               <img
                 src={data.imageUrl} // 🚀 여기도 서버 이미지 바로 꽂기!
                 alt={data.displayProductName || data.productName}
-                className="size-[360px] rounded-xl object-cover bg-gray-10 border border-gray-10"
+                className="size-[360px] rounded-xl object-cover bg-gray-10 border border-blue-50"
               />
             </div>
 

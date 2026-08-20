@@ -184,11 +184,11 @@ const NewItemSearchModal = ({ onClose }) => {
                       className="flex shrink-0 items-center gap-1.5 rounded-full border border-gray-20 bg-white py-1.5 pl-1.5 pr-3 shadow-sm"
                     >
                       {/* 작은 원형 썸네일 */}
-                      <div className="size-6 shrink-0 overflow-hidden rounded-full bg-gray-10">
+                      <div className="size-6 shrink-0 overflow-hidden rounded-full bg-gray-10 border border-gray-10">
                         <ProductImage
                           alt={selected.productName}
                           category={selected.category}
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover "
                         />
                       </div>
 
@@ -228,7 +228,7 @@ const NewItemSearchModal = ({ onClose }) => {
                       return (
                         <div
                           key={item.productId}
-                          className="flex items-center justify-between border-b border-gray-05 pb-4 last:border-0"
+                          className="flex items-center justify-between border-b border-gray-10 pb-4 last:border-0"
                         >
                           {/* 왼쪽: 이미지 + 제품 정보 */}
                           <div className="flex items-center gap-3">
@@ -254,11 +254,11 @@ const NewItemSearchModal = ({ onClose }) => {
                             onClick={() => toggleItemSelection(item)}
                             className={`shrink-0 rounded-full border px-4 py-1.5 text-[12px] font-semibold transition-colors ${
                               isSelected
-                                ? "border-gray-30 bg-gray-30 text-white"
+                                ? "border-white bg-blue-50 text-white"
                                 : "border-blue-50 bg-white text-blue-50"
                             }`}
                           >
-                            {isSelected ? "취소" : "추가"}
+                            {isSelected ? "추가됨" : "추가"}
                           </button>
                         </div>
                       );

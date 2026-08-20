@@ -68,12 +68,6 @@ const InventoryHome = () => {
       step: 0,
       totalSteps: 0,
       stepName: "인벤토리",
-      rightAction: {
-        content: isEditing ? "완료" : "편집",
-        onClick: () => setIsEditing((prev) => !prev),
-
-        textColor: isEditing ? "text-red-40" : "text-blue-50",
-      },
     });
   }, [setNavProps, isEditing]);
 
