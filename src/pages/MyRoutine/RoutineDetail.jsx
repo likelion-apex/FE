@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "../../store/authStore";
+import useRoutineStore from "../../store/routineStore";
 import { applyRoutineToToday } from "../../api/routine";
 
 import RoutineScore from "../../components/Analysis/RoutineScore";
@@ -84,6 +85,9 @@ const RoutineDetail = () => {
 
     try {
       const data = await applyRoutineToToday(id); // URL에서 뽑아온 id를 그대로 넘겨줍니다.
+
+      // 적용 응답(=오늘의 데일리 루틴)을 store에 바로 넣어 홈/데일리에 즉시 반영한다.
+      useRoutineStore.getState().setRoutine(data);
 
       alert("오늘의 루틴으로 적용되었습니다!");
       console.log("적용 결과 데이터", data);

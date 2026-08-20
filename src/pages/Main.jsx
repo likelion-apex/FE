@@ -16,6 +16,7 @@ import soakMark from "../assets/logo/soak-mark.png";
 import soakWordmark from "../assets/logo/soak-wordmark.svg";
 
 import { getSummary, updateCondition } from "../api/home";
+import useRoutineStore from "../store/routineStore";
 
 // SkinConditionCard의 id -> 서버가 받는 한글 컨디션 라벨
 const CONDITION_LABELS = {
@@ -26,22 +27,31 @@ const CONDITION_LABELS = {
   best: "컨디션최고예요",
 };
 
+// 서버가 준 한글 condition을 다시 카드 id(trouble/dry/...)로 되돌리기 위한 역매핑.
+// (공백이 섞여 와도 매칭되도록 비교 시 공백 제거)
+const CONDITION_LABEL_TO_ID = Object.fromEntries(
+  Object.entries(CONDITION_LABELS).map(([id, label]) => [label, id]),
+);
+
 function Main() {
   const navigate = useNavigate();
 
   const [selectedCondition, setSelectedCondition] = useState(null);
   const [memo, setMemo] = useState("");
   const [isMemoSaved, setIsMemoSaved] = useState(false);
-  const [checkedIds, setCheckedIds] = useState([]);
   const [url, setUrl] = useState("");
 
   const [summary, setSummary] = useState(null);
 
-  const toggleStep = (id) => {
-    setCheckedIds((prev) =>
-      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
-    );
-  };
+  // 데일리 루틴은 store에서 구독한다. (홈/데일리 화면이 같은 데이터를 공유)
+  const routine = useRoutineStore((state) => state.routine);
+  const loadRoutine = useRoutineStore((state) => state.loadRoutine);
+  const toggleStep = useRoutineStore((state) => state.toggleStep);
+
+  // 체크된 스텝 id는 routine에서 파생한다.
+  const checkedIds = (routine?.steps ?? [])
+    .filter((step) => step.completed)
+    .map((step) => step.stepId);
 
   const loadSummary = async () => {
     const data = await getSummary();
@@ -50,7 +60,21 @@ function Main() {
 
   useEffect(() => {
     loadSummary();
-  }, []);
+    loadRoutine();
+  }, [loadRoutine]);
+
+  // 저장돼 있던 오늘의 컨디션/메모를 홈 진입(및 새로고침) 시 복원한다.
+  useEffect(() => {
+    const today = summary?.todayCondition;
+    if (!today) return;
+
+    if (today.condition) {
+      const id = CONDITION_LABEL_TO_ID[today.condition.replace(/\s/g, "")];
+      if (id) setSelectedCondition(id);
+    }
+    if (today.memo != null) setMemo(today.memo);
+    setIsMemoSaved(Boolean(today.memo?.trim()));
+  }, [summary]);
 
   const handleMemoSubmit = () => {
     const condition = CONDITION_LABELS[selectedCondition] ?? null;
@@ -60,8 +84,8 @@ function Main() {
     });
   };
 
-  const mappedSteps = (summary?.todayRoutine?.steps ?? []).map((step) => ({
-    id: step.inventoryId ?? step.productId,
+  const mappedSteps = (routine?.steps ?? []).map((step) => ({
+    id: step.stepId,
     name: step.productName,
     imageUrl: step.imageUrl,
   }));
@@ -118,13 +142,12 @@ function Main() {
             title="오늘의 나이트 케어"
             onAction={() => navigate("/MyRoutine")}
           />
-          {summary?.todayRoutine ? (
+          {routine ? (
             <NightCareCard
               tip="확실한 안티에이징을 위한 최적의 액티브 조합이예요."
               steps={mappedSteps}
               checkedIds={checkedIds}
               onToggleStep={toggleStep}
-              onRestart={() => setCheckedIds([])}
             />
           ) : (
             <NoRoutineCard onClick={()=>navigate("/RoutineAnalysis")}/>

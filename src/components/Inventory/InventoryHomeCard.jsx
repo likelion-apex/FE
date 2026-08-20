@@ -1,7 +1,7 @@
 import arrowRightIcon from "../../assets/icons/arrowRight.svg";
 import plusIcon from "../../assets/icons/plusIcon_blue.svg";
 import InventoryItemCard from "../../components/Inventory/InventoryItemCard";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import NewItemSearchModal from "./NewItemSearchModal";
 
 //카테고리 섹션 (제목 + 전체보기 + 제품 카드 목록)

@@ -14,48 +14,31 @@ import RoutineComplete from "../../components/MyRoutine/RoutineComplete";
 import NoRoutineCard from "../../components/NoRoutineCard";
 import MyCalendar from "../../components/MyRoutine/MyCalendar";
 
-import {
-  getDailyRoutine,
-  updateStepCompletion,
-  completeAllSteps,
-  completeToday,
-  getRoutineLogs,
-} from "../../api/routine";
+import { getRoutineLogs } from "../../api/routine";
+import useRoutineStore from "../../store/routineStore";
 
 const MyRoutine = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(
     location.state?.activeTab || "데일리 루틴",
   );
-  const [checkedItems, setCheckedItems] = useState([]);
   const navigate = useNavigate();
 
-  // "루틴 완료하기" 버튼 클릭 여부
-  const [isRoutineSubmitted, setIsRoutineSubmitted] = useState(false);
+  // 데일리 루틴은 store에서 구독한다. (홈 화면과 같은 데이터를 공유)
+  const routine = useRoutineStore((state) => state.routine);
+  const loadRoutine = useRoutineStore((state) => state.loadRoutine);
+  const toggleStep = useRoutineStore((state) => state.toggleStep);
+  const completeAll = useRoutineStore((state) => state.completeAll);
+  const submitToday = useRoutineStore((state) => state.completeToday);
 
-  const [routine, setRoutine] = useState(null);
+  // 체크된 스텝 id는 routine에서 파생한다.
+  const checkedItems = (routine?.steps ?? [])
+    .filter((step) => step.completed)
+    .map((step) => step.stepId);
 
   useEffect(() => {
-    const loadRoutine = async () => {
-      try {
-        const data = await getDailyRoutine();
-        setRoutine(data);
-      } catch (err) {
-        console.error("루틴 조회 실패:", err);
-      }
-    };
-
     loadRoutine();
-  }, []);
-
-  useEffect(() => {
-    if (routine) {
-      const completedIds = routine.steps
-        .filter((step) => step.completed)
-        .map((step) => step.stepId);
-      setCheckedItems(completedIds);
-    }
-  }, [routine]);
+  }, [loadRoutine]);
 
   const { setNavProps } = useOutletContext();
   useEffect(() => {
@@ -83,69 +66,13 @@ const MyRoutine = () => {
   // 소수점이 나오지 않게 Math.round로 반올림 처리
   const progressPercentage = Math.round((completedSteps / totalSteps) * 100);
 
-  //
-  const handleToggle = async (id) => {
-    const nextCompleted = !checkedItems.includes(id);
-
-    // 낙관적 업데이트: 우선 화면부터 바꾸고, 실패하면 되돌린다.
-    setCheckedItems((prev) =>
-      nextCompleted ? [...prev, id] : prev.filter((itemId) => itemId !== id),
-    );
-
-    try {
-      const data = await updateStepCompletion(id, nextCompleted);
-      setRoutine(data);
-    } catch (err) {
-      console.error("스텝 완료 상태 저장 실패:", err);
-      setCheckedItems((prev) =>
-        nextCompleted ? prev.filter((itemId) => itemId !== id) : [...prev, id],
-      );
-    }
-  };
-
   //진행 완료 표시
-  const isAllChecked = checkedItems.length === totalSteps;
+  const isAllChecked = totalSteps > 0 && checkedItems.length === totalSteps;
 
-  const handleCompleteAll = async () => {
-    if (isAllChecked) {
-      // 전체 취소: 벌크 취소 API가 없어 스텝별로 개별 취소한다.
-      const previousCheckedItems = checkedItems;
-      setCheckedItems([]);
-
-      try {
-        const allIds = routine.steps.map((step) => step.stepId);
-        const results = await Promise.all(
-          allIds.map((stepId) => updateStepCompletion(stepId, false)),
-        );
-        setRoutine(results[results.length - 1]);
-      } catch (err) {
-        console.error("전체 취소 실패:", err);
-        setCheckedItems(previousCheckedItems);
-      }
-      return;
-    }
-
-    const allIds = routine.steps.map((step) => step.stepId);
-    setCheckedItems(allIds);
-
-    try {
-      const data = await completeAllSteps();
-      setRoutine(data);
-    } catch (err) {
-      console.error("전체 완료 처리 실패:", err);
-      setCheckedItems([]);
-    }
-  };
-
-  const handleSubmitRoutine = async () => {
-    try {
-      const data = await completeToday();
-      setRoutine(data);
-      setIsRoutineSubmitted(true);
-    } catch (err) {
-      console.error("루틴 완료 처리 실패:", err);
-    }
-  };
+  // 실제 로직은 store가 담당한다. (홈 화면과 상태 공유 + 낙관적 업데이트/롤백)
+  const handleToggle = (id) => toggleStep(id);
+  const handleCompleteAll = () => completeAll();
+  const handleSubmitRoutine = () => submitToday();
 
   // 달력에서 선택한 날짜(기본 : 오늘)
   const [selectedDate, setSelectedDate] = useState("2026-08-20");
@@ -210,6 +137,7 @@ const MyRoutine = () => {
               <MyCalendar
                 progressPercentage={progressPercentage}
                 monthlyData={monthlyLogs} //달력에 월별 데이터 전달
+                dailyRecord={dailyRoutine} //선택한 날짜의 상세 기록(모달용)
                 onDateSelect={(date) => setSelectedDate(date)} //날짜 클릭 시 선택된 날짜 변경
                 onMonthChange={(year, month) =>
                   setCurrentMonth({ year, month })
@@ -227,7 +155,7 @@ const MyRoutine = () => {
                 <div className="mb-[68px]">
                   <NoRoutineCard onClick={() => navigate("/RoutineAnalysis")} />
                 </div>
-              ) : isRoutineSubmitted ? (
+              ) : routine.completed ? (
                 <div className="w-full overflow-clip rounded-2xl border border-gray-10 shadow-card mb-10">
                   <RoutineComplete />
                 </div>
