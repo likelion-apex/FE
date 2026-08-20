@@ -20,9 +20,6 @@ const InvertoryItemCard = ({ item, onClick }) => {
         <p className="w-full text-left text-[14px] font-semibold text-black truncate">
           {item.productName}
         </p>
-        <p className="w-full text-left text-[12px] font-medium text-gray-60 truncate">
-          {item.tag}
-        </p>
       </div>
     </div>
   );

@@ -13,14 +13,14 @@ import { updateFavorite, deleteInventoryItem } from "../../api/inventory";
 const CATEGORIES = [
   { id: "ALL", name: "전체 화장품" },
   { id: "SKIN_TONER", name: "스킨/토너" },
-  { id: "LOTION_EMULSION", name: "로션/에멀전" },
+  { id: "LOTION", name: "로션/에멀전" },
   { id: "ESSENCE_SERUM", name: "에센스/앰플/세럼" },
-  { id: "FACE_OIL", name: "페이스 오일" },
+  { id: "FACEOIL", name: "페이스 오일" },
   { id: "CREAM", name: "크림" },
-  { id: "EYE_CARE", name: "아이케어" },
-  { id: "MIST_GEL", name: "미스트·젤" },
-  { id: "TONER_PAD", name: "스킨/토너 패드" },
-  { id: "ETC", name: "기타" },
+  { id: "EYECARE", name: "아이케어" },
+  { id: "MIST", name: "미스트/젤" },
+  { id: "SKIN_TONERPAD", name: "스킨/토너 패드" },
+  { id: "BAM", name: "밤/멀티밤" },
 ];
 
 const InventoryStar = () => {
