@@ -188,7 +188,7 @@ const RecordDetailModal = ({ isOpen, onClose, recordData, isToday }) => {
                         routine.completed ? "text-blue-50" : "text-gray-40"
                       }`}
                     >
-                      {index + 1}단계
+                      {routine.order ?? index + 1}단계
                     </span>
                     <span className="truncate text-[14px] text-black">
                       {routine.name}
