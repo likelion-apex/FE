@@ -35,7 +35,7 @@ const MatchingCard = ({ data }) => {
               숏폼 속 새로운 제품
             </span>
             <span className="font-bold text-black">
-              {data.newProductCount}개
+              {data.steps.length - data.replacedCount}개
             </span>
           </div>
           <div className="flex items-center justify-between">
