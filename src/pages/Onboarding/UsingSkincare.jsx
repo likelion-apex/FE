@@ -1,42 +1,86 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import cancelIcon from "../../assets/icons/cancel.svg";
 import searchIcon from "../../assets/icons/search.svg";
 import NextButton from "../../components/NextButton";
 import TopNavbar from "../../components/layouts/TopNavbar";
-
-
-// TODO: 제품 검색 API 연동 시 교체
-const PRODUCTS = [
-  { id: 1, brand: "아비브", name: "어성초 흔적 에센스 패드" },
-  { id: 2, brand: "아누아", name: "어성초 포어 컨트롤 클렌징오일" },
-  { id: 3, brand: "구달", name: "맑은 어성초 진정 무기자차 선크림" },
-  { id: 4, brand: "아누아", name: "어성초 센텔라 레드 스팟 크림" },
-];
+import { searchProducts, addInventoryItem } from "../../api/inventory";
 
 function UsingSkincare() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [registered, setRegistered] = useState([]);
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [registered, setRegistered] = useState([]); // 선택된 제품(ProductSearchItem[])
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const keyword = query.trim();
-  const results = keyword
-    ? PRODUCTS.filter(
-        (product) =>
-          product.name.includes(keyword) || product.brand.includes(keyword),
-      )
-    : [];
 
-  const isRegistered = (id) => registered.some((item) => item.id === id);
+  // 검색어가 바뀌면 300ms 디바운스 후 제품 검색 API 호출
+  useEffect(() => {
+    if (!keyword) {
+      setResults([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsLoading(true);
+      try {
+        const data = await searchProducts(keyword);
+        const items = data?.items ?? [];
+        // 서버가 키워드로 안 걸러줄 경우를 대비해 클라이언트에서도 한 번 더 필터
+        const filtered = items.filter(
+          (item) =>
+            item.productName?.includes(keyword) || item.brand?.includes(keyword),
+        );
+        setResults(filtered);
+      } catch (error) {
+        console.error("제품 검색 실패:", error);
+        setResults([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  const isRegistered = (productId) =>
+    registered.some((item) => item.productId === productId);
 
   const addProduct = (product) => {
-    if (isRegistered(product.id)) return;
+    if (isRegistered(product.productId)) return;
     setRegistered((prev) => [...prev, product]);
   };
 
-  const removeProduct = (id) =>
-    setRegistered((prev) => prev.filter((item) => item.id !== id));
+  const removeProduct = (productId) =>
+    setRegistered((prev) =>
+      prev.filter((item) => item.productId !== productId),
+    );
+
+  // "시작하기": 선택한 제품들을 인벤토리에 저장한 뒤 홈으로 이동
+  const handleStart = async () => {
+    if (registered.length === 0 || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      await Promise.all(
+        registered.map((item) =>
+          addInventoryItem({
+            productId: item.productId,
+            productName: item.productName,
+          }),
+        ),
+      );
+      navigate("/main");
+    } catch (error) {
+      console.error("인벤토리 등록 실패:", error);
+      alert("제품 등록 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="relative min-h-full w-full bg-white pt-[51px] pb-[132px]">
@@ -85,17 +129,25 @@ function UsingSkincare() {
             <div className="mt-3 flex flex-wrap gap-2">
               {registered.map((product) => (
                 <div
-                  key={product.id}
+                  key={product.productId}
                   className="flex items-center gap-1 rounded-3xl border border-gray-20 bg-white p-1"
                 >
-                  <span className="size-8 shrink-0 rounded-full bg-gray-10" />
+                  <span className="size-8 shrink-0 overflow-hidden rounded-full bg-gray-10">
+                    {product.imageUrl && (
+                      <img
+                        src={product.imageUrl}
+                        alt={product.productName}
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                  </span>
                   <span className="text-sm font-bold text-gray-60">
-                    {product.name}
+                    {product.productName}
                   </span>
                   <button
                     type="button"
-                    aria-label={`${product.name} 삭제`}
-                    onClick={() => removeProduct(product.id)}
+                    aria-label={`${product.productName} 삭제`}
+                    onClick={() => removeProduct(product.productId)}
                     className="flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-full bg-gray-10"
                   >
                     <img src={cancelIcon} alt="" className="size-3" />
@@ -106,27 +158,39 @@ function UsingSkincare() {
           </div>
 
           <div className="rounded-t-[20px] bg-white px-[30px] pt-[18px]">
-            {results.length === 0 ? (
+            {isLoading ? (
+              <p className="py-8 text-center text-sm text-gray-60">
+                검색 중입니다...
+              </p>
+            ) : results.length === 0 ? (
               <p className="py-8 text-center text-sm text-gray-60">
                 검색 결과가 없어요.
               </p>
             ) : (
               results.map((product) => {
-                const added = isRegistered(product.id);
+                const added = isRegistered(product.productId);
 
                 return (
                   <div
-                    key={product.id}
+                    key={product.productId}
                     className="flex items-center justify-between border-b border-gray-10 py-4"
                   >
                     <div className="flex items-start justify-center gap-4">
-                      <span className="size-[60px] shrink-0 rounded-xl bg-gray-10" />
+                      <span className="size-[60px] shrink-0 overflow-hidden rounded-xl bg-gray-10">
+                        {product.imageUrl && (
+                          <img
+                            src={product.imageUrl}
+                            alt={product.productName}
+                            className="h-full w-full object-cover"
+                          />
+                        )}
+                      </span>
                       <div className="flex flex-col gap-1 py-2">
                         <span className="text-xs text-gray-60">
                           {product.brand}
                         </span>
                         <span className="text-base leading-[14px] font-bold text-gray-80">
-                          {product.name}
+                          {product.productName}
                         </span>
                       </div>
                     </div>
@@ -153,10 +217,10 @@ function UsingSkincare() {
 
       <div className="absolute right-6 bottom-[52px] left-6">
         <NextButton
-          disabled={registered.length === 0}
-          onClick={() => navigate("/main")}
+          disabled={registered.length === 0 || isSubmitting}
+          onClick={handleStart}
         >
-          시작하기
+          {isSubmitting ? "등록 중..." : "시작하기"}
         </NextButton>
       </div>
     </div>
