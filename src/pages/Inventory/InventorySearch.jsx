@@ -56,7 +56,7 @@ const InventorySearch = () => {
   }, [keyword, inventoryList]);
 
   return (
-    <div className="flex h-full flex-col bg-gray-05 px-[20px] pt-5">
+    <div className="flex h-full flex-col bg-gray-05 px-[20px] pt-[53px]">
       <div className="flex items-center gap-3 mb-6">
         <div
           className={`flex flex-1 items-center rounded-2xl border bg-gray-05 px-5 py-[10px] transition-colors ${

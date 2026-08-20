@@ -57,6 +57,7 @@ const useRoutineStore = create(
 
         try {
           const data = await getDailyRoutine();
+          console.log("오늘의 데일리 루틴 API 응답:", data);
           // DAY/NIGHT 무시하고 무조건 NIGHT 루틴만 다룬다.
           // - NIGHT 루틴이 오면 그 최신 stepId로 갱신
           // - 낮이라 null이 오거나 DAY 루틴이 와도 무시하고, 기존(NIGHT) 루틴 유지

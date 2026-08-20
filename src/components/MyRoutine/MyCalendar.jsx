@@ -24,7 +24,10 @@ const normalizeRecord = (raw, dateLabel) => {
     completionRate,
     completedCount,
     totalCount,
-    routines: steps.map((s) => ({ name: s.productName ?? s.name })),
+    routines: steps.map((s) => ({
+      name: s.productName ?? s.name,
+      imageUrl: s.imageUrl ?? s.productImageUrl,
+    })),
   };
 };
 
@@ -48,7 +51,10 @@ const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
     completionRate:
       activeRoutine.completionRate ??
       (totalCount ? Math.round((completedCount / totalCount) * 100) : 0),
-    routines: steps.map((s) => ({ name: s.productName ?? s.name })),
+    routines: steps.map((s) => ({
+      name: s.productName ?? s.name,
+      imageUrl: s.imageUrl ?? s.productImageUrl,
+    })),
   };
 
   // 컨디션/메모(base)가 있으면 그 위에 루틴 정보만 얹고, 없으면 새로 구성
