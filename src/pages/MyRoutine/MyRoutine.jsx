@@ -1,11 +1,6 @@
 import { useOutletContext, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import {
-  ROUTINE_BRIEFING_DATA,
-  SAVED_ROUTINE_DATA,
-} from "../../mocks/mockData";
-
 import CareCard from "../../components/MyRoutine/CareCard";
 import Button from "../../components/Button";
 import RoutineScore from "../../components/Analysis/RoutineScore";
@@ -240,7 +235,7 @@ const MyRoutine = () => {
                     </h3>
                     <div>
                       <RoutineScore
-                        data={ROUTINE_BRIEFING_DATA[0]}
+                        data={routine.aiBriefing}
                         isDetailPage={true}
                         isRoutine={true}
                       />
@@ -255,7 +250,6 @@ const MyRoutine = () => {
         {activeTab === "내 루틴 보관함" && (
           <div className="mt-7">
             <SavedRoutineList
-              data={SAVED_ROUTINE_DATA}
               onClick={(id) => {
                 navigate(`/MyRoutine/RoutineDetail/${id}`);
               }}
