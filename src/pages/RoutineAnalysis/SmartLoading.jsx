@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios"; // 💡 통신을 위해 추가
 import useAuthStore from "../../store/authStore"; // 💡 토큰을 위해 추가
-import { USER_NAME } from "../../mocks/mockData";
 import soakImage from "../../assets/logo/soakImage.png";
+import useUserStore from "../../store/userStore";
 
 const SmartLoading = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const accessToken = useAuthStore((state) => state.accessToken);
+  const nickname = useUserStore((state) => state.nickname);
 
   const type = location.state?.type || "routine";
   const analysisId = location.state?.analysisId;
@@ -121,34 +123,34 @@ const SmartLoading = () => {
   const LOADING_DATA = {
     routine: {
       typeTitle: "루틴",
-      title: `영상 속 루틴이 ${USER_NAME}님에게 \n적합한지 검토하고 있어요`,
+      title: `영상 속 루틴이 ${nickname}님에게 \n적합한지 검토하고 있어요`,
       subTitle: "피부 적합도와 성분 궁합 분석 중",
       navigateUrl: "/RoutineAnalysis/AnalyzeResult",
       steps: [
         { id: 1, title: "영상 속 핵심 제품 및 성분 추출", desc: null },
         {
           id: 2,
-          title: `${USER_NAME}님의 피부 타입 적합도 분석`,
+          title: `${nickname}님의 피부 타입 적합도 분석`,
           desc: "민감성 피부 기준 자극도 체크 중...",
         },
         { id: 3, title: "인벤토리 제품과 성분 충돌 확인", desc: null },
         {
           id: 4,
-          title: `오직 ${USER_NAME}님만을 위한 맞춤형 루틴 설계`,
+          title: `오직 ${nickname}님만을 위한 맞춤형 루틴 설계`,
           desc: null,
         },
       ],
     },
     item: {
       typeTitle: "제품",
-      title: `영상 속 핵심 제품이 ${USER_NAME}님 화장대와 \n잘 어울리는지 검토하고 있어요`,
+      title: `영상 속 핵심 제품이 ${nickname}님 화장대와 \n잘 어울리는지 검토하고 있어요`,
       subTitle: "보유 제품과의 시너지 및 성분 충돌 분석 중",
       navigateUrl: "/RoutineAnalysis/AnalyzeResult",
       steps: [
         { id: 1, title: "핵심 제품 주요 성분 및 효능 분석", desc: null },
         {
           id: 2,
-          title: `${USER_NAME}님의 피부 타입 적합도 분석`,
+          title: `${nickname}님의 피부 타입 적합도 분석`,
           desc: "민감성 피부 기준 자극도 체크 중...",
         },
         {
@@ -210,7 +212,7 @@ const SmartLoading = () => {
             strokeWidth="2"
             strokeDasharray="590"
             strokeDashoffset="590"
-            style={{ animation: "fill-up 8s linear forwards" }}
+            style={{ animation: "fill-up 15s linear forwards" }}
           />
         </svg>
 

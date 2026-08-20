@@ -150,7 +150,7 @@ const InventoryStar = () => {
         // cursor-grab, active:cursor-grabbing: 마우스 커서가 '잡는 손' 모양으로 바뀜
         className="flex-1 select-none cursor-grab active:cursor-grabbing"
       >
-        {/* 💡 카드의 클릭(이동/추가)이 드래그를 방해하지 않도록 pointer-events-none을 줍니다 */}
+        {/* 카드의 클릭(이동/추가)이 드래그를 방해하지 않도록 pointer-events-none을 줍니다 */}
         <div className="grid grid-cols-2 gap-4 pointer-events-none">
           {/* 1. 실제 데이터가 있는 화장품 카드 먼저 그리기 */}
           {currentItems.map((item) => (
@@ -160,16 +160,6 @@ const InventoryStar = () => {
                 isEditing={isEditing}
                 onToggleFavorite={toggleFavorite}
                 onDelete={handleDeleteItem}
-              />
-            </div>
-          ))}
-
-          {/* 2. 남은 빈 칸 개수만큼 '추가하기' 카드 그리기 */}
-          {emptyCards.map((_, index) => (
-            <div key={`empty-${index}`} className="pointer-events-auto">
-              <BrandItemCard
-                isAddCard={true}
-                onAddClick={() => setIsModalOpen(true)}
               />
             </div>
           ))}

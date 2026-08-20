@@ -5,8 +5,10 @@ import FinishModal from "../../components/Analysis/FinishModal";
 import useUserStore from "../../store/userStore";
 import TopNavbar from "../../components/layouts/TopNavbar";
 import MatchingCard from "../../components/Analysis/MatchingCard";
+
 import axios from "axios";
 import useAuthStore from "../../store/authStore";
+import { addInventoryItem } from "../../api/inventory";
 
 const OptimizedRoutine = () => {
   const isDetailPage = false;
@@ -113,7 +115,7 @@ const OptimizedRoutine = () => {
           </h2>
           <div className="flex flex-col gap-2">
             {optimizedData.steps.map((step) => (
-              <RoutineAccordionItem key={step.id} step={step} />
+              <RoutineAccordionItem key={step.order} step={step} />
             ))}
           </div>
         </div>
