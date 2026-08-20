@@ -18,13 +18,14 @@ const normalizeRecord = (raw, dateLabel) => {
 
   return {
     date: dateLabel, // 화면 표시용 문자열 ("8월 20일 (목)")
-    condition: raw.condition, // 서버 한글 문자열 -> 모달에서 아이콘 매핑
+    condition: raw.condition ?? raw.skinCondition, // 서버 한글 문자열 -> 모달에서 아이콘 매핑
     conditionId: raw.conditionId, // 혹시 영어 id로 올 경우 대비
     memo: raw.memo ?? null,
     completionRate,
     completedCount,
     totalCount,
     routines: steps.map((s) => ({
+      order: s.order ?? s.stepOrder,
       name: s.productName ?? s.name,
       imageUrl: s.imageUrl ?? s.productImageUrl,
       category: s.category,
@@ -53,6 +54,7 @@ const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
       ? Math.round((completedCount / totalCount) * 100)
       : 0,
     routines: steps.map((s) => ({
+      order: s.order ?? s.stepOrder,
       name: s.productName ?? s.name,
       imageUrl: s.imageUrl ?? s.productImageUrl,
       category: s.category,
