@@ -9,7 +9,7 @@ import useUserStore from "../../store/userStore"; // 🚀 2. 닉네임 스토어
 
 const RoutineAccordionItem = ({ step }) => {
   // 기본적으로 열려있도록 설정
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const nickname = useUserStore((state) => state.nickname);
   // 등록 완료 상태를 관리하는 State 추가
   const [isRegistered, setIsRegistered] = useState(false);
@@ -98,7 +98,7 @@ const RoutineAccordionItem = ({ step }) => {
           <div className="flex flex-col justify-between w-full">
             <div className="flex items-center gap-1">
               <div className="text-[16px] font-bold text-black">
-                {step.replaceName || step.productName}
+                {step.productName || step.replaceName}
               </div>
               <div
                 className={`rounded px-2 py-1 text-[10px] whitespace-nowrap shrink-0 font-bold ${currentTheme.badge}`}
@@ -108,7 +108,7 @@ const RoutineAccordionItem = ({ step }) => {
             </div>
             <span className="text-[12px] text-gray-60">
               {step.replaceName
-                ? step.productName
+                ? step.replaceName
                 : "인벤토리 미등록 · 영상 속 루틴"}
             </span>
           </div>
