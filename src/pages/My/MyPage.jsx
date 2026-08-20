@@ -16,13 +16,13 @@ import useUserStore from "../../store/userStore";
 const MONTH_SUMMARY = [
   {
     label: "컨디션 기록",
-    value: 7,
+    value: 1,
     unit: "회",
     icon: MY_ICONS.penWriting,
   },
   {
     label: "루틴 완수율",
-    value: 62,
+    value: 100,
     unit: "%",
     icon: MY_ICONS.incompleteCircle,
   },
