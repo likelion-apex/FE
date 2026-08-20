@@ -16,7 +16,7 @@ import soakMark from "../assets/logo/soak-mark.png";
 import soakWordmark from "../assets/logo/soak-wordmark.svg";
 
 import { getSummary, updateCondition } from "../api/home";
-import { getDailyRoutine, updateStepCompletion } from "../api/routine";
+import useRoutineStore from "../store/routineStore";
 
 // SkinConditionCard의 id -> 서버가 받는 한글 컨디션 라벨
 const CONDITION_LABELS = {
@@ -39,49 +39,29 @@ function Main() {
   const [selectedCondition, setSelectedCondition] = useState(null);
   const [memo, setMemo] = useState("");
   const [isMemoSaved, setIsMemoSaved] = useState(false);
-  const [checkedIds, setCheckedIds] = useState([]);
   const [url, setUrl] = useState("");
 
   const [summary, setSummary] = useState(null);
-  const [routine, setRoutine] = useState(null);
 
-  const toggleStep = async (id) => {
-    const nextCompleted = !checkedIds.includes(id);
+  // 데일리 루틴은 store에서 구독한다. (홈/데일리 화면이 같은 데이터를 공유)
+  const routine = useRoutineStore((state) => state.routine);
+  const loadRoutine = useRoutineStore((state) => state.loadRoutine);
+  const toggleStep = useRoutineStore((state) => state.toggleStep);
 
-    // 낙관적 업데이트: 우선 화면부터 바꾸고, 실패하면 되돌린다.
-    setCheckedIds((prev) =>
-      nextCompleted ? [...prev, id] : prev.filter((v) => v !== id),
-    );
-
-    try {
-      const data = await updateStepCompletion(id, nextCompleted);
-      setRoutine(data);
-    } catch (err) {
-      console.error("스텝 완료 상태 저장 실패:", err);
-      setCheckedIds((prev) =>
-        nextCompleted ? prev.filter((v) => v !== id) : [...prev, id],
-      );
-    }
-  };
+  // 체크된 스텝 id는 routine에서 파생한다.
+  const checkedIds = (routine?.steps ?? [])
+    .filter((step) => step.completed)
+    .map((step) => step.stepId);
 
   const loadSummary = async () => {
     const data = await getSummary();
     setSummary(data);
   };
 
-  const loadRoutine = async () => {
-    try {
-      const data = await getDailyRoutine();
-      setRoutine(data);
-    } catch (err) {
-      console.error("루틴 조회 실패:", err);
-    }
-  };
-
   useEffect(() => {
     loadSummary();
     loadRoutine();
-  }, []);
+  }, [loadRoutine]);
 
   // 저장돼 있던 오늘의 컨디션/메모를 홈 진입(및 새로고침) 시 복원한다.
   useEffect(() => {
@@ -95,15 +75,6 @@ function Main() {
     if (today.memo != null) setMemo(today.memo);
     setIsMemoSaved(Boolean(today.memo?.trim()));
   }, [summary]);
-
-  useEffect(() => {
-    if (routine) {
-      const completedIds = routine.steps
-        .filter((step) => step.completed)
-        .map((step) => step.stepId);
-      setCheckedIds(completedIds);
-    }
-  }, [routine]);
 
   const handleMemoSubmit = () => {
     const condition = CONDITION_LABELS[selectedCondition] ?? null;
