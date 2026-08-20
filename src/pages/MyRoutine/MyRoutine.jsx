@@ -30,9 +30,6 @@ const MyRoutine = () => {
   const [checkedItems, setCheckedItems] = useState([]);
   const navigate = useNavigate();
 
-  // "루틴 완료하기" 버튼 클릭 여부
-  const [isRoutineSubmitted, setIsRoutineSubmitted] = useState(false);
-
   const [routine, setRoutine] = useState(null);
 
   useEffect(() => {
@@ -141,7 +138,6 @@ const MyRoutine = () => {
     try {
       const data = await completeToday();
       setRoutine(data);
-      setIsRoutineSubmitted(true);
     } catch (err) {
       console.error("루틴 완료 처리 실패:", err);
     }
@@ -210,6 +206,7 @@ const MyRoutine = () => {
               <MyCalendar
                 progressPercentage={progressPercentage}
                 monthlyData={monthlyLogs} //달력에 월별 데이터 전달
+                dailyRecord={dailyRoutine} //선택한 날짜의 상세 기록(모달용)
                 onDateSelect={(date) => setSelectedDate(date)} //날짜 클릭 시 선택된 날짜 변경
                 onMonthChange={(year, month) =>
                   setCurrentMonth({ year, month })
@@ -227,7 +224,7 @@ const MyRoutine = () => {
                 <div className="mb-[68px]">
                   <NoRoutineCard onClick={() => navigate("/RoutineAnalysis")} />
                 </div>
-              ) : isRoutineSubmitted ? (
+              ) : routine.completed ? (
                 <div className="w-full overflow-clip rounded-2xl border border-gray-10 shadow-card mb-10">
                   <RoutineComplete />
                 </div>

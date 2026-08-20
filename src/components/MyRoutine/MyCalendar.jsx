@@ -1,10 +1,36 @@
 import React, { useState } from "react";
-import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 import RecordDetailModal from "./RecordDetailModal";
+
+// 서버 일별 상세 응답(untyped)을 모달이 기대하는 형태로 정규화한다.
+// 실제 필드명이 다르면 이 함수 한 곳만 고치면 된다. (console.log로 확인)
+const normalizeRecord = (raw, dateLabel) => {
+  // 아직 안 불러왔거나(빈 배열/undefined) 기록이 없으면 null
+  if (!raw || Array.isArray(raw)) return null;
+
+  const steps = raw.steps ?? raw.routines ?? [];
+  const completedCount =
+    raw.completedCount ?? steps.filter((s) => s.completed).length;
+  const totalCount = raw.totalCount ?? steps.length;
+  const completionRate =
+    raw.completionRate ??
+    (totalCount ? Math.round((completedCount / totalCount) * 100) : 0);
+
+  return {
+    date: dateLabel, // 화면 표시용 문자열 ("8월 20일 (목)")
+    condition: raw.condition, // 서버 한글 문자열 -> 모달에서 아이콘 매핑
+    conditionId: raw.conditionId, // 혹시 영어 id로 올 경우 대비
+    memo: raw.memo ?? null,
+    completionRate,
+    completedCount,
+    totalCount,
+    routines: steps.map((s) => ({ name: s.productName ?? s.name })),
+  };
+};
 
 const MyCalendar = ({
   progressPercentage,
   monthlyData = [],
+  dailyRecord = null,
   onDateSelect,
   onMonthChange,
 }) => {
@@ -268,7 +294,7 @@ const MyCalendar = ({
       <RecordDetailModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        recordData
+        recordData={normalizeRecord(dailyRecord, selectedDateInfo)}
         isToday={isToday} // 💡 전달 완료!
       />
     </div>
