@@ -100,7 +100,10 @@ const IngredientModal = ({
         <div className="flex items-start justify-between px-5 py-6 shrink-0">
           <div className="flex gap-4">
             {/* 이미지 삽입 필요 */}
-            <div className="size-[64px] shrink-0 rounded-xl bg-gray-40" />
+            <img
+            src={data.imageUrl}
+            className="size-[36px] shrink-0 rounded-lg border-gray-40"
+          />
             <Item data={data} />
           </div>
           <button
