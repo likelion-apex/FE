@@ -234,20 +234,20 @@ const MyRoutine = () => {
                       }
                     />
                   </div>
+                  <div className="flex flex-col gap-[16px]">
+                    <h3 className="text-black text-[18px] font-bold">
+                      오늘의 맞춤 케어 브리핑
+                    </h3>
+                    <div>
+                      <RoutineScore
+                        data={ROUTINE_BRIEFING_DATA[0]}
+                        isDetailPage={true}
+                        isRoutine={true}
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
-              <div className="flex flex-col gap-[16px]">
-                <h3 className="text-black text-[18px] font-bold">
-                  오늘의 맞춤 케어 브리핑
-                </h3>
-                <div>
-                  <RoutineScore
-                    data={ROUTINE_BRIEFING_DATA[0]}
-                    isDetailPage={true}
-                    isRoutine={true}
-                  />
-                </div>
-              </div>
             </div>
           </div>
         )}

@@ -10,7 +10,7 @@ const Item = ({ data }) => {
       </h2>
       <div className="mt-2 flex gap-1">
         {data.ingredientMarketOrVariant ? (
-          <span className="rounded bg-gray-10 px-2.5 py-1 text-[10px] font-bold text-gray-60">
+          <span className="rounded bg-gray-10 px-2 py-1 text-[10px] font-bold text-gray-60">
             {data.ingredientMarketOrVariant}
           </span>
         ) : (
@@ -19,7 +19,7 @@ const Item = ({ data }) => {
 
         <span>
           {data.category ? (
-            <span className="rounded bg-gray-10 px-2.5 py-1 text-[10px] font-bold text-gray-60">
+            <span className="rounded bg-gray-10 px-2 py-1 text-[10px] font-bold text-gray-60">
               {data.category}
             </span>
           ) : (

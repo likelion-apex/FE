@@ -15,6 +15,7 @@ const OptimizedRoutine = () => {
   const nickname = useUserStore((state) => state.nickname);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -58,6 +59,53 @@ const OptimizedRoutine = () => {
 
     fetchOptimizedRoutine();
   }, [analysisId, accessToken, navigate]);
+
+  //루틴 저장하기
+  const handleSaveRoutine = async (saveType) => {
+    if (!analysisId) {
+      alert("분석 ID를 찾을 수 없습니다.");
+      return;
+    }
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/shortform-analyses/${analysisId}/apply`,
+        {
+          saveType: saveType,
+          routineType: "NIGHT",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      console.log("저장 성공", response.data);
+
+      if (saveType === "LIBRARY") {
+        setIsModalOpen(true);
+      }
+    } catch (error) {
+      console.error("루틴 저장 실패:", error);
+      // 💡 1. 409 에러: 이미 저장된 경우
+      if (error.response && error.response.status === 409) {
+        alert("이미 저장된 루틴입니다! 루틴 화면으로 넘어갑니다.");
+        // 이미 저장됐으니 그냥 루틴 화면으로 보내버립니다.
+        navigate("/MyRoutine", { state: { activeTab: "데일리 루틴" } });
+      }
+      // 💡 2. 400 에러: 단어(Enum) 불일치
+      else if (error.response && error.response.status === 400) {
+        alert("저장 실패: 백엔드 명세서의 saveType 단어(Enum)를 확인해주세요.");
+      }
+      // 기타 에러
+      else {
+        alert("루틴을 저장하는 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -127,10 +175,10 @@ const OptimizedRoutine = () => {
           type="button"
           className="flex w-full h-[56px] items-center justify-center rounded-[10px] bg-blue-50 px-10 py-2 text-[18px] font-medium text-white cursor-pointer"
           onClick={() => {
-            setIsModalOpen(true);
+            handleSaveRoutine("LIBRARY");
           }}
         >
-          이 안전한 루틴으로 오늘 케어하기
+          나의 루틴 보관함에 저장하기
         </button>
       </div>
 

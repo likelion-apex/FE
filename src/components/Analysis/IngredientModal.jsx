@@ -8,6 +8,8 @@ import Information from "../../assets/routine-analyze/Information.svg";
 import kirakiraIcon from "../../assets/icons/kirakiraIcon.svg";
 import ProductImage from "../ProductImage";
 
+import { addInventoryItem } from "../../api/inventory";
+
 const IngredientModal = ({
   onClose,
   stepData,
@@ -20,6 +22,7 @@ const IngredientModal = ({
   isInInventory = true,
 }) => {
   const [activeTab, setActiveTab] = useState("AI 맞춤 분석");
+  const [localIsInInventory, setLocalIsInInventory] = useState(false);
 
   const [detailedData, setDetailedData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,6 +91,36 @@ const IngredientModal = ({
   const data = detailedData;
   if (!data) return null;
 
+  // 모달 전용 인벤토리 추가 로직
+  const handleAddInventory = async (e) => {
+    e.stopPropagation(); // 버튼 눌렀을 때 엉뚱한 이벤트 발생 방지
+
+    if (localIsInInventory) {
+      alert("이미 인벤토리에 등록된 제품입니다.");
+
+      return;
+    }
+
+    const confirmAdd = window.confirm("이 제품을 인벤토리에 추가하시겠습니까?");
+    if (!confirmAdd) return;
+
+    try {
+      await addInventoryItem({
+        productName: data.displayProductName || stepData.productName,
+      });
+      alert("인벤토리에 성공적으로 등록되었습니다!");
+      setLocalIsInInventory(true); // 버튼을 파란색(추가 완료)으로 변경
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        alert("이미 인벤토리에 등록되어 있는 제품입니다! 🪞");
+        setLocalIsInInventory(true); // 이미 있으니 상태만 완료로 변경
+      } else {
+        alert("등록 중 오류가 발생했습니다.");
+        console.error("인벤토리 등록 실패:", error);
+      }
+    }
+  };
+
   return (
     <div
       className={`flex w-full flex-col bg-white overflow-hidden ${
@@ -96,6 +129,9 @@ const IngredientModal = ({
       onClick={isModal ? (e) => e.stopPropagation() : undefined}
     >
       {isModal ? (
+        //모달일때
+        <div className="relative flex w-full items-center justify-between px-5 pt-8 pb-6 shrink-0">
+          {/* 1. 닫기(X) 버튼: absolute로 우측 상단 공중에 띄우기 */}
         <div className="flex items-start justify-between px-5 py-6 shrink-0">
           <div className="flex gap-4">
             {/* 이미지 삽입 필요 */}
@@ -108,9 +144,36 @@ const IngredientModal = ({
           </div>
           <button
             onClick={onClose}
-            className="flex size-7 items-center justify-center rounded-full bg-gray-10 text-[23px] font-bold text-gray-60 cursor-pointer"
+            className="absolute right-4 top-4 flex size-7 items-center justify-center rounded-full bg-gray-10 text-[16px] font-bold text-gray-50 cursor-pointer"
           >
             ✕
+          </button>
+
+          {/* 2. 제품 썸네일 & 제품 정보 */}
+          <div className="flex flex-1 items-center gap-3 pr-2">
+            {/* 이미지 크기를 시안처럼 큼직하게 키우고 테두리 추가 */}
+            <div className="flex size-[64px] shrink-0 items-center justify-center overflow-hidden rounded-[12px] border border-gray-20 bg-white">
+              <img
+                src={data.imageUrl}
+                alt="제품 썸네일"
+                className="h-full w-full object-cover p-1"
+              />
+            </div>
+            <div className="flex-1">
+              <Item data={data} />
+            </div>
+          </div>
+
+          {/* 3. 인벤토리 버튼 */}
+          <button
+            onClick={handleAddInventory}
+            className={`flex shrink-0 items-center justify-center rounded-[8px] px-3 py-[6px] text-[12px] font-bold transition-colors active:scale-95 z-10 ${
+              localIsInInventory
+                ? "bg-blue-50 text-white border border-blue-50"
+                : "bg-white text-blue-50 border border-blue-50 hover:bg-blue-05"
+            }`}
+          >
+            {localIsInInventory ? "인벤토리" : "+ 인벤토리"}
           </button>
         </div>
       ) : (
@@ -125,7 +188,6 @@ const IngredientModal = ({
               </div>
 
               <div className="absolute right-0 top-[20px] flex items-center gap-2">
-                {/* 1. 즐겨찾기(별) 버튼 */}
                 <button
                   onClick={() =>
                     ToggleFavorite && ToggleFavorite(data.id, data.isFavorite)

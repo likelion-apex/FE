@@ -23,7 +23,6 @@ const RoutineAnalyze = () => {
   const [videoData, setVideoData] = useState(null); //영상 데이터를 담음
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [recentRoutines, setRecentRoutines] = useState([]);
 
@@ -51,22 +50,22 @@ const RoutineAnalyze = () => {
           );
 
           const data = response.data.data;
-          //길이 검증 로직 추가
+          console.log("영상 세부사항 : ", data);
           if (data && data.duration) {
             let totalSeconds = 0;
-            const durationStr = String(data.duration);
+            const durationStr = String(data.duration).trim();
 
-            // 💡 경우 A: "MM:SS" 형식일 때 (예: "2:15")
             if (durationStr.includes(":")) {
               const parts = durationStr.split(":").map(Number);
+
               if (parts.length === 2) {
-                totalSeconds = parts[0] * 60 + parts[1]; // 분을 초로 변환
+                totalSeconds = parts[0] * 60 + parts[1];
               } else if (parts.length === 3) {
-                totalSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2]; // 시:분:초
+                totalSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
               }
             }
-            // 이미 초 단위 숫자일 때 (예: "135")
-            else if (!isNaN(durationStr)) {
+            // 💡 혹시 초 단위로 그냥 올 때를 대비 (예: "24")
+            else if (!isNaN(durationStr) && durationStr !== "") {
               totalSeconds = parseInt(durationStr, 10);
             }
 
@@ -74,19 +73,34 @@ const RoutineAnalyze = () => {
               alert(
                 "영상의 길이가 2분을 초과합니다. 2분 이내의 쇼츠(Shorts) URL을 입력해주세요.",
               );
-              setUrl(""); // 입력창 초기화
-              setVideoData(null); // 카드 초기화
-              return; // 여기서 멈춤 (아래 setVideoData 실행 안 함)
+              setUrl("");
+              setVideoData(null);
+              return;
             }
+          } else {
+            // 백엔드에서 시간 데이터를 안 줬을 때 방어
+            alert(
+              "영상의 길이를 확인할 수 없습니다. 다른 영상으로 다시 시도해주세요.",
+            );
+            setUrl("");
+            setVideoData(null);
+            return;
           }
-
-          // 길이가 2분 이하이거나 검증을 통과한 경우에만 데이터를 렌더링
           setVideoData(data);
         } catch (error) {
           console.error(
             "유트브 영상 미리보기 정보를 불러오는 데 실패했습니다",
             error,
           );
+          if (error.response && error.response.status === 400) {
+            alert(
+              "분석할 수 없는 영상입니다! 2분 이내의 쇼츠(Shorts) 링크가 맞는지 확인해주세요.",
+            );
+          } else {
+            alert("영상을 불러오는 중 오류가 발생했습니다. 다시 시도해주세요.");
+          }
+
+          setUrl(""); // 에러가 나면 얄짤없이 입력창 초기화!
           setVideoData(null);
         }
       };
@@ -146,6 +160,59 @@ const RoutineAnalyze = () => {
     }
   };
 
+  //분석 요청 보내기
+  const handleOptionClick = async (type) => {
+    if (type === "routine") {
+      if (isLoading) return;
+      setIsLoading(true);
+
+      try {
+        console.log("📤 서버로 보내는 Request Body:", { videoUrl: url });
+        console.log("🔑 사용 중인 토큰:", accessToken);
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/shortform-analyses`,
+          {
+            videoUrl: url,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+
+        const analysisId = response.data.data.analysisId;
+
+        navigate("/RoutineAnalysis/Smartloading", {
+          state: { type: "routine", analysisId: analysisId },
+        });
+      } catch (error) {
+        console.error("전체 루틴 분석 요청 실패:", error);
+        // 💡 백엔드가 보내준 구체적인 에러 메시지가 있는지 확인
+        const errorMessage = error.response?.data?.message;
+        const errorCode = error.response?.data?.code;
+
+        if (errorCode === "ANALYSIS-005") {
+          // 피부 타입 미등록 에러인 경우
+          alert("피부 타입을 먼저 등록해 주세요! 마이페이지로 이동합니다.");
+          // 필요하다면 피부 타입 설정 페이지로 이동: navigate("/mypage/profile");
+        } else if (errorMessage) {
+          // 백엔드가 준 다른 에러 메시지가 있다면 그걸 띄워줌
+          alert(errorMessage);
+        } else {
+          // 아예 통신이 끊겼거나 원인을 모를 때
+          alert("분석 요청에 실패했습니다. 다시 시도해 주세요.");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    } else if (type === "item") {
+      navigate("/RoutineAnalysis/Smartloading", {
+        state: { type: "item" },
+      });
+    }
+  };
+
   const { setNavProps } = useOutletContext();
   useEffect(() => {
     setNavProps({
@@ -196,7 +263,7 @@ const RoutineAnalyze = () => {
                 />
                 {/* 텍스트 콘텐츠 영역 */}
                 <div className="flex flex-col justify-center gap-8">
-                  <h4 className=" text-[16px] font-bold leading-snug text-black pr-5 ">
+                  <h4 className="text-[16px] font-bold leading-snug text-black pr-8 line-clamp-2">
                     {videoData.title}
                   </h4>
                   <div className="flex flex-col gap-1">
@@ -221,7 +288,7 @@ const RoutineAnalyze = () => {
                 <img
                   key={index}
                   src={imgSrc}
-                  alt={`추천 영상 썸네일 ${index + 1}`}
+                  alt={`이미지 ${index + 1}`}
                   className="h-[184px] w-[116px] shrink-0 rounded-xl bg-gray-10 object-cover"
                 />
               ))}
@@ -253,9 +320,7 @@ const RoutineAnalyze = () => {
             <button
               type="button"
               disabled={!videoData || isLoading}
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
+              onClick={() => handleOptionClick("routine")}
               className="flex w-full items-center justify-center rounded-3xl bg-blue-05 px-2 py-4 text-[16px] font-medium text-gray-40 disabled:cursor-not-allowed enabled:bg-blue-50 enabled:text-white"
             >
               {isLoading ? "요청 중..." : "AI 분석 요청하기"}
@@ -283,13 +348,6 @@ const RoutineAnalyze = () => {
             <h3 className="text-[18px] font-semibold leading-7">
               최근 분석한 루틴
             </h3>
-            <button
-              type="button"
-              className="flex items-end gap-1 text-[12px] text-gray-60"
-            >
-              전체보기
-              <img src={more_arrow} alt="" className="h-4 w-2" />
-            </button>
           </div>
           <div className="flex flex-col gap-2 flex-nowrap pb-2 no-scrollbar overflow-x-auto max-h-[200px]">
             {recentRoutines.map((routine) => (
@@ -320,14 +378,6 @@ const RoutineAnalyze = () => {
           </div>
         </section>
       </div>
-      {isModalOpen && (
-        <SelectModal
-          onClose={() => {
-            setIsModalOpen(false);
-          }}
-          url={url}
-        />
-      )}
     </div>
   );
 };

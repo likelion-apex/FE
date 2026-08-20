@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import NotFound from "./pages/NotFound";
 import Main from "./pages/Main";
+import LoginPage from "./pages/Onboarding/LoginPage";
 
 import Layout from "./components/layouts/Layout";
 import RoutineAnalysis from "./pages/RoutineAnalysis/RoutineAnalysis";
@@ -61,6 +62,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Onboarding />} />
             <Route path="/onboarding/*" element={<Onboarding />} />
+            <Route path="/onboarding/LoginPage" element={<LoginPage />} />
             <Route path="/onboarding/kakao" element={<KakaoCallback />} />
             <Route path="/onboarding/skin-type" element={<SkinType />} />
             <Route path="/onboarding/skin-concern" element={<SkinConcern />} />
