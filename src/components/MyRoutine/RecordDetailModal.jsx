@@ -6,6 +6,7 @@ import normalIcon from "../../assets/icons/skin-condition/normal.svg";
 import moistIcon from "../../assets/icons/skin-condition/moist.svg";
 import bestIcon from "../../assets/icons/skin-condition/best.svg";
 import notIcon from "../../assets/routine-analyze/notIcon_black.svg";
+import productPlaceholder from "../../assets/home/product-placeholder.png";
 import { useState } from "react";
 
 const SKIN_CONDITIONS = [
@@ -174,7 +175,15 @@ const RecordDetailModal = ({ isOpen, onClose, recordData, isToday }) => {
                     <img src={checkIcon} alt="체크" className="size-3" />
                   </div>
 
-                  <div className="size-[30px] shrink-0 rounded-md bg-gray-30" />
+                  <img
+                    src={routine.imageUrl || productPlaceholder}
+                    alt=""
+                    className="size-[30px] shrink-0 rounded-md object-cover"
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = productPlaceholder;
+                    }}
+                  />
 
                   {/* 단계 및 이름 */}
                   <span className="text-[14px] font-semibold text-blue-50 shrink-0">

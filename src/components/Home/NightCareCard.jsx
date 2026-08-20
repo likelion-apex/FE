@@ -19,6 +19,10 @@ const NightCareCard = ({ tip, steps }) => {
                 src={step.imageUrl || productPlaceholder}
                 alt=""
                 className="size-10 shrink-0 rounded-lg object-cover"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = productPlaceholder;
+                }}
               />
               <span className="ml-4 text-sm leading-[14px] font-semibold text-black">
                 {step.name}
