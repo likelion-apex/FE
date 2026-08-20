@@ -19,6 +19,7 @@ import {
   updateStepCompletion,
   completeAllSteps,
   completeToday,
+  getRoutineLogs,
 } from "../../api/routine";
 
 const MyRoutine = () => {
@@ -48,14 +49,13 @@ const MyRoutine = () => {
   }, []);
 
   useEffect(() => {
-  if (routine) {
-    const completedIds = routine.steps
-      .filter((step) => step.completed)
-      .map((step) => step.stepId);
-    setCheckedItems(completedIds);
-  }
-}, [routine]);
-
+    if (routine) {
+      const completedIds = routine.steps
+        .filter((step) => step.completed)
+        .map((step) => step.stepId);
+      setCheckedItems(completedIds);
+    }
+  }, [routine]);
 
   const { setNavProps } = useOutletContext();
   useEffect(() => {
@@ -147,6 +147,44 @@ const MyRoutine = () => {
     }
   };
 
+  // 달력에서 선택한 날짜(기본 : 오늘)
+  const [selectedDate, setSelectedDate] = useState("2026-08-20");
+  const [currentMonth, setCurrentMonth] = useState({ year: 2026, month: 8 });
+
+  // 루틴 로그 조회 API 로 받아올 데이터
+  const [monthlyLogs, setMonthlyLogs] = useState([]); // 달력에 점 찍을 월별 데이터
+  const [dailyRoutine, setDailyRoutine] = useState([]); // 하루 루틴 리스트
+
+  // 월(Month)이 바뀔 때마다 달력용 요약 데이터 불러오기
+  useEffect(() => {
+    const fetchMonthlyLogs = async () => {
+      try {
+        const data = await getRoutineLogs({
+          year: currentMonth.year,
+          month: currentMonth.month,
+        });
+        console.log("월별 데이터:", data);
+        setMonthlyLogs(data); // 달력에 넘겨줄 데이터 저장
+      } catch (error) {
+        console.error("월별 루틴 요약 실패:", error);
+      }
+    };
+    fetchMonthlyLogs();
+  }, [currentMonth.year, currentMonth.month]);
+
+  // 날짜를 클릭할 때마다 하단 상세 루틴 데이터 불러오기
+  useEffect(() => {
+    const fetchDailyRoutine = async () => {
+      try {
+        const data = await getRoutineLogs({ date: selectedDate });
+        setDailyRoutine(data); // 기존 TODAY_ROUTINE_DATA 대신 쓸 실제 데이터!
+      } catch (error) {
+        console.error("일별 루틴 상세 실패:", error);
+      }
+    };
+    if (selectedDate) fetchDailyRoutine();
+  }, [selectedDate]);
+
   return (
     <div className="relative flex h-full flex-col px-[20px]">
       <div className="flex-1 overflow-y-auto pb-[100px] pt-6 ">
@@ -169,11 +207,18 @@ const MyRoutine = () => {
         {activeTab === "데일리 루틴" && (
           <div className="mt-[42px]">
             <div className="mb-[45px]">
-              <MyCalendar progressPercentage={progressPercentage} />
+              <MyCalendar
+                progressPercentage={progressPercentage}
+                monthlyData={monthlyLogs} //달력에 월별 데이터 전달
+                onDateSelect={(date) => setSelectedDate(date)} //날짜 클릭 시 선택된 날짜 변경
+                onMonthChange={(year, month) =>
+                  setCurrentMonth({ year, month })
+                } //달 이동 시 월 변경
+              />
             </div>
             <div>
               <div className="flex items-center justify-between mb-[26px]">
-                <h3 className="text-black font-semibold text-[18px]">
+                <h3 className="text-black font-semibold text-[18px] ">
                   오늘의 나이트 케어
                 </h3>
               </div>
@@ -216,7 +261,11 @@ const MyRoutine = () => {
                     {routine.steps.map((step) => (
                       <CareCard
                         key={step.stepId}
-                        step={{id: step.stepId, title: step.productName, description: `${step.brand} · ${step.category}`,}}
+                        step={{
+                          id: step.stepId,
+                          title: step.productName,
+                          description: `${step.brand} · ${step.category}`,
+                        }}
                         isChecked={checkedItems.includes(step.stepId)}
                         onClick={() => handleToggle(step.stepId)}
                       />

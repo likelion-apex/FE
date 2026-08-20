@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import useAuthStore from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 import SavedRoutineCard from "./SavedRoutineCard";
 import YearModal from "./YearModal";
 
+import axios from "axios";
+import useAuthStore from "../../store/authStore";
+
 const SavedRoutineList = ({ onClick }) => {
   const accessToken = useAuthStore((state) => state.accessToken);
+  const navigate = useNavigate();
 
   const [year, setYear] = useState(2026);
   const [sortOption, setSortOption] = useState("최신순");
@@ -158,6 +161,7 @@ const SavedRoutineList = ({ onClick }) => {
               key={routine.routineId}
               data={routine}
               onClick={() => onClick(routine.routineId)}
+              onApply={(e) => handleApplyToday(routine.routineId, e)}
             />
           ))
         ) : (
