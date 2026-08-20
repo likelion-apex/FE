@@ -24,8 +24,9 @@ const NightCareCard = ({ tip, steps }) => {
                 <p className="truncate text-sm leading-5 font-semibold text-black">
                   {step.order}. {step.name}
                 </p>
-                <p className="mt-1 truncate text-xs leading-4 text-gray-60">
-                  {[step.brand, step.category].filter(Boolean).join(" · ")}
+                <p className="mt-1 line-clamp-2 text-xs leading-4 text-gray-60">
+                  {step.summary ||
+                    [step.brand, step.category].filter(Boolean).join(" · ")}
                 </p>
               </div>
             </li>

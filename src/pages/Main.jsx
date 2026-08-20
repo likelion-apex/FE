@@ -87,6 +87,7 @@ function Main() {
     brand: step.brand,
     imageUrl: step.imageUrl,
     category: step.category,
+    summary: step.summary,
   }));
 
   const mappedFavorites = (summary?.favoriteInventory?.items ?? []).map(

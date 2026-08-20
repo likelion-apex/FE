@@ -248,7 +248,7 @@ const MyRoutine = () => {
         )}
 
         {activeTab === "내 루틴 보관함" && (
-          <div className="mt-7">
+          <div className="mt-[23px]">
             <SavedRoutineList
               onClick={(id) => {
                 navigate(`/MyRoutine/RoutineDetail/${id}`);
