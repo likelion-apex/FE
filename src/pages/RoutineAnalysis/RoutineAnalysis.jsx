@@ -49,7 +49,39 @@ const RoutineAnalyze = () => {
               },
             },
           );
-          setVideoData(response.data.data);
+
+          const data = response.data.data;
+          //길이 검증 로직 추가
+          if (data && data.duration) {
+            let totalSeconds = 0;
+            const durationStr = String(data.duration);
+
+            // 💡 경우 A: "MM:SS" 형식일 때 (예: "2:15")
+            if (durationStr.includes(":")) {
+              const parts = durationStr.split(":").map(Number);
+              if (parts.length === 2) {
+                totalSeconds = parts[0] * 60 + parts[1]; // 분을 초로 변환
+              } else if (parts.length === 3) {
+                totalSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2]; // 시:분:초
+              }
+            }
+            // 이미 초 단위 숫자일 때 (예: "135")
+            else if (!isNaN(durationStr)) {
+              totalSeconds = parseInt(durationStr, 10);
+            }
+
+            if (totalSeconds > 120) {
+              alert(
+                "영상의 길이가 2분을 초과합니다. 2분 이내의 쇼츠(Shorts) URL을 입력해주세요.",
+              );
+              setUrl(""); // 입력창 초기화
+              setVideoData(null); // 카드 초기화
+              return; // 여기서 멈춤 (아래 setVideoData 실행 안 함)
+            }
+          }
+
+          // 길이가 2분 이하이거나 검증을 통과한 경우에만 데이터를 렌더링
+          setVideoData(data);
         } catch (error) {
           console.error(
             "유트브 영상 미리보기 정보를 불러오는 데 실패했습니다",
@@ -184,7 +216,6 @@ const RoutineAnalyze = () => {
               </div>
             </div>
           ) : (
-            /* 영상 데이터가 없을 때: 기존 회색 카드 리스트 표시 */
             <div className="flex gap-4 overflow-x-auto no-scrollbar">
               {THUMBNAILS.map((imgSrc, index) => (
                 <img
@@ -233,7 +264,7 @@ const RoutineAnalyze = () => {
 
           {/* 안내 문구 */}
           <div className=" text-center mt-3 rounded-xl bg-blue-05 py-[10px] text-[11px] font-semibold leading-normal text-gray-60">
-            <p>최대 5분 이내 영상만 분석할 수 있어요.</p>
+            <p>최대 2분 이내 영상만 분석할 수 있어요.</p>
             <p>영상 길이에 따라 분석에 많은 시간이 걸릴 수 있어요.</p>
           </div>
         </section>
@@ -268,6 +299,21 @@ const RoutineAnalyze = () => {
                   title={routine.title}
                   day={routine.createdAt}
                   score={routine.overallScore}
+                  status={routine.status}
+                  onClick={() => {
+                    console.log(
+                      "클릭한 루틴 상태:",
+                      routine.status,
+                      "ID:",
+                      routine.analysisId,
+                    );
+                    // 완료된 항목만 클릭 가능하게 방어!
+                    if (routine.status !== "COMPLETED") return;
+                    // URL 주소에 ID를 넣어서 이동!
+                    navigate(
+                      `/RoutineAnalysis/AnalyzeResult/${routine.analysisId}`,
+                    );
+                  }}
                 />
               </div>
             ))}

@@ -1,7 +1,14 @@
 import video_button from "../../assets/routine-analyze/video_button.svg";
 import more_arrow from "../../assets/routine-analyze/more_arrow.svg";
 
-const RecentRoutineItem = ({ title, day, score, thumbnailUrl }) => {
+const RecentRoutineItem = ({
+  title,
+  day,
+  score,
+  thumbnailUrl,
+  status,
+  onClick,
+}) => {
   const getDaysAgo = (dateString) => {
     if (!dateString) return "";
 
@@ -19,21 +26,28 @@ const RecentRoutineItem = ({ title, day, score, thumbnailUrl }) => {
 
     return "방금 전"; // 방금 막 생성되어서 시간차가 거의 없는 경우
   };
+
+  const clickable = status === "COMPLETED";
+
   return (
-    <div className="flex items-center w-full gap-3">
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={!clickable}
+      className="flex items-center w-full gap-3 text-left disabled:cursor-default"
+    >
+      {/* 왼쪽 썸네일 영역 */}
       <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center">
-        <div className="rotate-90">
-          <div className="relative h-[40px] w-[60px] overflow-clip rounded-lg bg-gray-200">
-            {/* 배경으로 깔리는 유튜브 썸네일 */}
-            <img
-              src={thumbnailUrl}
-              alt="유튜브 썸네일"
-              className="absolute inset-0 h-full w-full object-fill -rotate-90 scale-150"
-            />
-          </div>
+        <div className="relative h-[60px] w-[40px] overflow-clip rounded-lg bg-gray-200">
+          <img
+            src={thumbnailUrl}
+            alt="유튜브 썸네일"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         </div>
       </div>
 
+      {/* 중앙 텍스트 영역 */}
       <div className="flex flex-1 flex-col overflow-hidden">
         <p className="text-[16px] font-semibold leading-7 text-black truncate">
           {title}
@@ -44,11 +58,11 @@ const RecentRoutineItem = ({ title, day, score, thumbnailUrl }) => {
         </p>
       </div>
 
-      {/* 3. 오른쪽 화살표 영역 (크기 고정: shrink-0) */}
+      {/* 오른쪽 화살표 영역 */}
       <div className="flex size-5 shrink-0 items-center justify-center overflow-clip rounded-full">
         <img src={more_arrow} alt="자세히 보기" className="h-4 w-2" />
       </div>
-    </div>
+    </button>
   );
 };
 

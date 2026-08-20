@@ -4,6 +4,7 @@ import {
   useOutletContext,
   useNavigate,
   useLocation,
+  useParams,
 } from "react-router-dom";
 import IngredientCard from "../../components/Analysis/IngredientCard";
 import TopNavbar from "../../components/layouts/TopNavbar";
@@ -21,13 +22,16 @@ const AnalyzeResult = () => {
   const location = useLocation();
   const isModal = true;
   const isDetailPage = false;
-  const analysisId = location.state?.analysisId;
 
   const [resultData, setResultData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const accessToken = useAuthStore((state) => state.accessToken);
   const nickname = useUserStore((state) => state.nickname);
+  const { analysisId: pathAnalysisId } = useParams();
+
+  //주소창에 ID가 있다면 쓰고, 아니라면 기존 state 방법 사용
+  const analysisId = pathAnalysisId ?? location.state?.analysisId;
 
   //루틴 분석 결과 조회
   useEffect(() => {

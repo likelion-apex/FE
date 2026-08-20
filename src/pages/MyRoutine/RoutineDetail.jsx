@@ -84,9 +84,8 @@ const RoutineDetail = () => {
     }
 
     try {
-      const data = await applyRoutineToToday(id); // URL에서 뽑아온 id를 그대로 넘겨줍니다.
+      const data = await applyRoutineToToday(id);
 
-      // 적용 응답(=오늘의 데일리 루틴)을 store에 바로 넣어 홈/데일리에 즉시 반영한다.
       useRoutineStore.getState().setRoutine(data);
 
       alert("오늘의 루틴으로 적용되었습니다!");
@@ -118,6 +117,7 @@ const RoutineDetail = () => {
   const isDetailPage = true;
   const routineDeteilData = routineData.aiBriefing;
 
+  console.log("스탭", routineData.steps);
   return (
     <div className="relative flex h-full flex-col px-[20px]">
       <TopNavbar
@@ -129,7 +129,6 @@ const RoutineDetail = () => {
           onClick: handleDelete,
         }}
       />
-
       <div className="flex-1 overflow-y-auto pb-[100px] pt-6 ">
         <div className="mb-6 flex justify-between px-5">
           <h2 className="text-[20px] font-semibold text-black">
@@ -151,7 +150,7 @@ const RoutineDetail = () => {
 
         <div className="flex flex-col gap-2">
           {routineData.steps.map((step, index) => (
-            <RoutineAccordionItem key={step.productId || index} step={step} />
+            <RoutineAccordionItem key={step.order} step={step} />
           ))}
         </div>
       </div>

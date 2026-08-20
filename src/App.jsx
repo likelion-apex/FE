@@ -90,6 +90,10 @@ function App() {
               element={<AnalyzeResult />}
             />
             <Route
+              path="/RoutineAnalysis/AnalyzeResult/:analysisId"
+              element={<AnalyzeResult />}
+            />
+            <Route
               path="/RoutineAnalysis/OptimizedRoutine"
               element={<OptimizedRoutine />}
             />{" "}
@@ -103,6 +107,10 @@ function App() {
             />
             <Route element={<Layout />}>
               <Route path="/RoutineAnalysis" element={<RoutineAnalysis />} />
+              <Route
+                path="/RoutineAnalysis/AnalyzeResult/:analysisId"
+                element={<AnalyzeResult />}
+              />
               <Route path="/MyRoutine" element={<MyRoutine />} />
             </Route>
             <Route path="/inventory" element={<InventoryLayout />}>
