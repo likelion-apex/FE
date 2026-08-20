@@ -40,7 +40,7 @@ const SKIN_TYPES = [
   },
   {
     id: 5,
-    name: "수부지 (수분 부족형 지성)",
+    name: "수부지",
     description: "겉은 번들거리는데 속은 찢어질 듯 당겨요",
     icon: dehydratedOilyIcon,
   },

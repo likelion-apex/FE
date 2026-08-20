@@ -2,35 +2,49 @@ import React, { useState } from "react";
 import RecordDetailModal from "./RecordDetailModal";
 import useRoutineStore from "../../store/routineStore";
 
-// 서버 일별 상세 응답(untyped)을 모달이 기대하는 형태로 정규화한다.
-// 실제 필드명이 다르면 이 함수 한 곳만 고치면 된다. (console.log로 확인)
-const normalizeRecord = (raw, dateLabel) => {
-  // 아직 안 불러왔거나(빈 배열/undefined) 기록이 없으면 null
-  if (!raw || Array.isArray(raw)) return null;
-
-  const steps = raw.steps ?? raw.routines ?? [];
+const normalizeRoutineLog = (routineLog) => {
+  const steps = routineLog.steps ?? routineLog.routines ?? [];
   const completedCount =
-    raw.completedCount ?? steps.filter((s) => s.completed).length;
-  const totalCount = raw.totalCount ?? steps.length;
+    routineLog.completedCount ?? steps.filter((step) => step.completed).length;
+  const totalCount = routineLog.totalCount ?? steps.length;
   const completionRate =
-    raw.completionRate ??
+    routineLog.completionRate ??
     (totalCount ? Math.round((completedCount / totalCount) * 100) : 0);
 
   return {
-    date: dateLabel, // 화면 표시용 문자열 ("8월 20일 (목)")
-    condition: raw.condition ?? raw.skinCondition, // 서버 한글 문자열 -> 모달에서 아이콘 매핑
-    conditionId: raw.conditionId, // 혹시 영어 id로 올 경우 대비
-    memo: raw.memo ?? null,
+    routineId: routineLog.routineId,
+    name: routineLog.name ?? "나이트 케어",
+    routineType: routineLog.routineType,
     completionRate,
     completedCount,
     totalCount,
-    routines: steps.map((s) => ({
-      order: s.order ?? s.stepOrder,
-      name: s.productName ?? s.name,
-      imageUrl: s.imageUrl ?? s.productImageUrl,
-      category: s.category,
-      completed: Boolean(s.completed),
+    routines: steps.map((step) => ({
+      order: step.order ?? step.stepOrder,
+      name: step.productName ?? step.name,
+      imageUrl: step.imageUrl ?? step.productImageUrl,
+      category: step.category,
+      completed: Boolean(step.completed),
     })),
+  };
+};
+
+// 서버 일별 상세 응답을 모달이 기대하는 형태로 정규화한다.
+// 과거 기록은 routineLogs 배열 안에 그날 적용한 모든 루틴이 들어온다.
+const normalizeRecord = (raw, dateLabel) => {
+  if (!raw || Array.isArray(raw)) return null;
+
+  const rawRoutineLogs = Array.isArray(raw.routineLogs)
+    ? raw.routineLogs
+    : raw.steps || raw.routines
+      ? [raw]
+      : [];
+
+  return {
+    date: dateLabel,
+    condition: raw.condition ?? raw.skinCondition, // 서버 한글 문자열 -> 모달에서 아이콘 매핑
+    conditionId: raw.conditionId, // 혹시 영어 id로 올 경우 대비
+    memo: raw.memo ?? null,
+    routineLogs: rawRoutineLogs.map(normalizeRoutineLog),
   };
 };
 
@@ -48,11 +62,12 @@ const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
   const completedCount = steps.filter((s) => s.completed).length;
   const totalCount = steps.length;
   const routineInfo = {
+    routineId: activeRoutine.routineId,
+    name: activeRoutine.routineName ?? activeRoutine.name ?? "나이트 케어",
+    routineType: activeRoutine.routineType ?? "NIGHT",
     completedCount,
     totalCount,
-    completionRate: totalCount
-      ? Math.round((completedCount / totalCount) * 100)
-      : 0,
+    completionRate: totalCount ? Math.round((completedCount / totalCount) * 100) : 0,
     routines: steps.map((s) => ({
       order: s.order ?? s.stepOrder,
       name: s.productName ?? s.name,
@@ -62,10 +77,10 @@ const buildModalRecord = (dailyRaw, dateLabel, isToday, activeRoutine) => {
     })),
   };
 
-  // 컨디션/메모(base)가 있으면 그 위에 루틴 정보만 얹고, 없으면 새로 구성
+  // 컨디션/메모(base)가 있으면 그 위에 오늘의 활성 루틴을 얹고, 없으면 새로 구성
   return base
-    ? { ...base, ...routineInfo }
-    : { date: dateLabel, memo: null, ...routineInfo };
+    ? { ...base, routineLogs: [routineInfo] }
+    : { date: dateLabel, memo: null, routineLogs: [routineInfo] };
 };
 
 const MyCalendar = ({
