@@ -45,13 +45,8 @@ function Main() {
 
   // 데일리 루틴은 store에서 구독한다. (홈/데일리 화면이 같은 데이터를 공유)
   const routine = useRoutineStore((state) => state.routine);
+  const routineLoaded = useRoutineStore((state) => state.loaded);
   const loadRoutine = useRoutineStore((state) => state.loadRoutine);
-  const toggleStep = useRoutineStore((state) => state.toggleStep);
-
-  // 체크된 스텝 id는 routine에서 파생한다.
-  const checkedIds = (routine?.steps ?? [])
-    .filter((step) => step.completed)
-    .map((step) => step.stepId);
 
   const loadSummary = async () => {
     const data = await getSummary();
@@ -146,11 +141,11 @@ function Main() {
             <NightCareCard
               tip="확실한 안티에이징을 위한 최적의 액티브 조합이예요."
               steps={mappedSteps}
-              checkedIds={checkedIds}
-              onToggleStep={toggleStep}
             />
+          ) : !routineLoaded ? (
+            <div className="h-[220px] animate-pulse rounded-[20px] bg-gray-10" />
           ) : (
-            <NoRoutineCard onClick={()=>navigate("/RoutineAnalysis")}/>
+            <NoRoutineCard onClick={() => navigate("/RoutineAnalysis")} />
           )}
         </section>
 

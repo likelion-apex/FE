@@ -17,6 +17,14 @@ import MyCalendar from "../../components/MyRoutine/MyCalendar";
 import { getRoutineLogs } from "../../api/routine";
 import useRoutineStore from "../../store/routineStore";
 
+const getToday = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 const MyRoutine = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(
@@ -27,6 +35,8 @@ const MyRoutine = () => {
   // 데일리 루틴은 store에서 구독한다. (홈 화면과 같은 데이터를 공유)
   const routine = useRoutineStore((state) => state.routine);
 
+  const routineLoaded = useRoutineStore((state) => state.loaded);
+  const isCompleting = useRoutineStore((state) => state.isCompleting);
   const loadRoutine = useRoutineStore((state) => state.loadRoutine);
   const toggleStep = useRoutineStore((state) => state.toggleStep);
   const completeAll = useRoutineStore((state) => state.completeAll);
@@ -65,7 +75,8 @@ const MyRoutine = () => {
   //완료된 단계 수
   const completedSteps = checkedItems.length;
   // 소수점이 나오지 않게 Math.round로 반올림 처리
-  const progressPercentage = Math.round((completedSteps / totalSteps) * 100);
+  const progressPercentage =
+    totalSteps === 0 ? 0 : Math.round((completedSteps / totalSteps) * 100);
 
   //진행 완료 표시
   const isAllChecked = totalSteps > 0 && checkedItems.length === totalSteps;
@@ -76,8 +87,11 @@ const MyRoutine = () => {
   const handleSubmitRoutine = () => submitToday();
 
   // 달력에서 선택한 날짜(기본 : 오늘)
-  const [selectedDate, setSelectedDate] = useState("2026-08-20");
-  const [currentMonth, setCurrentMonth] = useState({ year: 2026, month: 8 });
+  const [selectedDate, setSelectedDate] = useState(getToday);
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const date = new Date();
+    return { year: date.getFullYear(), month: date.getMonth() + 1 };
+  });
 
   // 루틴 로그 조회 API 로 받아올 데이터
   const [monthlyLogs, setMonthlyLogs] = useState([]); // 달력에 점 찍을 월별 데이터
@@ -152,12 +166,14 @@ const MyRoutine = () => {
                 </h3>
               </div>
 
-              {!routine ? (
+              {!routine && !routineLoaded ? (
+                <div className="mb-[68px] h-[220px] animate-pulse rounded-[20px] bg-gray-10" />
+              ) : !routine ? (
                 <div className="mb-[68px]">
                   <NoRoutineCard onClick={() => navigate("/RoutineAnalysis")} />
                 </div>
               ) : routine.completed ? (
-                <div className="w-full overflow-clip rounded-2xl border border-gray-10 shadow-card mb-10">
+                <div className="mb-10 w-full overflow-clip rounded-[20px] border border-gray-10 shadow-card">
                   <RoutineComplete />
                 </div>
               ) : (
@@ -208,7 +224,11 @@ const MyRoutine = () => {
                       borderColor={
                         isAllChecked ? "border-blue-50" : "border-gray-10"
                       }
-                      onClick={isAllChecked ? handleSubmitRoutine : undefined}
+                      onClick={
+                        isAllChecked && !isCompleting
+                          ? handleSubmitRoutine
+                          : undefined
+                      }
                     />
                   </div>
                 </div>
