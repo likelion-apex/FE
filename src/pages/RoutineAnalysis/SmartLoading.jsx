@@ -19,29 +19,7 @@ const SmartLoading = () => {
   const [isCanceling, setIsCanceling] = useState(false);
 
   useEffect(() => {
-    // 혹시라도 서버 응답이 더 빠를 수 있으니, Math.max로 역주행 방지
-    const timer1 = setTimeout(
-      () => setCurrentStep((prev) => Math.max(prev, 2)),
-      4000,
-    );
-    const timer2 = setTimeout(
-      () => setCurrentStep((prev) => Math.max(prev, 3)),
-      8000,
-    );
-    const timer3 = setTimeout(
-      () => setCurrentStep((prev) => Math.max(prev, 4)),
-      12000,
-    );
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!analysisId) return; // ID가 없으면 실행 안 함
+    if (!analysisId) return;
 
     let intervalId;
 
@@ -50,24 +28,19 @@ const SmartLoading = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/shortform-analyses/${analysisId}/status`,
           {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
+            headers: { Authorization: `Bearer ${accessToken}` },
           },
         );
 
-        // 명세서에 따른 응답 데이터 구조
         const { status, progress, errorMessage } = response.data.data;
         console.log("현재 진행 상태:", status, progress);
 
-        // 백엔드 완료 상태 확인
         if (status === "COMPLETED" || status === "DONE") {
           clearInterval(intervalId);
           setCurrentStep(5);
 
           setTimeout(() => {
             setCurrentStep(6);
-            // 다음 결과 페이지로 이동 (결과 페이지에서 조회할 수 있도록 analysisId도 함께 넘겨줌)
             if (type === "routine") {
               navigate("/RoutineAnalysis/AnalyzeResult", {
                 state: { analysisId },
@@ -77,13 +50,29 @@ const SmartLoading = () => {
                 state: { analysisId },
               });
             }
-          }, 500); // 0.5초 뒤 넘어감
-        } else if (status === "FAILED" || status === "ERROR") {
+          }, 500);
+        }
+        // 💡 2. 에러 났을 때
+        else if (status === "FAILED" || status === "ERROR") {
           clearInterval(intervalId);
           alert(
             `분석 중 문제가 발생했습니다: ${errorMessage || "알 수 없는 오류"}`,
           );
           navigate(-1);
+        }
+        // 💡 3. 아직 진행 중일 때 (progress 값에 따라 UI 단계 변경!)
+        else {
+          // progress가 0~100의 숫자라고 가정했을 때의 예시입니다.
+          // 백엔드 진행도에 맞춰 1~4단계를 보여줍니다.
+          if (progress < 25) {
+            setCurrentStep(1);
+          } else if (progress < 50) {
+            setCurrentStep(2);
+          } else if (progress < 75) {
+            setCurrentStep(3);
+          } else {
+            setCurrentStep(4);
+          }
         }
       } catch (error) {
         console.error("상태 체크 실패:", error);
@@ -211,8 +200,18 @@ const SmartLoading = () => {
             className="stroke-blue-50"
             strokeWidth="2"
             strokeDasharray="590"
-            strokeDashoffset="590"
-            style={{ animation: "fill-up 60s linear forwards" }}
+            // currentStep이 5 이상(완료)이면 애니메이션을 끄고 즉시 100%로 채움
+            style={
+              currentStep >= 5
+                ? {
+                    strokeDashoffset: 0,
+                    transition: "stroke-dashoffset 0.4s ease-out",
+                  }
+                : {
+                    strokeDashoffset: 590,
+                    animation: "fill-up 60s linear forwards",
+                  }
+            }
           />
         </svg>
 

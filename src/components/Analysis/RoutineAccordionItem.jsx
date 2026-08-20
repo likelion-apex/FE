@@ -84,7 +84,7 @@ const RoutineAccordionItem = ({ step }) => {
   const subTitle = step.replaceName
     ? step.replaceName
     : step.brand
-      ? `${step.brand} · 내 화장대 제품`
+      ? `${step.brand}`
       : "인벤토리 미등록 · 영상 속 루틴";
 
   return (
@@ -104,7 +104,7 @@ const RoutineAccordionItem = ({ step }) => {
           <ProductImage
             alt=""
             category={step.category}
-            className="size-[36px] shrink-0 rounded-lg border-gray-40"
+            className="size-[36px] shrink-0 rounded-lg border border-gray-20"
           />
 
           <div className="flex flex-col justify-between w-full">

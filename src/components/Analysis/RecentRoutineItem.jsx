@@ -7,26 +7,9 @@ const RecentRoutineItem = ({
   score,
   thumbnailUrl,
   status,
+  stepCount,
   onClick,
 }) => {
-  const getDaysAgo = (dateString) => {
-    if (!dateString) return "";
-
-    const targetDate = new Date(dateString);
-    const today = new Date();
-
-    // 시간 차이를 밀리초(ms) 단위로 계산
-    const diffTime = today.getTime() - targetDate.getTime();
-
-    // 밀리초를 일(day) 단위로 변환 (소수점 버림)
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) return "오늘"; // 오늘인 경우
-    if (diffDays > 0) return `${diffDays}일 전`; // 1일 이상 지난 경우
-
-    return "방금 전"; // 방금 막 생성되어서 시간차가 거의 없는 경우
-  };
-
   const clickable = status === "COMPLETED";
 
   if (!title || !day || !score) return null;
@@ -40,12 +23,18 @@ const RecentRoutineItem = ({
     >
       {/* 왼쪽 썸네일 영역 */}
       <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center">
-        <div className="relative h-[60px] w-[40px] overflow-clip rounded-lg bg-gray-200">
+        <div className="relative flex h-[60px] w-[40px] items-start justify-center overflow-clip rounded-lg bg-gray-200 pt-1.5">
           <img
             src={thumbnailUrl}
             alt="유튜브 썸네일"
-            className="absolute inset-0 h-full w-full object-cover"
+            // 💡 opacity-50 (또는 40~60)을 주어 뒤의 회색 배경이 비치게 만듭니다.
+            className="absolute inset-0 h-full w-full object-cover opacity-50"
           />
+
+          {/* 💡 z-10을 주어 텍스트가 이미지 위로 올라오게 합니다. */}
+          <span className="relative z-10 text-[10px] font-bold tracking-tight text-red-800">
+            Shorts
+          </span>
         </div>
       </div>
 
@@ -55,7 +44,7 @@ const RecentRoutineItem = ({
           {title}
         </p>
         <p className="text-[12px] font-medium leading-[14px] text-gray-60 truncate">
-          {getDaysAgo(day)} • AI 궁합점수
+          {stepCount}단계 • AI 궁합점수
           <span className="text-blue-50 font-semibold"> {score}점</span>
         </p>
       </div>

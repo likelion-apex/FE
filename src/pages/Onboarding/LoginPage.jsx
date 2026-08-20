@@ -37,8 +37,14 @@ const LoginPage = () => {
 
       setAuth(data);
 
-      // 2. 온보딩 여부에 따른 라우팅 분기 처리
-      if (data.onboardingRequired) {
+      // 실제 데이터가 있는지 프론트에서 2중 체크
+      const member = data.member;
+      const hasOnboardingData =
+        member?.skinType ||
+        (member?.skinConcerns && member.skinConcerns.length > 0);
+
+      // 온보딩 데이터가 이미 있다면 무조건 메인(/)으로! 데이터가 아예 없을 때만 온보딩으로!
+      if (data.onboardingRequired && !hasOnboardingData) {
         navigate("/onboarding/nickname");
       } else {
         navigate("/");
@@ -57,7 +63,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="relative mx-auto flex h-screen w-full max-w-[400px] flex-col bg-white px-6">
+    <div className="relative mx-auto flex h-[100dvh] w-full max-w-[400px] flex-col bg-white px-6">
       {/* 1. 로고 영역 */}
       <div className="mt-[140px] flex justify-center pb-[80px]">
         <img src={wordamark} alt="SOAK" className="w-[142px]" />
@@ -112,11 +118,11 @@ const LoginPage = () => {
       </div>
 
       {/* 3. 하단 로그인 버튼 */}
-      <div className="absolute bottom-[40px] left-6 right-6">
+      <div className="mt-auto pb-[40px]">
         <button
           onClick={handleLogin}
           disabled={isLoading}
-          className="h-[56px] w-full rounded-full bg-blue-50 text-[18px] font-bold text-white transition-opacity hover:opacity-90 disabled:bg-gray-300"
+          className="h-[56px] w-full rounded-full bg-blue-50 text-[18px] font-bold text-white transition-opacity mb-[550px] hover:opacity-90 disabled:bg-gray-300"
         >
           {isLoading ? "로그인 중..." : "로그인"}
         </button>

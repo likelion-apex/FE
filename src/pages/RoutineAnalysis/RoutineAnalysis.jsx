@@ -63,9 +63,7 @@ const RoutineAnalyze = () => {
               } else if (parts.length === 3) {
                 totalSeconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
               }
-            }
-            // 💡 혹시 초 단위로 그냥 올 때를 대비 (예: "24")
-            else if (!isNaN(durationStr) && durationStr !== "") {
+            } else if (!isNaN(durationStr) && durationStr !== "") {
               totalSeconds = parseInt(durationStr, 10);
             }
 
@@ -167,8 +165,8 @@ const RoutineAnalyze = () => {
       setIsLoading(true);
 
       try {
-        console.log("📤 서버로 보내는 Request Body:", { videoUrl: url });
-        console.log("🔑 사용 중인 토큰:", accessToken);
+        console.log("서버로 보내는 Request Body:", { videoUrl: url });
+        console.log("사용 중인 토큰:", accessToken);
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/api/shortform-analyses`,
           {
@@ -188,7 +186,7 @@ const RoutineAnalyze = () => {
         });
       } catch (error) {
         console.error("전체 루틴 분석 요청 실패:", error);
-        // 💡 백엔드가 보내준 구체적인 에러 메시지가 있는지 확인
+
         const errorMessage = error.response?.data?.message;
         const errorCode = error.response?.data?.code;
 
@@ -358,6 +356,7 @@ const RoutineAnalyze = () => {
                   day={routine.createdAt}
                   score={routine.overallScore}
                   status={routine.status}
+                  stepCount={routine.stepCount}
                   onClick={() => {
                     console.log(
                       "클릭한 루틴 상태:",
@@ -365,9 +364,9 @@ const RoutineAnalyze = () => {
                       "ID:",
                       routine.analysisId,
                     );
-                    // 완료된 항목만 클릭 가능하게 방어!
+
                     if (routine.status !== "COMPLETED") return;
-                    // URL 주소에 ID를 넣어서 이동!
+
                     navigate(
                       `/RoutineAnalysis/AnalyzeResult/${routine.analysisId}`,
                     );
