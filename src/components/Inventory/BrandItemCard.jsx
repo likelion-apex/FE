@@ -82,7 +82,7 @@ const BrandItemCard = ({
       {/* 텍스트 영역 */}
       <div className="flex flex-col px-1 pb-1">
         <span className="text-[12px] font-medium text-gray-60 truncate">
-          {item.brand}
+          {item.brand || "내 화장대 제품"}
         </span>
         <p className="mt-1 break-keep text-[16px] font-bold leading-[1.3] text-black line-clamp-2">
           {item.productName}
